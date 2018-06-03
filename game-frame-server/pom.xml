@@ -51,5 +51,6 @@
 		<module>game-dao-server</module>
 		<module>game-common</module>
 		<module>game-gateway</module>
+		<module>game-network-message</module>
 	</modules>
 </project>
