@@ -15,4 +15,7 @@
 
 详细文档介绍见：http://www.coc88.com
 
+打赏
+http://img.zcool.cn/community/01080755c1edaf32f87528a18e9840.jpg@900w_1l_2o_100sh.jpg
+
 
