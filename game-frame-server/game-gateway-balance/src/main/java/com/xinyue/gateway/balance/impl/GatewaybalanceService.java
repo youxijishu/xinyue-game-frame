@@ -1,6 +1,6 @@
 package com.xinyue.gateway.balance.impl;
 
-import javax.annotation.PostConstruct;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.balance.config.GatewayServerConfig;
-import com.xinyue.gateway.balance.model.GatewayServerInfo;
+import com.xinyue.gateway.balance.config.GatewayServerInfo;
 
 /**
  * 负责管理网关的负载，从这里可以获取分配的网关id。
@@ -23,16 +23,16 @@ public class GatewaybalanceService implements IGatewaybalanceService {
 	@Autowired
 	private GatewayServerConfig gatewayServerConfig;
 
-	@PostConstruct
-	public void init() {
-		System.out.println("log level:" + logger.isDebugEnabled());
-		System.out.println("log level:" + logger.isInfoEnabled());
-		logger.debug("初始化成功：{}", gatewayServerConfig);
-	}
-
 	@Override
 	public GatewayServerInfo selectGateWay(long userId) {
-
+		List<GatewayServerInfo> gatewayServerInfos = gatewayServerConfig.getGatewayServer();
+		if (gatewayServerInfos != null && !gatewayServerInfos.isEmpty()) {
+			int size = gatewayServerInfos.size();
+			int index = (int) (userId % size);
+			GatewayServerInfo selectResult = gatewayServerInfos.get(index);
+			logger.debug("{}选择网关：{}", userId, selectResult);
+			return selectResult;
+		}
 		return null;
 	}
 

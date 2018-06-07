@@ -1,15 +1,15 @@
-package com.xinyue.gateway.balance.model;
+package com.xinyue.gateway.balance.config;
 
 public class GatewayServerInfo {
-	private String serverId;
+	private int serverId;
 	private int port;
 	private String host;
 
-	public String getServerId() {
+	public int getServerId() {
 		return serverId;
 	}
 
-	public void setServerId(String serverId) {
+	public void setServerId(int serverId) {
 		this.serverId = serverId;
 	}
 

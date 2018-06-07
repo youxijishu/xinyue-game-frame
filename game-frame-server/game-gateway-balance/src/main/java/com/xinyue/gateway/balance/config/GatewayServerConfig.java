@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import com.xinyue.gateway.balance.model.GatewayServerInfo;
-
 @Configuration
 @ConfigurationProperties(prefix = "gateway.server.config")
 public class GatewayServerConfig {

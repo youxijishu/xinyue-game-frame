@@ -61,7 +61,7 @@
 	</Appenders>
 	<Loggers>
 		<!-- 如果没有定义logger，使用这里默认的日志等级 -->
-		<root level="debug">
+		<root level="info">
 			<appender-ref ref="console" />
 			<appender-ref ref="consoleFileLog"/>
 		</root>

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: gameuser
+
+server:
+  port: 8181
+logic_threads: 16
+user-name-min-length: 4
+user-name-max-length: 32
