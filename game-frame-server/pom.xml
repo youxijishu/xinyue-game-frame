@@ -53,13 +53,13 @@
 
 	</dependencies>
 	<modules>
-		<module>game-user</module>
-		<module>game-cluster</module>
-		<module>game-gateway-balance</module>
+		<module>game-web</module>
 		<module>game-logic-server</module>
 		<module>game-dao-server</module>
 		<module>game-common</module>
 		<module>game-gateway</module>
 		<module>game-network-message</module>
+		<module>game-dao-entity</module>
+		<module>eureka-server</module>
 	</modules>
 </project>
