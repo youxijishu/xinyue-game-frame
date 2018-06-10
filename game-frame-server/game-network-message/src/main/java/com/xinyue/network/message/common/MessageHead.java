@@ -5,8 +5,6 @@ public class MessageHead {
 	private int messageId;
 	// 消息序列号
 	private int seqId;
-	// 消息版本
-	private short msgVersion;
 
 	// 错误码，只有服务器返回给客户端的消息中才会有。
 	private int errorCode;
@@ -43,13 +41,7 @@ public class MessageHead {
 		this.seqId = seqId;
 	}
 
-	public short getMsgVersion() {
-		return msgVersion;
-	}
-
-	public void setMsgVersion(short msgVersion) {
-		this.msgVersion = msgVersion;
-	}
+	
 
 	public int getErrorCode() {
 		return errorCode;
