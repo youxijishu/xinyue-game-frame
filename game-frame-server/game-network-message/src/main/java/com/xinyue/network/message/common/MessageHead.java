@@ -8,8 +8,11 @@ public class MessageHead {
 
 	// 错误码，只有服务器返回给客户端的消息中才会有。
 	private int errorCode;
+	
+	
+	// ----以下字段服务器内部使用的字段，不需要在传输中序列化的字段---
+	
 	private String errorMsg;
-	// 服务器内部使用的字段，不需要在传输中序列化的字段
 	private long roleId;
 	// 用户id
 	private long userId;
