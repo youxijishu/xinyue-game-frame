@@ -1,17 +1,27 @@
 package com.xinyue.network.message.impl;
-
-import com.google.protobuf.GeneratedMessage;
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.xinyue.network.message.common.AbstractGameMessage;
 import com.xinyue.network.message.common.GameMessageMetaData;
 import com.xinyue.network.message.common.GameMessageType;
+import com.xinyue.utils.JsonUtil;
 
-@GameMessageMetaData(id = 1001, type = GameMessageType.RESPONSE)
+//河南心悦网络科技有限公司   王广帅
+//连接认证
+
+@GameMessageMetaData(id = 1001, type =GameMessageType.RESPONSE)
 public class ConnectConfirmResponse extends AbstractGameMessage {
+
 	private final static int MessageId = 1001;
 	private final static GameMessageType type = GameMessageType.RESPONSE;
-
 	
+	public ConnectConfirmResponse(){
+	}
+	
+	
+	public ConnectConfirmRequest newResponse() {
+		ConnectConfirmRequest response = new ConnectConfirmRequest();
+		copyMessageHead(response.getMessageHead());
+		return response;
+	}
 
 	@Override
 	protected int getMessageId() {
@@ -23,14 +33,23 @@ public class ConnectConfirmResponse extends AbstractGameMessage {
 		return type;
 	}
 
-	@Override
-	public byte[] encodeBody() throws Exception {
-		return null;
-	}
-
+	
+	
 	@Override
 	public void decodeBody(byte[] bytes) throws Exception {
-		
 	}
-
+	
+	@Override
+	public byte[] encodeBody() {  
+		 if(this.getMessageHead().getErrorCode() != 0){
+		  	return null;
+		 }
+		 
+		 return null;
+	}
+	@Override
+	public String toString(){
+		String info = "ConnectConfirmResponse->" + JsonUtil.objToJson(this);
+		return info;
+	}
 }

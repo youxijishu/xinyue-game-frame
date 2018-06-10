@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol package="com.xinyue.network.message.impl">
+	<Structs>
+
+	</Structs>
+
+	<Commands>
+		<command name="ConnectConfirm" id="1001" desc="连接认证">
+			<request>
+				<field name="token" type="string" desc="token" />
+				<field name="userId" type="long" desc="userId" />
+				<field name="roleId" type="long" desc="角色id" />
+			</request>
+			<response>
+
+			</response>
+		</command>
+	</Commands>
+</protocol>

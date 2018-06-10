@@ -10,6 +10,17 @@ public class ServerConfig {
 	private int bossThreads;
 	private int workThreads;
 	private long idleTime;
+	private int connectTimeout;
+	
+	
+
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	public void setConnectTimeout(int connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
 
 	public long getIdleTime() {
 		return idleTime;

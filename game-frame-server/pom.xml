@@ -61,5 +61,6 @@
 		<module>game-network-message</module>
 		<module>game-dao-entity</module>
 		<module>eureka-server</module>
+		<module>game-tool</module>
 	</modules>
 </project>

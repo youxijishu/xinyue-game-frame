@@ -1,0 +1,9 @@
+option java_package = "com.xinyue.network.message.impl.proto";
+option java_outer_classname = "UserModule";
+message ConnectConfirmRequestModel{
+	required string token = 1;
+	required int64 userId = 2;
+	required int64 roleId = 3;
+} 
+message ConnectConfirmResponseModel{
+} 

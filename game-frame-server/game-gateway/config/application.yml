@@ -1,0 +1,11 @@
+logging: 
+  config: file:config/log4j2.xml
+
+game:
+  server :
+    port: 8809
+    bossThreads: 1
+    workThreads: 16
+    idleTime: 300
+    connectTimeout: 10
+    
