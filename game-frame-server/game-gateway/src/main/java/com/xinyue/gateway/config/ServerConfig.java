@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "game.server")
 public class ServerConfig {
+	private int serverId;
 	private int port;
 	private int bossThreads;
 	private int workThreads;
@@ -13,6 +14,14 @@ public class ServerConfig {
 	private int connectTimeout;
 	
 	
+
+	public int getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(int serverId) {
+		this.serverId = serverId;
+	}
 
 	public int getConnectTimeout() {
 		return connectTimeout;

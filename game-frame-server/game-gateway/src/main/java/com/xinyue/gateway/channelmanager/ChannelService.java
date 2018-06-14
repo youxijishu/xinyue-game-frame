@@ -3,17 +3,21 @@ package com.xinyue.gateway.channelmanager;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 
 import com.xinyue.network.message.common.IGameMessage;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.EventExecutor;
+
 /**
  * 此类负责管理角色id和channel的对应关系，并且负责给某个角色id的channel发送消息。
- * @author 心悦网络科技有限公司   王广帅
+ * 
+ * @author 心悦网络科技有限公司 王广帅
  *
  * @Date 2018年6月10日 上午12:03:38
  */
@@ -22,6 +26,19 @@ public class ChannelService {
 	private EventLoopGroup loopGroup;
 	private Map<Integer, GameChannelGroup> eventLoopMap = new HashMap<>();
 	private boolean hadInit;
+	private AtomicInteger channelCount = new AtomicInteger();
+
+	/**
+	 * 
+	 * @Desc 获取当前在线人数
+	 * @return
+	 * @Author 心悦网络 王广帅
+	 * @Date 2018年6月14日 下午3:58:20
+	 *
+	 */
+	public int getOnlineCount() {
+		return this.channelCount.get();
+	}
 
 	/**
 	 * 
@@ -45,8 +62,8 @@ public class ChannelService {
 		}
 	}
 
-	private int getIndex(Long userId) {
-		int index = (int) (userId % eventLoopMap.size());
+	private int getIndex(Long roleId) {
+		int index = (int) (roleId % eventLoopMap.size());
 		return index;
 	}
 
@@ -60,23 +77,28 @@ public class ChannelService {
 		return gameChannelGroup;
 	}
 
-	public void addChannel(Long userId, Channel channel) {
-		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(userId);
-		gameChannelGroup.addChannel(userId, channel);
+	public void addChannel(Long roleId, Channel channel) {
+		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(roleId);
+		gameChannelGroup.addChannel(roleId, channel);
+		this.channelCount.incrementAndGet();
 	}
 
-	public void removeChannel(Long userId) {
-		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(userId);
+	public void removeChannel(Long roleId, ChannelId channelId) {
+		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(roleId);
 		if (gameChannelGroup != null) {
-			gameChannelGroup.removeChannel(userId);
+			gameChannelGroup.removeChannel(roleId, channelId);
+			int result = this.channelCount.decrementAndGet();
+			if (result < 0) {
+				this.channelCount.set(0);
+			}
 		}
 	}
 
 	public void writeMessage(IGameMessage message) {
-		long userId = message.getMessageHead().getRoleId();
-		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(userId);
+		long roleId = message.getMessageHead().getRoleId();
+		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(roleId);
 		if (gameChannelGroup != null) {
-			gameChannelGroup.writeMessage(userId, message);
+			gameChannelGroup.writeMessage(roleId, message);
 		}
 	}
 

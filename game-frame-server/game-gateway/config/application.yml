@@ -1,8 +1,11 @@
 logging: 
   config: file:config/log4j2.xml
-
+spring:
+  application:
+    name: gate-server
 game:
   server :
+    serverId: 1001
     port: 8809
     bossThreads: 1
     workThreads: 16

@@ -53,7 +53,7 @@ public class GameGatewayServer {
 
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
-
+				
 			}
 		};
 		return channelInitializer;

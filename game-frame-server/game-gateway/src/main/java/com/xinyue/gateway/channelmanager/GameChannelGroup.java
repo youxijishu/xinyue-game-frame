@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 import io.netty.util.concurrent.EventExecutor;
 
 /**
@@ -32,28 +33,41 @@ public class GameChannelGroup {
 		this.executor.execute(task);
 	}
 
-	public void addChannel(Long userId, Channel channel) {
+	public void addChannel(Long roleId, Channel channel) {
 		this.execute(() -> {
-			channelMap.put(userId, channel);
+			channelMap.put(roleId, channel);
 		});
 	}
 
-	public void removeChannel(Long userId) {
+	/**
+	 * 
+	 * @Desc 这里在删除的时候需要保证线程安全，以及检测要删除的channelId和已存在的channelId是否一样。不一样不做删除。
+	 *       因为一个用户的连接断开之后，可能又迅速建立了一条新的连接。
+	 * @param roleId
+	 * @param channelId
+	 * @Author 心悦网络 王广帅
+	 * @Date 2018年6月14日 下午10:38:47
+	 *
+	 */
+	public void removeChannel(Long roleId, ChannelId channelId) {
 		this.execute(() -> {
-			channelMap.remove(userId);
+			Channel channel = channelMap.get(roleId);
+			if (channel != null && channel.id().equals(channelId)) {
+				channelMap.remove(roleId);
+			}
 		});
 	}
 
-	public void writeMessage(Long userId, Object message) {
+	public void writeMessage(Long roleId, Object message) {
 		this.execute(() -> {
-			Channel channel = channelMap.get(userId);
+			Channel channel = channelMap.get(roleId);
 			if (channel == null) {
-				logger.debug("userId[{}]对应的channel为null", userId);
+				logger.debug("roleId[{}]对应的channel为null", roleId);
 			} else {
 				if (channel.isActive() && channel.isOpen()) {
 					channel.writeAndFlush(message);
 				} else {
-					logger.debug("userId[{}]的channel已关闭", userId);
+					logger.debug("roleId[{}]的channel已关闭", roleId);
 				}
 			}
 		});
