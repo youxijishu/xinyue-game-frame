@@ -16,30 +16,15 @@ public class InnerMessageHeader extends MessageHead {
 	private long roleId;
 	// 用户id
 	private long userId;
-	// 网关接收到消息的时间
-	private long grecTime;
 	// 业务服务接收到的消息时间
-	private long lrecTime;
+	private long recTime;
 	// 消息处理完的响应时间
 	private long respTime;
 	// 客户端的ip地址
 	private String clientIp;
-	//客户端的ip地址，使用int表示
-	private int i_clientIp;
-	
-	
-	public int getI_clientIp() {
-		return i_clientIp;
-	}
-
-	public void setI_clientIp(int i_clientIp) {
-		this.i_clientIp = i_clientIp;
-	}
 
 	public String getClientIp() {
-		if(clientIp == null && i_clientIp != 0){
-			
-		}
+
 		return clientIp;
 	}
 
@@ -47,20 +32,12 @@ public class InnerMessageHeader extends MessageHead {
 		this.clientIp = clientIp;
 	}
 
-	public long getGrecTime() {
-		return grecTime;
+	public long getRecTime() {
+		return recTime;
 	}
 
-	public void setGrecTime(long grecTime) {
-		this.grecTime = grecTime;
-	}
-
-	public long getLrecTime() {
-		return lrecTime;
-	}
-
-	public void setLrecTime(long lrecTime) {
-		this.lrecTime = lrecTime;
+	public void setRecTime(long recTime) {
+		this.recTime = recTime;
 	}
 
 	public long getRespTime() {

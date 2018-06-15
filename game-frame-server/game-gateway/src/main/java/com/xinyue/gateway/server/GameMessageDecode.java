@@ -8,15 +8,16 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.server.model.GateMessageInfo;
-import com.xinyue.gateway.utils.NettyUtil;
 import com.xinyue.network.message.common.GameMessageRegisterFactory;
 import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.network.message.common.MessageHead;
+import com.xinyue.utils.NettyUtil;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * 解码从客户端收到的数据包，并负责对包的正确性进行验证，在这里消息被检测是否需要网关处理整个消息，即解码出整个消息的内容，
@@ -46,54 +47,61 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 		if (msg == null) {
 			return;
 		}
+
 		ByteBuf byteBuf = (ByteBuf) msg;
-		int total = byteBuf.readInt();
-		logger.debug("ip:{},channelId:{},接收字节大小:{}", total, NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
-		MessageHead messageHead = new MessageHead();
-		messageHead.readMessage(byteBuf);
-		// 验证序列号是否正确
-		if (messageHead.getSeqId() <= nowSeqId) {
-			logger.warn("收到消息重复，消息非法，ip:{},channelId:{}", NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
-			ctx.close();
-			return;
-		}
-		byte[] body = null;
-		if (byteBuf.readableBytes() > 0) {
-			body = new byte[byteBuf.readableBytes()];
-			// 验证消息的crc是否正确
-			long crcValue = byteBuf.readLong();
-			long newCrcValue = this.getCrcValue(body);
-			if (crcValue != newCrcValue) {
-				logger.error("crc验证失败，收到消息的crcValue:{},计算得到的crcValue:{},ip:{},channelId:{}", crcValue, newCrcValue,
-						NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
+		try {
+			int total = byteBuf.readInt();
+			logger.debug("ip:{},channelId:{},接收字节大小:{}", total, NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
+			MessageHead messageHead = new MessageHead();
+			int seqId = byteBuf.readInt();
+			messageHead.setSeqId(seqId);
+			int messageId = byteBuf.readInt();
+			messageHead.setMessageId(messageId);
+			// 验证序列号是否正确
+			if (messageHead.getSeqId() <= nowSeqId) {
+				logger.warn("收到消息重复，消息非法，ip:{},channelId:{}", NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
 				ctx.close();
 				return;
 			}
-		}
-
-		int messageId = messageHead.getMessageId();
-		// 判断一下，这个命令是不是gate服务直接处理的，如果是就不转发了。
-		boolean isExistGateMessage = GameMessageRegisterFactory.getInstance().containsGameMessage(messageId);
-		if (isExistGateMessage) {
-			IGameMessage gameMessage = this.decode(messageHead, body);
-			if (gameMessage != null) {
-				ctx.fireChannelRead(gameMessage);
-			} else {
-				logger.warn("非法请求，关闭连接,ip:{},channelId:{}", NettyUtil.getIp(ctx), ctx.channel().id().asShortText());
-				ctx.close();
+			byte[] body = null;
+			if (byteBuf.readableBytes() > 0) {
+				body = new byte[byteBuf.readableBytes()];
+				// 验证消息的crc是否正确
+				long crcValue = byteBuf.readLong();
+				long newCrcValue = this.getCrcValue(body);
+				if (crcValue != newCrcValue) {
+					logger.error("crc验证失败，收到消息的crcValue:{},计算得到的crcValue:{},ip:{},channelId:{}", crcValue, newCrcValue,
+							NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
+					ctx.close();
+					return;
+				}
 			}
-		} else {
-			// 把包头和包体封装一下，发送到下个handler去处理。
-			GateMessageInfo gateMessageInfo = new GateMessageInfo(messageHead, body);
-			ctx.fireChannelRead(gateMessageInfo);
+			// 判断一下，这个命令是不是gate服务直接处理的，如果是就不转发了。
+			boolean isExistGateMessage = GameMessageRegisterFactory.getInstance().containsGameMessage(messageId);
+			if (isExistGateMessage) {
+				IGameMessage gameMessage = this.decode(messageHead, body);
+				if (gameMessage != null) {
+					ctx.fireChannelRead(gameMessage);
+				} else {
+					logger.warn("非法请求，关闭连接,ip:{},channelId:{}", NettyUtil.getIp(ctx), ctx.channel().id().asShortText());
+					ctx.close();
+				}
+			} else {
+				// 把包头和包体封装一下，发送到下个handler去处理。
+				GateMessageInfo gateMessageInfo = new GateMessageInfo(messageHead, body);
+				ctx.fireChannelRead(gateMessageInfo);
+			}
+		} finally {
+			ReferenceCountUtil.release(byteBuf);
 		}
 	}
+
 	/**
 	 * 
-	 * @Desc  计算包体的crc值
+	 * @Desc 计算包体的crc值
 	 * @param body
 	 * @return
-	 * @Author 心悦网络  王广帅
+	 * @Author 心悦网络 王广帅
 	 * @Date 2018年6月14日 下午3:41:40
 	 *
 	 */

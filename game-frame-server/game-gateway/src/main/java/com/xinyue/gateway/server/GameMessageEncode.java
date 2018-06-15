@@ -1,7 +1,5 @@
 package com.xinyue.gateway.server;
 
-import com.xinyue.network.message.inner.InnerMessageHeader;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;

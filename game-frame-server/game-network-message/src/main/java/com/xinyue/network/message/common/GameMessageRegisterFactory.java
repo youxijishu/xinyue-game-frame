@@ -9,18 +9,9 @@ import java.util.List;
  * @Date 2018年6月10日 下午5:25:04
  */
 import java.util.Map;
-import java.util.zip.CRC32;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 
 public class GameMessageRegisterFactory {
-	private final static int ResponseHeadLength = 16;
 	private Map<Integer, Class<? extends IGameMessage>> messageClassMap = null;
-	private Logger logger = LoggerFactory.getLogger(GameMessageRegisterFactory.class);
 	private static GameMessageRegisterFactory instance = new GameMessageRegisterFactory();
 
 	public static GameMessageRegisterFactory getInstance() {
@@ -58,13 +49,23 @@ public class GameMessageRegisterFactory {
 		return this.messageClassMap.containsKey(messageId);
 	}
 
+	/**
+	 * 
+	 * @Desc 获取一个messageid对应的class创建的对象
+	 * @param messageId
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @Author 心悦网络 王广帅
+	 * @Date 2018年6月15日 下午4:34:19
+	 *
+	 */
 	public IGameMessage getGameMessage(int messageId) throws InstantiationException, IllegalAccessException {
 		Class<? extends IGameMessage> clazz = this.messageClassMap.get(messageId);
+		if (clazz == null) {
+			return null;
+		}
 		return clazz.newInstance();
 	}
-
-	
-
-	
 
 }

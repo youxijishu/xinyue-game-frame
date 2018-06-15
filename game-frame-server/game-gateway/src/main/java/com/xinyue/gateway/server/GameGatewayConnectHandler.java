@@ -14,9 +14,9 @@ import com.xinyue.gateway.config.ServerConfig;
 import com.xinyue.gateway.server.model.GateError;
 import com.xinyue.gateway.server.model.GateMessageInfo;
 import com.xinyue.gateway.server.model.GateUserInfo;
-import com.xinyue.gateway.utils.NettyUtil;
 import com.xinyue.network.message.impl.ConnectConfirmRequest;
 import com.xinyue.network.message.impl.ConnectConfirmResponse;
+import com.xinyue.utils.NettyUtil;
 import com.xinyue.utils.TokenUtil;
 import com.xinyue.utils.TokenUtil.TokenModel;
 
