@@ -1,7 +1,5 @@
 package com.xinyue.gateway.server;
 
-import java.util.zip.CRC32;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -16,12 +14,13 @@ import com.xinyue.utils.NettyUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 
 /**
  * 解码从客户端收到的数据包，并负责对包的正确性进行验证，在这里消息被检测是否需要网关处理整个消息，即解码出整个消息的内容，
- * 由网关自己处理，不需要转发到业务服务，如果不需要网关处理，则把消息体不需要解码，直接发送到下一个handler去处理
+ * 由网关自己处理，不需要转发到业务服务，如果不需要网关处理，则把消息体不需要解码，直接发送到下一个handler去处理 <br>
+ * 客户端发送到网关的消息格式为：total(4) + seqId(4) + messageId(4) + crc32(8) +
+ * body(protobuf字节数组)
  * 
  * @author 心悦网络科技有限公司 王广帅
  *
@@ -32,16 +31,7 @@ import io.netty.util.ReferenceCountUtil;
 public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(GameMessageDecode.class);
 	private int nowSeqId = 0;
-	private static byte[] CrcFactor = null;
-	static {
-		String msg = "xinyue";
-		CrcFactor = msg.getBytes(CharsetUtil.UTF_8);
-	}
 
-	/**
-	 * 客户端消息协议：数据总长度(int(4)) + 消息序列号(int(4)) + 消息id（int(4)) + crc32(8) +
-	 * protobuf消息体
-	 */
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		if (msg == null) {
@@ -55,20 +45,20 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 			MessageHead messageHead = new MessageHead();
 			int seqId = byteBuf.readInt();
 			messageHead.setSeqId(seqId);
-			int messageId = byteBuf.readInt();
-			messageHead.setMessageId(messageId);
 			// 验证序列号是否正确
 			if (messageHead.getSeqId() <= nowSeqId) {
 				logger.warn("收到消息重复，消息非法，ip:{},channelId:{}", NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
 				ctx.close();
 				return;
 			}
+			int messageId = byteBuf.readInt();
+			messageHead.setMessageId(messageId);
 			byte[] body = null;
 			if (byteBuf.readableBytes() > 0) {
 				body = new byte[byteBuf.readableBytes()];
 				// 验证消息的crc是否正确
 				long crcValue = byteBuf.readLong();
-				long newCrcValue = this.getCrcValue(body);
+				long newCrcValue = NettyUtil.getCrcValue(body);
 				if (crcValue != newCrcValue) {
 					logger.error("crc验证失败，收到消息的crcValue:{},计算得到的crcValue:{},ip:{},channelId:{}", crcValue, newCrcValue,
 							NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
@@ -89,28 +79,12 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 			} else {
 				// 把包头和包体封装一下，发送到下个handler去处理。
 				GateMessageInfo gateMessageInfo = new GateMessageInfo(messageHead, body);
+				gateMessageInfo.setMessageTotalSize(total);
 				ctx.fireChannelRead(gateMessageInfo);
 			}
 		} finally {
 			ReferenceCountUtil.release(byteBuf);
 		}
-	}
-
-	/**
-	 * 
-	 * @Desc 计算包体的crc值
-	 * @param body
-	 * @return
-	 * @Author 心悦网络 王广帅
-	 * @Date 2018年6月14日 下午3:41:40
-	 *
-	 */
-	private long getCrcValue(byte[] body) {
-		CRC32 crc32 = new CRC32();
-		crc32.update(body);
-		crc32.update(CrcFactor);
-		long crcValue = crc32.getValue();
-		return crcValue;
 	}
 
 	/**

@@ -103,7 +103,12 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 				gateMessageInfo.setRoleId(this.gateUserInfo.getRoleId());
 				gateMessageInfo.setUserId(this.gateUserInfo.getUserId());
 				gateMessageInfo.setToken(this.gateUserInfo.getToken());
+				long roleId = this.gateUserInfo.getRoleId();
+				int total = gateMessageInfo.getMessageTotalSize();
+				int messageId = gateMessageInfo.getMessageHead().getMessageId();
+				logger.debug("==>roleId:{}, message size [{}],messageId:{}", roleId, total, messageId);
 			}
+
 			ctx.fireChannelRead(msg);
 		}
 	}

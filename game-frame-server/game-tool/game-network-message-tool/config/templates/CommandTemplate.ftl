@@ -3,6 +3,7 @@ import com.xinyue.network.message.common.AbstractGameMessage;
 import com.xinyue.network.message.common.GameMessageMetaData;
 import com.xinyue.network.message.common.GameMessageType;
 import com.xinyue.utils.JsonUtil;
+import com.xinyue.network.EnumServerType;
 
 <#list imports as pck>
 import ${pck};
@@ -10,11 +11,8 @@ import ${pck};
 //河南心悦网络科技有限公司   王广帅
 //${desc}
 
-@GameMessageMetaData(id = ${id?c}, type =${messageType})
+@GameMessageMetaData(serverType = EnumServerType.${serverType},id = ${id?c}, type =${messageType})
 public class ${className} extends AbstractGameMessage {
-
-	private final static int MessageId = ${id?c};
-	private final static GameMessageType type = ${messageType};
 	<#list fields as field>
 	//${field.desc}
    	<#if field.arrayType == 1>
@@ -40,18 +38,6 @@ public class ${className} extends AbstractGameMessage {
 		copyMessageHead(response.getMessageHead());
 		return response;
 	}
-
-	@Override
-	protected int getMessageId() {
-		return MessageId;
-	}
-
-	@Override
-	protected GameMessageType getGameMessageType() {
-		return type;
-	}
-
-	
 	<#list fields as field>
 	<#if field.arrayType == 1>
 	public void set${field.name?cap_first} (List<${field.javaType}> ${field.name}){

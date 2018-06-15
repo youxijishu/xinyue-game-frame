@@ -19,16 +19,16 @@ public class BuildJavaCommand {
 
 		Collection<CommandObject> commandObjects = protocolObject.getCommandObjectMap().values();
 		for (CommandObject commandObject : commandObjects) {
-			buildCommand(protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
+			buildCommand(protocolObject.getServerType(),protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
 					commandObject.getRequestList(), commandPath, true);
 
-			buildCommand(protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
+			buildCommand(protocolObject.getServerType(),protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
 					commandObject.getResponseList(), commandPath, false);
 
 		}
 	}
 
-	private static void buildCommand(String fileName, String packageName, CommandObject commandObject,
+	private static void buildCommand(String serverType,String fileName, String packageName, CommandObject commandObject,
 			List<FieldObject> fieldObjects, String commandPath, boolean request) {
 		Map<String, Object> root = new HashMap<>();
 		List<String> imports = new ArrayList<>();
@@ -53,6 +53,7 @@ public class BuildJavaCommand {
 		root.put("builder", builder);
 		root.put("imports", imports);
 		root.put("packageName", packageName);
+		root.put("serverType", serverType);
 		String className = StringUtil.firstToUpper(commandObject.getCommandName());
 		if (request) {
 			root.put("newResponse", className + ObjectConstans.Response);

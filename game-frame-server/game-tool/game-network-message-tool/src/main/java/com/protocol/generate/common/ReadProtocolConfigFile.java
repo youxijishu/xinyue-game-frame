@@ -29,6 +29,11 @@ public class ReadProtocolConfigFile {
 			throw new NullPointerException("package no value");
 		}
 		protocolObject.setPackageName(packageName);
+		String serverType = rootDoc.attributeValue("serverType");
+		if(serverType == null || serverType.isEmpty()){
+			throw new NullPointerException("serverType必须有值");
+		}
+		protocolObject.setServerType(serverType);
 		readStructs(protocolObject, rootDoc);
 		readCommands(protocolObject, rootDoc);
 		return protocolObject;

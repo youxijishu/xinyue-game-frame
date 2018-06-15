@@ -10,6 +10,7 @@ import com.xinyue.network.message.common.MessageHead;
  * @Date 2018年6月14日 下午3:12:22
  */
 public class GateMessageInfo {
+	private int messageTotalSize;
 	private long userId;
 	private long roleId;
 	private String token;
@@ -22,6 +23,14 @@ public class GateMessageInfo {
 		super();
 		this.messageHead = messageHead;
 		this.body = body;
+	}
+
+	public int getMessageTotalSize() {
+		return messageTotalSize;
+	}
+
+	public void setMessageTotalSize(int messageTotalSize) {
+		this.messageTotalSize = messageTotalSize;
 	}
 
 	public String getToken() {

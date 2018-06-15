@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<protocol package="com.xinyue.network.message.impl">
+<protocol package="com.xinyue.network.message.impl" serverType = "GAME_SERVER">
 	<Structs>
 
 	</Structs>

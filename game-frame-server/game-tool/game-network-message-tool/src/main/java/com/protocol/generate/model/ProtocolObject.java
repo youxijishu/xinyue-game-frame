@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class ProtocolObject {
 	private String packageName;
+	private String serverType;
 	private String fileName;
 	private Map<String, StructObject> structObjectMap;
 	private Map<String, CommandObject> commandObjectMap;
@@ -32,6 +33,12 @@ public class ProtocolObject {
 	}
 	public void setStructObjectMap(Map<String, StructObject> structObjectMap) {
 		this.structObjectMap = structObjectMap;
+	}
+	public String getServerType() {
+		return serverType;
+	}
+	public void setServerType(String serverType) {
+		this.serverType = serverType;
 	}
 	
 	

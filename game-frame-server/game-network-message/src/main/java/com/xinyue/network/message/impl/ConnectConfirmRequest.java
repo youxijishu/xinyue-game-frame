@@ -3,15 +3,13 @@ import com.xinyue.network.message.common.AbstractGameMessage;
 import com.xinyue.network.message.common.GameMessageMetaData;
 import com.xinyue.network.message.common.GameMessageType;
 import com.xinyue.utils.JsonUtil;
+import com.xinyue.network.EnumServerType;
 
 //河南心悦网络科技有限公司   王广帅
 //连接认证
 
-@GameMessageMetaData(id = 1001, type =GameMessageType.REQUEST)
+@GameMessageMetaData(serverType = EnumServerType.GAME_SERVER,id = 1001, type =GameMessageType.REQUEST)
 public class ConnectConfirmRequest extends AbstractGameMessage {
-
-	private final static int MessageId = 1001;
-	private final static GameMessageType type = GameMessageType.REQUEST;
 	//token
 	private String token;
 	//userId
@@ -33,18 +31,6 @@ public class ConnectConfirmRequest extends AbstractGameMessage {
 		copyMessageHead(response.getMessageHead());
 		return response;
 	}
-
-	@Override
-	protected int getMessageId() {
-		return MessageId;
-	}
-
-	@Override
-	protected GameMessageType getGameMessageType() {
-		return type;
-	}
-
-	
 	
 	public void setToken (String token){
 		this.token = token;

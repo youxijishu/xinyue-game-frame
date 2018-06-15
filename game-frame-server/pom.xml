@@ -79,5 +79,6 @@
 		<module>game-dao-entity</module>
 		<module>eureka-server</module>
 		<module>game-tool</module>
+		<module>game-config-server</module>
 	</modules>
 </project>

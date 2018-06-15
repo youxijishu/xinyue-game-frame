@@ -7,8 +7,10 @@ public abstract class AbstractGameMessage implements IGameMessage {
 
 	public AbstractGameMessage() {
 		messageHead = new InnerMessageHeader();
-		messageHead.setMessageId(this.getMessageId());
-		messageHead.setGameMessageType(this.getGameMessageType());
+		GameMessageMetaData gameMessageMetaData = this.getClass().getAnnotation(GameMessageMetaData.class);
+		messageHead.setServerType(gameMessageMetaData.serverType());
+		messageHead.setMessageId(gameMessageMetaData.id());
+		messageHead.setGameMessageType(gameMessageMetaData.type());
 	}
 
 	@Override
@@ -17,7 +19,7 @@ public abstract class AbstractGameMessage implements IGameMessage {
 	}
 
 	protected void copyMessageHead(InnerMessageHeader responseMessageHead) {
-		if (this.getGameMessageType() == GameMessageType.REQUEST) {
+		if (this.messageHead.getGameMessageType() == GameMessageType.REQUEST) {
 			responseMessageHead.setUserId(this.messageHead.getUserId());
 			responseMessageHead.setRoleId(this.messageHead.getRoleId());
 			responseMessageHead.setSeqId(this.messageHead.getSeqId());
@@ -25,10 +27,6 @@ public abstract class AbstractGameMessage implements IGameMessage {
 			throw new UnsupportedOperationException("Response 消息不能创建返回消息");
 		}
 	}
-
-	protected abstract int getMessageId();
-
-	protected abstract GameMessageType getGameMessageType();
 
 	public void setError(IGameError gameError) {
 		this.messageHead.setErrorCode(gameError.getErrorCode());
