@@ -11,4 +11,6 @@ game:
     workThreads: 16
     idleTime: 300
     connectTimeout: 10
+    serverTypeMap: 
+      1001: [2001,2002]
     

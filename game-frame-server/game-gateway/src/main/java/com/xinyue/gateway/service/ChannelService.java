@@ -1,12 +1,16 @@
-package com.xinyue.gateway.channelmanager;
+package com.xinyue.gateway.service;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xinyue.gateway.config.ServerConfig;
 import com.xinyue.network.message.common.IGameMessage;
 
 import io.netty.channel.Channel;
@@ -27,7 +31,12 @@ public class ChannelService {
 	private Map<Integer, GameChannelGroup> eventLoopMap = new HashMap<>();
 	private boolean hadInit;
 	private AtomicInteger channelCount = new AtomicInteger();
-
+	@Autowired
+	private ServerConfig serverConfig;
+	@PostConstruct
+	public void init(){
+		System.out.println("初始化配置成功：" + serverConfig);
+	}
 	/**
 	 * 
 	 * @Desc 获取当前在线人数

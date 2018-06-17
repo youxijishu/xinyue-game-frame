@@ -14,9 +14,11 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 @Service
 public class GameGatewayServer {
@@ -53,7 +55,13 @@ public class GameGatewayServer {
 
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
-				
+				ChannelPipeline p = ch.pipeline();
+				//添加接收消息包的handler
+				p.addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4, -4, 0));
+				p.addLast(new GameMessageDecode());
+				p.addLast(new GameGatewayConnectHandler());
+				p.addLast(new GameMessageEncode());
+				p.addLast(new DispatchMessageHandler());
 			}
 		};
 		return channelInitializer;

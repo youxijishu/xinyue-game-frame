@@ -4,7 +4,7 @@ import com.xinyue.network.EnumServerType;
 
 public class MessageHead {
 	// 在与客户端传输中需要序列化的字段
-	private int messageId;
+	private short messageId;
 	// 消息序列号
 	private int seqId;
 	private EnumServerType serverType;
@@ -34,11 +34,11 @@ public class MessageHead {
 		this.seqId = seqId;
 	}
 
-	public int getMessageId() {
+	public short getMessageId() {
 		return messageId;
 	}
 
-	public void setMessageId(int messageId) {
+	public void setMessageId(short messageId) {
 		this.messageId = messageId;
 	}
 

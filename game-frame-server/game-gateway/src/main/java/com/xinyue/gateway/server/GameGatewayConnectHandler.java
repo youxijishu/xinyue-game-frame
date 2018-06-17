@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.xinyue.gateway.channelmanager.ChannelService;
 import com.xinyue.gateway.config.ServerConfig;
 import com.xinyue.gateway.server.model.GateError;
 import com.xinyue.gateway.server.model.GateMessageInfo;
 import com.xinyue.gateway.server.model.GateUserInfo;
+import com.xinyue.gateway.service.ChannelService;
 import com.xinyue.network.message.impl.ConnectConfirmRequest;
 import com.xinyue.network.message.impl.ConnectConfirmResponse;
 import com.xinyue.utils.NettyUtil;

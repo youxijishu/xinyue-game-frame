@@ -1,4 +1,4 @@
-package com.xinyue.gateway.channelmanager;
+package com.xinyue.gateway.service;
 
 import java.util.HashMap;
 import java.util.Map;

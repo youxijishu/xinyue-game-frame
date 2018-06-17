@@ -22,6 +22,24 @@ public class InnerMessageHeader extends MessageHead {
 	private long respTime;
 	// 客户端的ip地址
 	private String clientIp;
+	private int fromServerId;
+	private int toServerId;
+
+	public int getFromServerId() {
+		return fromServerId;
+	}
+
+	public void setFromServerId(int fromServerId) {
+		this.fromServerId = fromServerId;
+	}
+
+	public int getToServerId() {
+		return toServerId;
+	}
+
+	public void setToServerId(int toServerId) {
+		this.toServerId = toServerId;
+	}
 
 	public String getClientIp() {
 

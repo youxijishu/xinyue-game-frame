@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.server.model.GateMessageInfo;
+import com.xinyue.network.EnumServerType;
 import com.xinyue.network.message.common.GameMessageRegisterFactory;
 import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.network.message.common.MessageHead;
@@ -19,8 +20,8 @@ import io.netty.util.ReferenceCountUtil;
 /**
  * 解码从客户端收到的数据包，并负责对包的正确性进行验证，在这里消息被检测是否需要网关处理整个消息，即解码出整个消息的内容，
  * 由网关自己处理，不需要转发到业务服务，如果不需要网关处理，则把消息体不需要解码，直接发送到下一个handler去处理 <br>
- * 客户端发送到网关的消息格式为：total(4) + seqId(4) + messageId(4) + crc32(8) +
- * body(protobuf字节数组)
+ * 客户端发送到网关的消息格式为：total(4) + seqId(4) + serverType(2) + messageId(2) + crc32(8)
+ * + body(protobuf字节数组)
  * 
  * @author 心悦网络科技有限公司 王广帅
  *
@@ -51,7 +52,9 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 				ctx.close();
 				return;
 			}
-			int messageId = byteBuf.readInt();
+			short serverType = byteBuf.readShort();
+			short messageId = byteBuf.readShort();
+			messageHead.setServerType(EnumServerType.getServerType(serverType));
 			messageHead.setMessageId(messageId);
 			byte[] body = null;
 			if (byteBuf.readableBytes() > 0) {
@@ -98,9 +101,10 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 	 *
 	 */
 	public IGameMessage decode(MessageHead messageHead, byte[] body) throws Exception {
-		int messageId = messageHead.getMessageId();
+		short messageId = messageHead.getMessageId();
 		GameMessageRegisterFactory gameMessageCodecFactory = GameMessageRegisterFactory.getInstance();
-		IGameMessage gameMessage = gameMessageCodecFactory.getGameMessage(messageId);
+		IGameMessage gameMessage = gameMessageCodecFactory.getGameMessage(messageHead.getServerType().getServerType(),
+				messageId);
 		if (gameMessage == null) {
 			logger.error("找不到[{}]的GameMessage的实现类", messageId);
 			return null;

@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xinyue.network.EnumServerType;
 import com.xinyue.network.message.common.GameMessageRegisterFactory;
 import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.utils.IpUtil;
@@ -15,11 +16,11 @@ import io.netty.util.CharsetUtil;
 
 /**
  * 内部消息包的编码与解码：<br>
- * 网关给业务服务的编码格式：messageId(4) + userId(8) + roleId(8) + seqId(4) +
- * isIpv4(1,0表示是ipv4,1是ipv6) +
+ * 网关给业务服务的编码格式：serverType(2) + messageId(2) + userId(8) + roleId(8) + seqId(4)
+ * + fromServerId(4) + toServerId(4) + isIpv4(1,0表示是ipv4,1是ipv6) +
  * ip(如果是ipv4占4位,如果是ipv6，2位的字符串长度，变长的ipv6字符串长度，后期可以优化为两个long) + body <br>
- * 业务服务给网关的消息编码：messageId(4) + userId(8) + roleId(8) + seqId(4) + errorCode(4) +
- * body;
+ * 业务服务给网关的消息编码：serverType(2) + messageId(2) + userId(8) + roleId(8) + seqId(4)
+ * + errorCode(4) + body;
  * 
  * @author 心悦网络科技有限公司 王广帅
  *
@@ -50,7 +51,7 @@ public class InnerMessageCodecFactory {
 	 */
 	public ByteBuf gateEncode(InnerMessageHeader innerMessageHeader, byte[] body) {
 		// 前面几个固定的长度和
-		int total = 25;
+		int total = 33;
 		// 下面开始计算整个包的大小
 		String ip = innerMessageHeader.getClientIp();
 		boolean isIpv4 = IpUtil.Isipv4(ip);
@@ -67,10 +68,13 @@ public class InnerMessageCodecFactory {
 		}
 		ByteBuf buf = NettyUtil.createBuf(total);
 		buf.writeInt(total);
-		buf.writeInt(innerMessageHeader.getMessageId());
+		buf.writeShort(innerMessageHeader.getServerType().getServerType());
+		buf.writeShort(innerMessageHeader.getMessageId());
 		buf.writeLong(innerMessageHeader.getUserId());
 		buf.writeLong(innerMessageHeader.getRoleId());
 		buf.writeInt(innerMessageHeader.getSeqId());
+		buf.writeInt(innerMessageHeader.getFromServerId());
+		buf.writeInt(innerMessageHeader.getToServerId());
 
 		if (isIpv4) {
 			buf.writeByte(0);
@@ -100,11 +104,12 @@ public class InnerMessageCodecFactory {
 		IGameMessage gameMessage;
 		try {
 			int total = buf.readInt();
-			int messageId = buf.readInt();
+			short serverType = buf.readShort();
+			short messageId = buf.readShort();
 			long userId = buf.readLong();
 			long roleId = buf.readLong();
 			int seqId = buf.readInt();
-			gameMessage = registerFactory.getGameMessage(messageId);
+			gameMessage = registerFactory.getGameMessage(serverType, messageId);
 			if (gameMessage == null) {
 				logger.warn("messageId:{} 找不到对应的GameMessage class", messageId);
 				return null;
@@ -160,7 +165,8 @@ public class InnerMessageCodecFactory {
 		}
 		ByteBuf buf = NettyUtil.createBuf(total);
 		InnerMessageHeader header = gameMessage.getMessageHead();
-		buf.writeInt(header.getMessageId());
+		buf.writeShort(header.getServerType().getServerType());
+		buf.writeShort(header.getMessageId());
 		buf.writeLong(header.getUserId());
 		buf.writeLong(header.getRoleId());
 		buf.writeInt(header.getSeqId());
@@ -184,11 +190,13 @@ public class InnerMessageCodecFactory {
 	 */
 	public InnerMessageHeader getMessageHeaderFromResponse(ByteBuf buf) {
 		InnerMessageHeader header = new InnerMessageHeader();
-		int messageId = buf.readInt();
+		short serverType = buf.readShort();
+		short messageId = buf.readShort();
 		long userId = buf.readLong();
 		long roleId = buf.readLong();
 		int seqId = buf.readInt();
 		int errorCode = buf.readInt();
+		header.setServerType(EnumServerType.getServerType(serverType));
 		header.setMessageId(messageId);
 		header.setUserId(userId);
 		header.setRoleId(roleId);

@@ -24,6 +24,14 @@ public enum EnumServerType {
 	public String toString() {
 		return serverType + ":" + desc;
 	}
+	public static EnumServerType getServerType(short serverType){
+		for(EnumServerType type : EnumServerType.values()){
+			if(type.getServerType() == serverType){
+				return type;
+			}
+		}
+		return null;
+	}
 
 	public static void checkServerType() {
 		Set<Short> serverTypeSet = new HashSet<>();

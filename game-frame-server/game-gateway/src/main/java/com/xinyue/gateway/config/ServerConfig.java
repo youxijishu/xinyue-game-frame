@@ -1,5 +1,8 @@
 package com.xinyue.gateway.config;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,8 +15,19 @@ public class ServerConfig {
 	private int workThreads;
 	private long idleTime;
 	private int connectTimeout;
+	private Map<Short, List<Short>> serverTypeMap;
 	
 	
+
+	
+
+	public Map<Short, List<Short>> getServerTypeMap() {
+		return serverTypeMap;
+	}
+
+	public void setServerTypeMap(Map<Short, List<Short>> serverTypeMap) {
+		this.serverTypeMap = serverTypeMap;
+	}
 
 	public int getServerId() {
 		return serverId;
@@ -62,4 +76,12 @@ public class ServerConfig {
 	public void setWorkThreads(int workThreads) {
 		this.workThreads = workThreads;
 	}
+
+	@Override
+	public String toString() {
+		return "ServerConfig [serverId=" + serverId + ", port=" + port + ", bossThreads=" + bossThreads
+				+ ", workThreads=" + workThreads + ", idleTime=" + idleTime + ", connectTimeout=" + connectTimeout
+				+ ", serverTypeMap=" + serverTypeMap + "]";
+	}
+	
 }
