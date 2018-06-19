@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import com.xinyue.gateway.server.GameGatewayServer;
-import com.xinyue.gateway.service.IMessageRouterService;
 import com.xinyue.gateway.service.MessageRouterService;
+import com.xinyue.rocketmq.IMessageRouterService;
 
 @SpringBootApplication(scanBasePackages = { "com.xinyue.gateway", "com.xinyue.rocketmq" })
 public class GameGateWayMain {

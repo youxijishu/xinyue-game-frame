@@ -156,7 +156,7 @@ public class InnerMessageCodecFactory {
 	 * @Date 2018年6月14日 下午11:09:54
 	 *
 	 */
-	public ByteBuf encode(IGameMessage gameMessage) throws Exception {
+	public byte[] encode(IGameMessage gameMessage) throws Exception {
 		// 固定长度
 		int total = 28;
 		byte[] body = gameMessage.encodeBody();
@@ -164,19 +164,25 @@ public class InnerMessageCodecFactory {
 			total += body.length;
 		}
 		ByteBuf buf = NettyUtil.createBuf(total);
-		InnerMessageHeader header = gameMessage.getMessageHead();
-		buf.writeShort(header.getServerType().getServerType());
-		buf.writeShort(header.getMessageId());
-		buf.writeLong(header.getUserId());
-		buf.writeLong(header.getRoleId());
-		buf.writeInt(header.getSeqId());
-		buf.writeInt(header.getErrorCode());
-		if (header.getErrorCode() == 0) {
-			if (body != null) {
-				buf.writeBytes(body);
+		try {
+			InnerMessageHeader header = gameMessage.getMessageHead();
+			buf.writeShort(header.getServerType().getServerType());
+			buf.writeShort(header.getMessageId());
+			buf.writeLong(header.getUserId());
+			buf.writeLong(header.getRoleId());
+			buf.writeInt(header.getSeqId());
+			buf.writeInt(header.getErrorCode());
+			if (header.getErrorCode() == 0) {
+				if (body != null) {
+					buf.writeBytes(body);
+				}
 			}
+			body = new byte[total];
+			buf.readBytes(body);
+		} finally {
+			NettyUtil.releaseBuf(buf);
 		}
-		return buf;
+		return body;
 	}
 
 	/**

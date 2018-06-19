@@ -23,6 +23,8 @@ public abstract class AbstractGameMessage implements IGameMessage {
 			responseMessageHead.setUserId(this.messageHead.getUserId());
 			responseMessageHead.setRoleId(this.messageHead.getRoleId());
 			responseMessageHead.setSeqId(this.messageHead.getSeqId());
+			responseMessageHead.setFromServerId(this.messageHead.getToServerId());
+			responseMessageHead.setToServerId(this.messageHead.getFromServerId());
 		} else {
 			throw new UnsupportedOperationException("Response 消息不能创建返回消息");
 		}

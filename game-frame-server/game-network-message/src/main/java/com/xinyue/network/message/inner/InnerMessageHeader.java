@@ -1,5 +1,6 @@
 package com.xinyue.network.message.inner;
 
+import com.xinyue.model.GameCommonConstants;
 import com.xinyue.network.message.common.MessageHead;
 
 /**
@@ -24,6 +25,34 @@ public class InnerMessageHeader extends MessageHead {
 	private String clientIp;
 	private int fromServerId;
 	private int toServerId;
+
+	/**
+	 * 
+	 * @Desc 获取网关向逻辑服务发送消息的时候，逻辑服务需要监听这个消息的tag，网关服务发送消息的时候，需要指定这个tag.这个只有在请求的消息中，所以toServerId是逻辑服务的id，fromServerId是网关的服务id
+	 * @return
+	 * @Author 心悦网络 王广帅
+	 * @Date 2018年6月19日 下午10:36:17
+	 *
+	 */
+	public String getToLogicServerMessageTag() {
+
+		StringBuilder tagBuild = new StringBuilder();
+		tagBuild.append(GameCommonConstants.MessageTagPrefix).append(this.getServerType().getServerType()).append(":")
+				.append(this.getMessageId()).append(":").append(this.getToServerId());
+		return tagBuild.toString();
+	}
+
+	/**
+	 * 
+	 * @Desc 当业务服务向网关服务发送消息的时候，需要给消息添加这个tag,网关需要监听这个tag.这个只有在消息返回的时候才会使用。所以toServer就是指网关的消息id，fromServerid是当前业务服务的id
+	 * @return
+	 * @Author 心悦网络 王广帅
+	 * @Date 2018年6月19日 下午10:37:33
+	 *
+	 */
+	public String getToGateServerMessageTag() {
+		return String.valueOf(this.toServerId);
+	}
 
 	public int getFromServerId() {
 		return fromServerId;

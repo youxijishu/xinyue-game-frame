@@ -1,9 +1,7 @@
-package com.xinyue.gateway.service;
+package com.xinyue.rocketmq;
 
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.remoting.exception.RemotingException;
-
-import com.xinyue.network.message.inner.InnerMessageHeader;
 
 public interface IMessageRouterService {
 
@@ -11,7 +9,6 @@ public interface IMessageRouterService {
 
 	void shutdown();
 
-	void sendMessage(byte[] buf, InnerMessageHeader header) throws MQClientException, RemotingException, InterruptedException;
-
+	void sendMessage(byte[] buf, String tag) throws MQClientException, RemotingException, InterruptedException;
 
 }
