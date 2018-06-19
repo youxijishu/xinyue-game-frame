@@ -13,4 +13,14 @@ game:
     connectTimeout: 10
     serverTypeMap: 
       1001: [2001,2002]
+      
+  rocketmq:
+    instance-name: GateServer
+    consumer-group-name: GateMessageConsumerGroup
+    consumer-topic: GateMessageConsumerTopic
+    publish-topic: GateMessageProducerTopic3
+    publish-topic-key: GateMessageProduceTopicKey
+    publish-topic-queue-num: 8
+    name-server-addr: 127.0.0.1:9876
+    publish-group-name: GateMessageProduceGrooup
     
