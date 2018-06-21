@@ -22,6 +22,7 @@ public class NettyUtil {
 	}
 
 	public static ByteBuf createBuf(int capacity) {
+		
 		return ByteBufAllocator.DEFAULT.buffer(capacity);
 	}
 

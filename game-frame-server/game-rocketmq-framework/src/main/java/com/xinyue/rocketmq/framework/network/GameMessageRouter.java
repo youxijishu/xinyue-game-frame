@@ -6,21 +6,18 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.Message;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.network.message.inner.InnerMessageCodecFactory;
 import com.xinyue.rocketmq.RocketmqConfig;
 
-@Service
 public class GameMessageRouter {
 	private DefaultMQProducer producer;
 	private DefaultMQPushConsumer consumer;
-	@Autowired
 	private RocketmqConfig rocketmqConfig;
 
-	public void init(MessageListenerConcurrently messageListener, String[] tags) throws MQClientException {
+	public void init(RocketmqConfig rocketmqConfig,MessageListenerConcurrently messageListener, String[] tags) throws MQClientException {
+		this.rocketmqConfig = rocketmqConfig;
 		producer = new DefaultMQProducer(rocketmqConfig.getPublishGroupName());
 		producer.setNamesrvAddr(rocketmqConfig.getNameServerAddr());
 		producer.setInstanceName(rocketmqConfig.getInstanceName());

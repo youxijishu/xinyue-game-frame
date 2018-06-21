@@ -1,6 +1,8 @@
 package com.xinyue.network.message.inner;
 
 import com.xinyue.model.GameCommonConstants;
+import com.xinyue.network.EnumServerType;
+import com.xinyue.network.message.common.GameMessageType;
 import com.xinyue.network.message.common.MessageHead;
 
 /**
@@ -26,6 +28,12 @@ public class InnerMessageHeader extends MessageHead {
 	private int fromServerId;
 	private int toServerId;
 
+	public InnerMessageHeader() {
+		if (this.getGameMessageType() == GameMessageType.REQUEST) {
+			this.recTime = System.currentTimeMillis();
+		}
+	}
+
 	/**
 	 * 
 	 * @Desc 获取网关向逻辑服务发送消息的时候，逻辑服务需要监听这个消息的tag，网关服务发送消息的时候，需要指定这个tag.这个只有在请求的消息中，所以toServerId是逻辑服务的id，fromServerId是网关的服务id
@@ -35,10 +43,24 @@ public class InnerMessageHeader extends MessageHead {
 	 *
 	 */
 	public String getToLogicServerMessageTag() {
+		return getLogicServerMessageTag(this.getServerType(),this.getMessageId(),this.toServerId);
+	}
+	/**
+	 * 
+	 * @Desc  获取一个逻辑服务监听的GameMessage的tag
+	 * @param serverType
+	 * @param messageId
+	 * @param serverId
+	 * @return
+	 * @Author 心悦网络  王广帅
+	 * @Date 2018年6月21日 下午3:47:28
+	 *
+	 */
+	public static String getLogicServerMessageTag(EnumServerType serverType,short messageId,int serverId) {
 
 		StringBuilder tagBuild = new StringBuilder();
-		tagBuild.append(GameCommonConstants.MessageTagPrefix).append(this.getServerType().getServerType()).append(":")
-				.append(this.getMessageId()).append(":").append(this.getToServerId());
+		tagBuild.append(GameCommonConstants.MessageTagPrefix).append(serverType.getServerType()).append(":")
+				.append(messageId).append(":").append(serverId);
 		return tagBuild.toString();
 	}
 

@@ -4,6 +4,7 @@ import com.xinyue.network.message.inner.InnerMessageHeader;
 
 public abstract class AbstractGameMessage implements IGameMessage {
 	private InnerMessageHeader messageHead;
+	private int messageUniqueId = 0;
 
 	public AbstractGameMessage() {
 		messageHead = new InnerMessageHeader();
@@ -11,6 +12,13 @@ public abstract class AbstractGameMessage implements IGameMessage {
 		messageHead.setServerType(gameMessageMetaData.serverType());
 		messageHead.setMessageId(gameMessageMetaData.id());
 		messageHead.setGameMessageType(gameMessageMetaData.type());
+		this.messageUniqueId = MessageIdUtil.getMessageUniqueId(messageHead.getServerType(),
+				messageHead.getMessageId());
+	}
+
+	@Override
+	public int getMessageUniqueId() {
+		return this.messageUniqueId;
 	}
 
 	@Override
@@ -25,6 +33,7 @@ public abstract class AbstractGameMessage implements IGameMessage {
 			responseMessageHead.setSeqId(this.messageHead.getSeqId());
 			responseMessageHead.setFromServerId(this.messageHead.getToServerId());
 			responseMessageHead.setToServerId(this.messageHead.getFromServerId());
+			responseMessageHead.setRecTime(this.messageHead.getRecTime());
 		} else {
 			throw new UnsupportedOperationException("Response 消息不能创建返回消息");
 		}

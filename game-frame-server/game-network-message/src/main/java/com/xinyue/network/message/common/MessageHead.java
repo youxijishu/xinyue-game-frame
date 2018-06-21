@@ -9,6 +9,8 @@ public class MessageHead {
 	private int seqId;
 	private EnumServerType serverType;
 	private GameMessageType gameMessageType;
+	
+	
 
 	public EnumServerType getServerType() {
 		return serverType;
