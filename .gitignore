@@ -1,3 +1,6 @@
 /game-frame-server/game-gateway-balance/test-output
 target 
 .settings
+*.meta
+/game-frame-client/xinyue-game-client/Temp
+/game-frame-client/xinyue-game-client/Library
