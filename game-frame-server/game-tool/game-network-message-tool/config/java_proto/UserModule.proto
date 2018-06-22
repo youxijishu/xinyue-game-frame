@@ -7,3 +7,9 @@ message ConnectConfirmRequestModel{
 } 
 message ConnectConfirmResponseModel{
 } 
+message SignRequestModel{
+	required int64 RoleId = 1;
+} 
+message SignResponseModel{
+	required bool Result = 1;
+} 

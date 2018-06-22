@@ -13,6 +13,7 @@ public abstract class GameMessageRouter {
 	private RocketmqConfig rocketmqConfig;
 
 	public void start() throws MQClientException {
+		System.setProperty("rocketmq.client.log.loadconfig", "false");
 		this.rocketmqConfig = getRocketmqConfig();
 		producer = new DefaultMQProducer(rocketmqConfig.getPublishGroupName());
 		producer.setNamesrvAddr(rocketmqConfig.getNameServerAddr());

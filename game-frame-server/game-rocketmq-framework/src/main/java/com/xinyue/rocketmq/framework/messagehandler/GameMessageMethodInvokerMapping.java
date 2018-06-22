@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.xinyue.network.message.common.AbstractGameMessage;
 import com.xinyue.network.message.common.GameMessageMetaData;
 import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.network.message.common.MessageIdUtil;
@@ -51,10 +52,10 @@ public class GameMessageMethodInvokerMapping {
 					}
 
 					Class<?> commandClass = parameterClazzes[0];
-					if (!commandClass.isAssignableFrom(IGameMessage.class)) {
+					if (!AbstractGameMessage.class.isAssignableFrom( commandClass)) {
 						throw new IllegalArgumentException("消息处理方法的参数不正确，第一个参数必须是IGameMessage或其子类");
 					}
-					if (!parameterClazzes[1].isAssignableFrom(GameChannelHandlerContext.class)) {
+					if (!GameChannelHandlerContext.class.isAssignableFrom( parameterClazzes[1])) {
 						throw new IllegalArgumentException("消息处理方法的参数不正确，第二个参数必须是GameChannelHandlerContext");
 					}
 					GameMessageMetaData messageMetaData = commandClass.getAnnotation(GameMessageMetaData.class);
