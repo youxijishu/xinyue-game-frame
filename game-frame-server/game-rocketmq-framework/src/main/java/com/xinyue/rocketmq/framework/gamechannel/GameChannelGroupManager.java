@@ -5,7 +5,7 @@ import java.util.Iterator;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.network.message.common.IGameMessage;
-import com.xinyue.rocketmq.framework.network.GameMessageRouter;
+import com.xinyue.rocketmq.framework.network.LogicServerGameMessageRouter;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
@@ -22,7 +22,7 @@ public class GameChannelGroupManager {
 
 	private GameChannelGroup[] gameChannelGroups;
 	private IGameChannelInit gameChannelInit;
-	public void init(GameMessageRouter gameMessageRouter, EventExecutorGroup eventExecutorGroup,
+	public void init(LogicServerGameMessageRouter gameMessageRouter, EventExecutorGroup eventExecutorGroup,
 			IGameChannelInit gameChannelInit) {
 		this.gameChannelInit = gameChannelInit;
 		Iterator<EventExecutor> iterator = eventExecutorGroup.iterator();

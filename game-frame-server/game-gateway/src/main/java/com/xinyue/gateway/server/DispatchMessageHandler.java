@@ -1,8 +1,5 @@
 package com.xinyue.gateway.server;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -10,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.xinyue.gateway.config.ServerConfig;
 import com.xinyue.gateway.server.model.GateMessageInfo;
 import com.xinyue.gateway.service.ILogicServerService;
-import com.xinyue.network.EnumServerType;
 import com.xinyue.network.message.inner.InnerMessageCodecFactory;
 import com.xinyue.network.message.inner.InnerMessageHeader;
 import com.xinyue.utils.NettyUtil;
@@ -36,6 +32,9 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 	private ILogicServerService logicServerService;
 	private ServerConfig serverConfig;
 
+	@Autowired
+	private GateGameMessageRouter gameMessageRouter;
+
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		if (msg instanceof GateMessageInfo) {
@@ -48,12 +47,15 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 			header.setUserId(messageInfo.getUserId());
 			header.setSeqId(messageInfo.getMessageHead().getSeqId());
 			header.setFromServerId(serverConfig.getServerId());
-			// TODO 计算toServerId
-			short serverId = logicServerService.getToServerId(header.getRoleId(),
-					header.getServerType());
+			// 计算toServerId
+			short serverId = logicServerService.getToServerId(header.getRoleId(), header.getServerType());
+			header.setToServerId(serverId);
 			ByteBuf buf = codecFactory.gateEncode(header, body);
-			// TODO 这里使用消息队列向业务服务发送消息。
-			
+			// 这里使用消息队列向业务服务发送消息。
+			String tag = header.getToLogicServerMessageTag();
+			body = new byte[buf.readableBytes()];
+			buf.readBytes(body);
+			gameMessageRouter.sendMessage(body, tag);
 		}
 	}
 }

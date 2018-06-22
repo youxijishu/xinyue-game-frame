@@ -19,7 +19,7 @@ import io.netty.buffer.ByteBuf;
 public class LogicMessageConsumerListener implements MessageListenerConcurrently {
 	private static Logger logger = LoggerFactory.getLogger(LogicMessageConsumerListener.class);
 	private GameChannelGroupManager gameChannelGroupManager;
-
+	
 	public LogicMessageConsumerListener(GameChannelGroupManager gameChannelGroupManager,
 			List<Class<? extends IGameMessage>> gameMessageClasses) {
 		this.gameChannelGroupManager = gameChannelGroupManager;

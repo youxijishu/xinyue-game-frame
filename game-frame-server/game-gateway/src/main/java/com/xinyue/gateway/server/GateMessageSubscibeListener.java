@@ -1,4 +1,4 @@
-package com.xinyue.gateway.service;
+package com.xinyue.gateway.server;
 
 import java.util.List;
 

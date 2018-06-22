@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: logic-main-server
+game:
+  server:
+    server-id: 2001
+    threads: 16
+  rocketmq: 
+    instance-name: ${spring.application.name}-2001
+    consumer-group-name: LogicServerMessageConsumerGroup
+    consumer-topic: GateMessageProducerTopic3
+    publish-topic: GateMessageConsumerTopic
+    publish-topic-key: LogicServerMessageProduceTopicKey
+    publish-topic-queue-num: 8
+    name-server-addr: 127.0.0.1:9876
+    publish-group-name: GateMessageProduceGrooup

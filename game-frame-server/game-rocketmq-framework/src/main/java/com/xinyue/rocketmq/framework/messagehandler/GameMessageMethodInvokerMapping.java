@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
 import com.xinyue.network.message.common.GameMessageMetaData;
 import com.xinyue.network.message.common.IGameMessage;
@@ -22,16 +24,13 @@ import com.xinyue.rocketmq.framework.gamechannel.GameChannelHandlerContext;
  *
  * @Date 2018年6月20日 下午10:06:35
  */
+@Service
 public class GameMessageMethodInvokerMapping {
 
 	private Map<Integer, MethodInvokerInfo> methodMap = new HashMap<>();
 	private List<Class<? extends IGameMessage>> allMessageClass = new ArrayList<>();
+	@Autowired
 	private ApplicationContext applicationContext;
-
-	public GameMessageMethodInvokerMapping(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-
-	}
 
 	public void scanGameMessageMapping() {
 		// 获取所有添加了MessageHandler注解的所有bean对象的beanName

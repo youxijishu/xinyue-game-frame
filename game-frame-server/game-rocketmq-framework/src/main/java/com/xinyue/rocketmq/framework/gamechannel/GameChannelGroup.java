@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xinyue.concurrent.GameTask;
 import com.xinyue.network.message.common.IGameMessage;
-import com.xinyue.rocketmq.framework.network.GameMessageRouter;
+import com.xinyue.rocketmq.framework.network.LogicServerGameMessageRouter;
 
 import io.netty.util.concurrent.EventExecutor;
 
@@ -24,9 +24,9 @@ public class GameChannelGroup {
 	private Map<Long, GameChannel> gameChannelMap = new HashMap<>();
 	private EventExecutor executor;
 	private IGameChannelInit channelInit;
-	private GameMessageRouter gameMessageRouter;
+	private LogicServerGameMessageRouter gameMessageRouter;
 
-	public GameChannelGroup(GameMessageRouter gameMessageRouter, EventExecutor executor, IGameChannelInit channelInit) {
+	public GameChannelGroup(LogicServerGameMessageRouter gameMessageRouter, EventExecutor executor, IGameChannelInit channelInit) {
 		this.executor = executor;
 		this.channelInit = channelInit;
 		this.gameMessageRouter = gameMessageRouter;
