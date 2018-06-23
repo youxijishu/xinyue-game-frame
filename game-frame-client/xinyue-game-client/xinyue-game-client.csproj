@@ -290,7 +290,6 @@
     <Compile Include="Assets\Scripts\game-common\DateUtil.cs" />
     <Compile Include="Assets\Scripts\game-common\StringUtil.cs" />
     <Compile Include="Assets\Scripts\game-network\ByteBuf.cs" />
-    <Compile Include="Assets\Scripts\game-network\ByteBuffer.cs" />
     <Compile Include="Assets\Scripts\game-network\GameSocket.cs" />
     <Compile Include="Assets\Scripts\game-network\GameSocketState.cs" />
     <Compile Include="Assets\Scripts\Thirdparty\Protobuf\BclHelpers.cs" />
