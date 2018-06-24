@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace Assets.Scripts.game_network
 {
-    public delegate void GameSocketSateChange(GameSocket gameSocket,GameSocketState nowState);
-    public delegate void ReceiveMessage(ByteBuffer buf);
+    delegate void GameSocketSateChange(GameSocket gameSocket,GameSocketState nowState);
+    delegate void ReceiveMessage(ByteBuf buf);
 
-    public class GameSocket
+    class GameSocket
     {
         public event GameSocketSateChange GameSocketStateChangeEvent;
         public event ReceiveMessage ReceiveMessageEvent;
         //本地socket接收网络字节的缓冲区大小，默认是1M
-        private ByteBuffer localBytesBuffer = ByteBuffer.Allocate(1024 * 1024);
+        private ByteBuf localBytesBuffer = new ByteBuf(1024 * 1024);
         //每次从网络中读取的字节数，默认是512k
         private byte[] readBuffer = new byte[1024 * 512];
         private Socket socket;
@@ -134,7 +134,7 @@ namespace Assets.Scripts.game_network
                                 {
                                     localBytesBuffer.ResetReaderIndex();
                                     //当前接收到的字节数达到一个数据包的字节数量
-                                    ByteBuffer byteBuf = ByteBuffer.Allocate(total);
+                                    ByteBuf byteBuf = new ByteBuf(total);
                                     byte[] source = new byte[total];
                                     localBytesBuffer.ReadBytes(source, 0, total);
                                     byteBuf.WriteBytes(source);
@@ -169,17 +169,13 @@ namespace Assets.Scripts.game_network
             
             try
             {
-                SocketError error = SocketError.Success;
-                socket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, out error, (_result) =>
+                socket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, (_result) =>
                 {
-                    if (_result.IsCompleted && error == SocketError.Success)
+                    if (!_result.IsCompleted)
                     {
-                        
+                        InvokeConnectState(GameSocketState.CONNECT_ERROR);
                     }
-                    else
-                    {
-                        InvokeConnectState(ConnectState.CONNECT_ERROR);
-                    }
+                   
 
                 }, null);
 
@@ -187,7 +183,7 @@ namespace Assets.Scripts.game_network
             catch (System.Exception ex)
             {
                 Debug.LogError(ex);
-                InvokeConnectState(ConnectState.CONNECT_ERROR);
+                InvokeConnectState(GameSocketState.CONNECT_ERROR);
             }
            
         }

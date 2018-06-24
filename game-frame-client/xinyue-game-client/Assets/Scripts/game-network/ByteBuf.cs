@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace Assets.Scripts.game_network
@@ -307,6 +308,7 @@ namespace Assets.Scripts.game_network
         public ByteBuf WriteBytes(byte[] src)
         {
             this.WriteBytes(src,0,src.Length);
+            IPAddress.HostToNetworkOrder();
             return this;
         }
         private  bool IsOutBounds(int length)
@@ -314,6 +316,26 @@ namespace Assets.Scripts.game_network
             return (this.writerIndex | length | (this.writerIndex + length) | (this.capacity - (this.writerIndex + length))) < 0;
         }
 
+        public byte[] IntToBytes(int value)
+        {
+            //把本地字节值转换成网络字节值
+            value = IPAddress.HostToNetworkOrder(value);
+            byte[] bytes = BitConverter.GetBytes(value);
+            return bytes;
+        }
+
+        public int BytesToInt(byte[] bytes)
+        {
+
+            int value = BitConverter.ToInt32(bytes,0);
+            //把网络字节值转化为本地字节值
+            value = IPAddress.NetworkToHostOrder(value);
+         
+            return value;
+        }
+
     }
+
+   
     
 }
