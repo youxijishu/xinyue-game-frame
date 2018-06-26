@@ -308,7 +308,6 @@ namespace Assets.Scripts.game_network
         public ByteBuf WriteBytes(byte[] src)
         {
             this.WriteBytes(src,0,src.Length);
-            IPAddress.HostToNetworkOrder();
             return this;
         }
         private  bool IsOutBounds(int length)
@@ -332,6 +331,10 @@ namespace Assets.Scripts.game_network
             value = IPAddress.NetworkToHostOrder(value);
          
             return value;
+        }
+
+        public byte[] ToArray() {
+            return array;
         }
 
     }
