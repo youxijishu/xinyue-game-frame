@@ -4,21 +4,19 @@ import com.xinyue.network.message.inner.InnerMessageHeader;
 
 public abstract class AbstractGameMessage implements IGameMessage {
 	private InnerMessageHeader messageHead;
-	private int messageUniqueId = 0;
+	
 
 	public AbstractGameMessage() {
 		messageHead = new InnerMessageHeader();
-		GameMessageMetaData gameMessageMetaData = this.getClass().getAnnotation(GameMessageMetaData.class);
-		messageHead.setServerType(gameMessageMetaData.serverType());
-		messageHead.setMessageId(gameMessageMetaData.id());
-		messageHead.setGameMessageType(gameMessageMetaData.type());
-		this.messageUniqueId = MessageIdUtil.getMessageUniqueId(messageHead.getServerType(),
-				messageHead.getMessageId());
+		this.readGameMessageMeta();
+		
 	}
 
-	@Override
-	public int getMessageUniqueId() {
-		return this.messageUniqueId;
+	private void readGameMessageMeta() {
+		GameMessageMetaData gameMessageMetaData = this.getClass().getAnnotation(GameMessageMetaData.class);
+		messageHead.setServerType(gameMessageMetaData.serverType());
+		messageHead.setMessageId(gameMessageMetaData.messageId());
+		messageHead.setGameMessageType(gameMessageMetaData.messageType());
 	}
 
 	@Override

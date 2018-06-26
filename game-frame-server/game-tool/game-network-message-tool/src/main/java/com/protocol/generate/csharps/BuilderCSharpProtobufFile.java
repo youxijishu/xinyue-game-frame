@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.xinyue.arithmetic.ByteUtil;
+import com.xinyue.utils.ByteUtil;
 
 public class BuilderCSharpProtobufFile {
 

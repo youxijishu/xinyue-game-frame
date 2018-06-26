@@ -16,8 +16,8 @@ import com.protocol.generate.model.CommandObject;
 import com.protocol.generate.model.FieldObject;
 import com.protocol.generate.model.ProtocolObject;
 import com.protocol.generate.model.StructObject;
-import com.xinyue.string.StringUtil;
-import com.xinyue.xml.XmlUtil;
+import com.xinyue.utils.StringUtil;
+import com.xinyue.utils.XmlUtil;
 
 public class ReadProtocolConfigFile {
 	public ProtocolObject readFile(File file) throws DocumentException {

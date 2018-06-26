@@ -16,7 +16,7 @@ import io.netty.util.CharsetUtil;
 
 /**
  * 内部消息包的编码与解码：<br>
- * 网关给业务服务的编码格式：serverType(2) + messageId(2) + userId(8) + roleId(8) + seqId(4)
+ * 网关给业务服务的编码格式：messageUniqueId(4) + userId(8) + roleId(8) + seqId(4)
  * + fromServerId(4) + toServerId(4) + isIpv4(1,0表示是ipv4,1是ipv6) +
  * ip(如果是ipv4占4位,如果是ipv6，2位的字符串长度，变长的ipv6字符串长度，后期可以优化为两个long) + body <br>
  * 业务服务给网关的消息编码：serverType(2) + messageId(2) + userId(8) + roleId(8) + seqId(4)
@@ -67,9 +67,8 @@ public class InnerMessageCodecFactory {
 			total += body.length;
 		}
 		ByteBuf buf = NettyUtil.createBuf(total);
-		buf.writeInt(total);
-		buf.writeShort(innerMessageHeader.getServerType().getServerType());
-		buf.writeShort(innerMessageHeader.getMessageId());
+		int messageUniqueId = innerMessageHeader.getMessageUniqueId();
+		buf.writeInt(messageUniqueId);
 		buf.writeLong(innerMessageHeader.getUserId());
 		buf.writeLong(innerMessageHeader.getRoleId());
 		buf.writeInt(innerMessageHeader.getSeqId());
@@ -104,14 +103,12 @@ public class InnerMessageCodecFactory {
 		IGameMessage gameMessage;
 		try {
 			int total = buf.readInt();
-			short serverType = buf.readShort();
-			short messageId = buf.readShort();
+			int messageUniqueId = buf.readInt();
 			long userId = buf.readLong();
 			long roleId = buf.readLong();
 			int seqId = buf.readInt();
-			gameMessage = registerFactory.getGameMessage(serverType, messageId);
+			gameMessage = registerFactory.getGameMessage(messageUniqueId);
 			if (gameMessage == null) {
-				logger.warn("messageId:{} 找不到对应的GameMessage class", messageId);
 				return null;
 			}
 			byte isIpv4 = buf.readByte();
@@ -127,7 +124,6 @@ public class InnerMessageCodecFactory {
 			}
 			InnerMessageHeader header = gameMessage.getMessageHead();
 			header.setClientIp(ip);
-			header.setMessageId(messageId);
 			header.setRecTime(System.currentTimeMillis());
 			header.setRoleId(roleId);
 			header.setSeqId(seqId);

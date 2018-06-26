@@ -11,6 +11,6 @@ import com.xinyue.network.EnumServerType;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GameMessageMetaData {
 	public EnumServerType serverType();
-	public short id();
-	public GameMessageType type();
+	public short messageId();
+	public GameMessageType messageType();
 }

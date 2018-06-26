@@ -3,8 +3,8 @@ package com.protocol.generate.javas;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.xinyue.arithmetic.ByteUtil;
-import com.xinyue.string.StringUtil;
+import com.xinyue.utils.ByteUtil;
+import com.xinyue.utils.StringUtil;
 
 public class BuildJavaProtobufFile {
 

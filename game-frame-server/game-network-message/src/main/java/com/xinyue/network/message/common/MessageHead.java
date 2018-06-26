@@ -9,8 +9,11 @@ public class MessageHead {
 	private int seqId;
 	private EnumServerType serverType;
 	private GameMessageType gameMessageType;
-	
-	
+
+	public int getMessageUniqueId() {
+		int messageUniqueId = MessageIdUtil.getMessageUniqueId(this.getServerType(), this.getMessageId());
+		return messageUniqueId;
+	}
 
 	public EnumServerType getServerType() {
 		return serverType;
