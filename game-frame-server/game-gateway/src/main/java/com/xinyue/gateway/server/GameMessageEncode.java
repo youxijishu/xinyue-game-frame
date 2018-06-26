@@ -16,7 +16,7 @@ import io.netty.channel.ChannelPromise;
 
 /**
  * 这里处理收到业务服务发送来的消息，加工成返回客户端的包。<br>
- * 返回给客户端的协议格式：total(4) + seqId(4) + messageId(4) + errorCode(4) + crc(8) +
+ * 返回给客户端的协议格式：total(4) + seqId(4) + uniqueMessageId(4) + errorCode(4) +
  * body(protobuf字节数组)
  * 
  * @author 心悦网络科技有限公司 王广帅
@@ -48,11 +48,9 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 			buf = NettyUtil.createBuf(total);
 			buf.writeInt(total);
 			buf.writeInt(header.getSeqId());
-			buf.writeInt(header.getMessageId());
+			buf.writeInt(header.getMessageUniqueId());
 			buf.writeInt(header.getErrorCode());
 			if (body != null) {
-				long crcValue = NettyUtil.getCrcValue(body);
-				buf.writeLong(crcValue);
 				buf.writeBytes(body);
 			}
 

@@ -18,4 +18,15 @@ public class MessageIdUtil {
 		int messageId1 = messageId;
 		return (type1 << 16) + messageId1;
 	}
+
+
+	public static short getMessageId(int uniqueMessageId) {
+		short messageId = (short) (uniqueMessageId & 0xffff);
+		return messageId;
+	}
+
+	public static short getServerType(int uniqueMessageId) {
+		return (short) (uniqueMessageId >> 16);
+	}
+
 }

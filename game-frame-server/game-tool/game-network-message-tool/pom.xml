@@ -13,15 +13,20 @@
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
-			<version>2.3.23</version>
 		</dependency>
 
 		<dependency>
-			<groupId>xinyue</groupId>
-			<artifactId>xinyue-game-common</artifactId>
+			<groupId>com.xinyue</groupId>
+			<artifactId>game-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+  </dependencies>
 	<build>
 		<plugins>
 			<plugin>

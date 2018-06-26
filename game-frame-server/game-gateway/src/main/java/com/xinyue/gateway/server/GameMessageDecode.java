@@ -10,6 +10,7 @@ import com.xinyue.network.EnumServerType;
 import com.xinyue.network.message.common.GameMessageRegisterFactory;
 import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.network.message.common.MessageHead;
+import com.xinyue.network.message.common.MessageIdUtil;
 import com.xinyue.utils.NettyUtil;
 
 import io.netty.buffer.ByteBuf;
@@ -20,8 +21,7 @@ import io.netty.util.ReferenceCountUtil;
 /**
  * 解码从客户端收到的数据包，并负责对包的正确性进行验证，在这里消息被检测是否需要网关处理整个消息，即解码出整个消息的内容，
  * 由网关自己处理，不需要转发到业务服务，如果不需要网关处理，则把消息体不需要解码，直接发送到下一个handler去处理 <br>
- * 客户端发送到网关的消息格式为：total(4) + seqId(4) + serverType(2) + messageId(2) + crc32(8)
- * + body(protobuf字节数组)
+ * 客户端发送到网关的消息格式为：total(4) + seqId(4) + messageUniqueId(4) + body(protobuf字节数组)
  * 
  * @author 心悦网络科技有限公司 王广帅
  *
@@ -52,22 +52,15 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 				ctx.close();
 				return;
 			}
-			short serverType = byteBuf.readShort();
-			short messageId = byteBuf.readShort();
+			int messageUniqueId = byteBuf.readInt();
+			short serverType = MessageIdUtil.getServerType(messageUniqueId);
+			short messageId = MessageIdUtil.getMessageId(messageUniqueId);
 			messageHead.setServerType(EnumServerType.getServerType(serverType));
 			messageHead.setMessageId(messageId);
 			byte[] body = null;
 			if (byteBuf.readableBytes() > 0) {
 				body = new byte[byteBuf.readableBytes()];
-				// 验证消息的crc是否正确
-				long crcValue = byteBuf.readLong();
-				long newCrcValue = NettyUtil.getCrcValue(body);
-				if (crcValue != newCrcValue) {
-					logger.error("crc验证失败，收到消息的crcValue:{},计算得到的crcValue:{},ip:{},channelId:{}", crcValue, newCrcValue,
-							NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
-					ctx.close();
-					return;
-				}
+				byteBuf.readBytes(body);
 			}
 			// 判断一下，这个命令是不是gate服务直接处理的，如果是就不转发了。
 			boolean isExistGateMessage = GameMessageRegisterFactory.getInstance().containsGameMessage(messageId);
@@ -101,12 +94,9 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 	 *
 	 */
 	public IGameMessage decode(MessageHead messageHead, byte[] body) throws Exception {
-		short messageId = messageHead.getMessageId();
 		GameMessageRegisterFactory gameMessageCodecFactory = GameMessageRegisterFactory.getInstance();
-		IGameMessage gameMessage = gameMessageCodecFactory.getGameMessage(messageHead.getServerType().getServerType(),
-				messageId);
+		IGameMessage gameMessage = gameMessageCodecFactory.getGameMessage(messageHead.getMessageUniqueId());
 		if (gameMessage == null) {
-			logger.error("找不到[{}]的GameMessage的实现类", messageId);
 			return null;
 		}
 		MessageHead messageHead2 = gameMessage.getMessageHead();

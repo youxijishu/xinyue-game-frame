@@ -42,7 +42,7 @@ public class LogicServerGameMessageRouter extends GameMessageRouter {
 		String[] allTags = new String[gameMessageClasses.size()];
 		for (int i = 0; i < gameMessageClasses.size(); i++) {
 			GameMessageMetaData messageMetaData = gameMessageClasses.get(i).getAnnotation(GameMessageMetaData.class);
-			short messageId = messageMetaData.id();
+			short messageId = messageMetaData.messageId();
 			EnumServerType serverType = messageMetaData.serverType();
 			allTags[i] = InnerMessageHeader.getLogicServerMessageTag(serverType, messageId, serverId);
 		}

@@ -10,7 +10,11 @@ import java.util.List;
  */
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GameMessageRegisterFactory {
+	private static Logger logger = LoggerFactory.getLogger(GameMessageRegisterFactory.class);
 	private Map<Integer, Class<? extends IGameMessage>> messageClassMap = null;
 	private static GameMessageRegisterFactory instance = new GameMessageRegisterFactory();
 
@@ -18,20 +22,7 @@ public class GameMessageRegisterFactory {
 		return instance;
 	}
 
-	public int getUniqueMessageId(short serverType, short messageId) {
-		int id = (((int) serverType) << 16) + ((int) messageId);
-		return id;
-	}
-
-	public short getMessageId(int uniqueMessageId) {
-		short messageId = (short) (uniqueMessageId & 0xffff);
-		return messageId;
-	}
-
-	public short getServerType(int uniqueMessageId) {
-		return (short) (uniqueMessageId >> 16);
-	}
-
+	
 	/**
 	 * 
 	 * @Desc 设置要解码的消息的id和对应的class
@@ -50,10 +41,10 @@ public class GameMessageRegisterFactory {
 			if (gameMessageMetaData == null) {
 				throw new IllegalArgumentException(gameMessage.getName() + "消息没有GameMessageMetaData");
 			}
-			short messageId = gameMessageMetaData.id();
-			GameMessageType messageType = gameMessageMetaData.type();
+			short messageId = gameMessageMetaData.messageId();
+			GameMessageType messageType = gameMessageMetaData.messageType();
 			if (messageType == GameMessageType.REQUEST) {
-				int uniqueMessageId = this.getUniqueMessageId(gameMessageMetaData.serverType().getServerType(),
+				int uniqueMessageId = MessageIdUtil.getMessageUniqueId(gameMessageMetaData.serverType(),
 						messageId);
 				if (messageClassMap.containsKey(uniqueMessageId)) {
 					throw new IllegalArgumentException("命令重复注册：serverType:"
@@ -71,7 +62,7 @@ public class GameMessageRegisterFactory {
 
 	/**
 	 * 
-	 * @Desc 获取一个messageid对应的class创建的对象
+	 * @Desc 获取一个messageUniqueId对应的class创建的对象
 	 * @param messageId
 	 * @return
 	 * @throws InstantiationException
@@ -80,11 +71,11 @@ public class GameMessageRegisterFactory {
 	 * @Date 2018年6月15日 下午4:34:19
 	 *
 	 */
-	public IGameMessage getGameMessage(short serverType, short messageId)
+	public IGameMessage getGameMessage(int messageUniqueId)
 			throws InstantiationException, IllegalAccessException {
-		int uniqueMessage = this.getUniqueMessageId(serverType, messageId);
-		Class<? extends IGameMessage> clazz = this.messageClassMap.get(uniqueMessage);
+		Class<? extends IGameMessage> clazz = this.messageClassMap.get(messageUniqueId);
 		if (clazz == null) {
+			logger.warn("找不到对应的GameMessage class,serverType:{},messageId:{}", MessageIdUtil.getServerType(messageUniqueId),MessageIdUtil.getMessageId(messageUniqueId));
 			return null;
 		}
 		return clazz.newInstance();

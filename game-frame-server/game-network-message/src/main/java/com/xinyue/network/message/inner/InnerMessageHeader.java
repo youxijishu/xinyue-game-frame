@@ -28,11 +28,19 @@ public class InnerMessageHeader extends MessageHead {
 	private int fromServerId;
 	private int toServerId;
 
+	
+
+
+
 	public InnerMessageHeader() {
 		if (this.getGameMessageType() == GameMessageType.REQUEST) {
 			this.recTime = System.currentTimeMillis();
 		}
 	}
+	
+
+
+	
 
 	/**
 	 * 

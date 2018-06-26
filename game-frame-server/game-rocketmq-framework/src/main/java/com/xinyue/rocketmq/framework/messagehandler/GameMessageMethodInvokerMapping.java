@@ -64,7 +64,7 @@ public class GameMessageMethodInvokerMapping {
 								+ obj.getClass().getName() + "#" + method.getName());
 					}
 					int messageUniqueId = MessageIdUtil.getMessageUniqueId(messageMetaData.serverType(),
-							messageMetaData.id());
+							messageMetaData.messageId());
 					@SuppressWarnings("unchecked")
 					Class<? extends IGameMessage> messageClass = (Class<? extends IGameMessage>) commandClass;
 					allMessageClass.add(messageClass);
@@ -87,7 +87,7 @@ public class GameMessageMethodInvokerMapping {
 	 *
 	 */
 	public void Invoker(IGameMessage gameMessage, GameChannelHandlerContext ctx) {
-		Integer key = gameMessage.getMessageUniqueId();
+		Integer key = gameMessage.getMessageHead().getMessageUniqueId();
 		MethodInvokerInfo methodInvokerInfo = this.methodMap.get(key);
 		if (methodInvokerInfo != null) {
 			Object obj = methodInvokerInfo.getObject();

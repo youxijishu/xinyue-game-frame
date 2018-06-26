@@ -10,7 +10,7 @@ import com.protocol.generate.common.TemplateUtil;
 import com.protocol.generate.model.CommandObject;
 import com.protocol.generate.model.ObjectConstans;
 import com.protocol.generate.model.ProtocolObject;
-import com.xinyue.string.StringUtil;
+import com.xinyue.utils.StringUtil;
 
 public class BuildCommandFactory {
 

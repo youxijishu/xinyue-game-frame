@@ -8,7 +8,7 @@ import com.xinyue.network.EnumServerType;
 //河南心悦网络科技有限公司   王广帅
 //连接认证
 
-@GameMessageMetaData(serverType = EnumServerType.GAME_SERVER,id = 1001, type =GameMessageType.RESPONSE)
+@GameMessageMetaData(serverType = EnumServerType.GAME_SERVER,messageId = 1001, messageType =GameMessageType.RESPONSE)
 public class ConnectConfirmResponse extends AbstractGameMessage {
 	
 	public ConnectConfirmResponse(){

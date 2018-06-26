@@ -11,7 +11,7 @@ import com.protocol.generate.model.ObjectConstans;
 import com.protocol.generate.model.ProtobufMessage;
 import com.protocol.generate.model.ProtocolObject;
 import com.protocol.generate.model.StructObject;
-import com.xinyue.string.StringUtil;
+import com.xinyue.utils.StringUtil;
 
 public class BuilderProtobufFile {
 	public static void build(ProtocolObject protocolObject) {
