@@ -5,7 +5,7 @@ using System.Collections.Generic;
 ${ns}
 </#list>
 
-namespace ${namespace}.model
+namespace Assets.Scripts.game_network.game_message_impl
 {
 	public class ${className}
 	{

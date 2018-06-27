@@ -1,0 +1,5 @@
+message Exchange
+{
+    required int32 uid=1;
+    required int32 cmd=2;
+}

@@ -123,7 +123,11 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 	 *
 	 */
 	private GateError checkToken(ConnectConfirmRequest connectConfirmRequest) {
+		
 		long roleId = connectConfirmRequest.getRoleId();
+		if(roleId > 0){
+			return null;
+		}
 		long userId = connectConfirmRequest.getUserId();
 		String token = connectConfirmRequest.getToken();
 		TokenModel tokenModel = TokenUtil.getTokenModel(token);

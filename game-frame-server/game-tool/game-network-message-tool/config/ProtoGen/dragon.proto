@@ -1,0 +1,1610 @@
+package proto_file.game.dragon;
+
+
+///////////////////////////////////////////////////////////////////////////登录
+message MoneyNode{
+	required int32 mid	= 1;
+	required int32 val = 2;
+}
+message VipInfo{
+	required int32 viplevel = 1; 			//等级
+	required int32 exp = 2; 				//经验
+	optional int32 wipetimes = 3; 			//已扫荡次数
+	optional int32 buygoldtimes = 4; 		//已买金币次数
+	optional int32 buyvitalitytimes = 5; 	//已买体力次数
+}
+message BaseInfo{
+	required string uid = 1;
+	required string nickname =2;
+	optional int32 conlogin = 3;			//连续登录天数
+	optional int32 soulsocketcount = 4;		//龙魂插槽数量
+}
+
+
+//货币信息请求 command 61 MoneyResponse
+message MoneyRequest{
+	required int32 mid = 1;
+}
+message MoneyResponse{
+	repeated MoneyNode moneylist = 1;
+}
+
+
+message TimeNode{
+	required int32 Type = 1;				//0:服务器时间,1:单抽倒计时,2：10连抽倒计时
+	required int32 time = 2;				//时间戳
+}
+
+
+//帐号注册/密码登录 command 1003
+message AccountLoginRequest{
+	required string account = 1;			//帐号
+	required string password = 2;			//密码
+	required int32 type = 3;				//1.注册，2.登录, 3.游客登录
+}
+message AccountLoginResponse{
+	required int32 status = 1;				//状态：1.成功,其他值为失败
+	optional string sid = 2;				//用于验证登录
+	optional string puid = 3;				//g_uid(if 昵称： +昵称)
+}
+
+
+//游客绑定帐号
+message AccountBindRequest{
+	required string visitorcode = 1;		//游客编码字符串
+	required string account = 2;			//帐号
+	required string password = 3;			//密码
+}
+
+
+//角色登录请求&创建 command 1001 LoginResponse
+message LoginRequest{
+	required string token = 1;
+	optional int64 roleid = 2;
+	optional string nickname = 3;
+	optional int32 job = 4;
+	optional string openId = 5;                 //用户ID UI
+	optional int32 os = 7;					    //操作系统
+	repeated HardwareInfo hardware_list = 6;    //硬件信息
+	optional int32 platform = 8;
+	optional string access_token = 9;
+	optional string pf = 10;
+	optional string pfkey = 11;
+	optional string pay_token = 12;
+	optional int32 action = 13;                 //0:login,1:relogin,2:register
+}
+
+message HardwareInfo{
+    required string ClientVersion = 1; 		//客户端版本
+    required string SystemSoftware = 2; 	//移动终端操作系统版本
+    required string SystemHardware = 3; 	//移动终端机型
+    required string TelecomOper = 4; 	    //运营商
+    required string Network = 5; 		    //3G/WIFI/2G
+    required int32 ScreenWidth = 6; 		//显示屏宽度
+    required int32 ScreenHight = 7; 	    //显示屏高度
+    required string Density = 8; 			//像素密度
+    required int32 RegChannel = 9; 		    //注册渠道
+    required string UUID = 10; 		        //MAC地址
+    required string CpuHardware = 11;    	//cpu类型|频率|核数
+    required int32 Memory = 12; 			    //内存信息单位M
+    required string GLRender = 13; 	    	//opengl render信息
+    required string GLVersion = 14; 		    //opengl版本信息
+    required string DeviceId = 15; 	        //设备ID
+    required string LoginChannel = 16; 	    //登录渠道
+}
+message LoginResponse{
+	required RoleBaseInfo roleinfo = 1;		    //角色信息
+	repeated RoleSkillInfo skill_list = 2;	    //角色技能
+	repeated DragonInfo dragon_list = 3;	    //飞龙列表
+	repeated EquipBaseInfo_tx equip_list = 4;	//装备
+	repeated MertialInfo mertial_list = 5;		//材料
+	repeated GemInfo gem_list = 6;				//宝石
+	required int32 packamount = 7;				//背包格数
+	repeated StageInfo stage = 8; 			    //关卡列表
+    repeated Item ownitemlist = 9; 			    //道具列表
+	repeated MoneyNode moneylist = 10;
+	repeated TaskNode tasklist = 11;			//任务列表
+	repeated int32 newbie = 12;				    //新手引导列表
+	optional float time = 13;				    //服务器时间
+	repeated int32 roger_list = 14;			    //更新小红点
+	repeated FriendsInfo friends_info = 15;		//好友信息
+	repeated PetNode pets = 16;					//宠物信息
+	repeated SignStatusResponse sign_info = 17; //签到信息
+	optional string ip = 18;                    //客户端IP
+	required int32 qq_vip = 19;                 //QQ会员信息 0非会员 1会员 16超级会员
+	required int32 vip_level = 20;              //vip等级
+    required int32 qq_vip_end = 21;             //QQ会员期限，标准时间戳
+    optional int32 qip_lives_used = 23;		//已使用免费复活次数
+	required string private_key = 22;			//密钥
+}
+
+message FriendsInfo{
+    required int64 uid = 1;				    //uid
+    required int32 level = 2;			    //等级
+    required string icon = 3;			    //头像url
+    required string nickname_qq = 4;	    //qq昵称
+    required string nickname_game = 5;		//游戏昵称
+    required int32 fighting_capacity = 6;	//战斗力
+    required int32 is_accept = 7;			//是否接受好友赠送体力 0不接受 1接受
+    required int32 is_send = 8;			    //是否已赠送该好友体力 0未赠送 1已增送
+    repeated CurrentStage current_stage = 9;//关卡进度
+    required int32 dragon_id = 10;			//使用的飞龙id
+    required string openid = 11;            //openid
+    required int64 highest_score = 12;      //最高分数
+    required int32 use_times = 13;          //雇佣该好友的次数
+    required bool dragon_capacity = 14;     //飞龙战斗力
+    required int32 qq_vip = 15;             //QQ会员信息 0非会员 1会员 16超级会员
+    required int32 vip_level = 16;          //vip等级
+    required int32 dragon_stars = 17;       //飞龙星级
+}
+
+message CurrentStage{
+    required int32 stage_id = 1; //关卡id
+}
+
+//获取时间(服务器时间&功能时间) command 64 TimeResponse
+message TimeRequest{
+	required int32 Type = 1;				//-1:所有倒计时,0:服务器时间,1:单抽倒计时,2：10连抽倒计时
+}
+message TimeResponse{
+	repeated TimeNode timers = 1;
+}
+
+
+///////////////////////////////////////////////////////////////////////////角色系统_tx
+//角色基本信息
+message RoleBaseInfo{
+    required int64 gid = 1;
+    required string nickname = 2;
+    required int32 job = 3;
+    required int32 level = 4;
+    required int32 exp = 5;
+    repeated EquipBaseInfo_tx equips = 6;
+}
+//角色技能基本信息
+message RoleSkillInfo{
+     required int32 skill_id = 1;
+     optional int32 level = 2;
+}
+
+
+////响应获取角色信息请求 command 11401 RoleResponse
+//message RoleResponse{
+//	required RoleBaseInfo role_info = 1;
+//}
+
+
+//响应获取角色技能信息请求 command 11402 RoleSkillListResponse
+message RoleSkillListResponse{
+	repeated RoleSkillInfo skill_list = 1;
+}
+
+
+////响应角色升级请求 command 11403 RoleLevelResponse
+//message RoleLevelResponse{
+//    required int32 level = 1;
+//    required int32 exp = 2;
+//}
+
+
+//响应角色技能升级请求 command 11404 RoleSkillListResponse
+message AlterRoleSkillRequest{
+	required int32 skill_id = 1;
+}
+
+
+/////////////////////////////8.1版本角色
+message JobState{
+	required int32 job = 1;
+	required int32 state = 2;	// 0.已购买，1.未解锁， 2.已解锁
+	optional int32 duration = 3;	//持续时间/s，-1为永久
+}
+
+//获取角色列表 command 11405 None-> RoleListResponse
+message RoleListResponse{
+	repeated JobState jobnode = 1;
+}
+
+//购买角色 command 11406 BuyRoleRequest -> RoleListResponse(只含所购买的)
+message BuyRoleRequest{
+	required int32 job = 1;		//要购买的角色
+	required int32 days = 2;	//要购买几天
+}
+
+//使用角色 command 11407 BuyRoleRequest -> RoleListResponse(只含使用中的角色)
+message UseRoleRequest{
+	required int32 job = 1;		//要使用角色
+}
+
+
+///////////////////////////////////////////////////////////////////////////通用
+//错误返回 command 401	#错误：返回登录界面
+//错误返回 command 402	#错误：刷新数据
+//错误返回 command 403	#错误：仅提示
+message ErrMessage{
+	required int32 id = 1;			//错误编号
+	optional string message = 2;	//错误信息
+}
+message ResultMessage{
+	required bool result = 1;
+}
+//推送 command 101 状态有变化
+message ChangeState{
+	required int32 type = 1;		//类型：1.邮箱， 2.好友
+}
+
+//推送 command 20001 ChangeStateList
+message ChangeStateList{
+	repeated int32 ids = 1;		//刷新 1. 任务 2. 邮箱 3.活动
+}
+//反馈 command 20002 RogerThat
+message RogerThat{
+	repeated int32 ids = 1;		//反馈 1. 任务 2. 邮箱 3.活动
+}
+
+//用户是否在线 command 4001 bool
+
+///////////////////////////////////////////////////////////////////////////飞龙
+//飞龙基本信息
+message DragonBaseInfo{
+     required int32 id = 1;			//飞龙id
+     optional bool isget = 2;		//是否已经获取
+     optional int32 level = 3;		//飞龙等级
+     optional bool ison  = 4;		//是否使用中
+}
+
+
+//请求飞龙信息 command 11
+//请求升级飞龙 command 12
+//请求购买飞龙 command 13
+//请求更换使用中的飞龙 command 14 DragonResponse
+message DragonRequest{
+	required int32 id = 1;					//飞龙编号
+}
+message DragonResponse{
+	repeated DragonBaseInfo dragoninfo = 1; //龙信息list
+}
+
+
+///////////////////////////////////////////////////////////////////////////飞龙系统_tx
+//飞龙信息_tx
+message DragonInfo{
+     required int32 id = 1;			        //飞龙id
+     optional bool isget = 2;		        //是否已经获取
+     optional int32 stars = 3; 		        //星级（亲密度）
+     optional int32 used_food = 4; 		    //已吃食物
+     optional int32 last_food = 5; 		    //剩余食物
+     optional int32 quality = 6;	        //品阶
+     optional int32 level = 7;		        //飞龙等级
+     optional bool ison  = 8;		        //是否使用中
+     repeated SoulSkillInfo skills = 9;     //飞龙技能信息
+     optional bool is_second  = 10;		    //是否是援护飞龙
+     optional float favorability  = 11;		//当前好感度
+     optional int32 fondle_times  = 12;		//当前可抚摸次数
+     optional int32 exp = 13;               //当前经验值
+     optional int32 fondle_time = 14;       //抚摸次数恢复时间（s）
+}
+//龙魂信息_tx
+message SoulSkillInfo{
+     required int32 id = 1;
+     required int32 level = 2;
+}
+
+
+//获取飞龙列表 command 11201 DragonListResponse
+message DragonListResponse{
+	repeated DragonInfo dragon_list = 1;
+	required int32 second_drgaon_id = 2;  // 个人援护飞龙
+}
+
+
+//飞龙操作请求 command 11202 OperateDragonResponse
+message OperateDragonRequest{
+	required int32 dragon_id = 1;
+	required int32 type = 2; 		//1 解锁 2 升星 3 升阶 4 升级 5 启用 6 喂食 7 设置个人援护飞龙 8提升好感度 9抚摸飞龙
+	optional int32 count = 3; 		//数量(升级，提升好感度时为道具数量)
+	optional int32 itemid = 4; 		//道具id
+}
+message OperateDragonResponse{
+	required DragonInfo dragon_info = 1;  //飞龙信息
+	required int32 second_drgaon_id = 2;  // 个人援护飞龙
+	repeated AwardNode itemlist =3;       //抚摸时奖品列表
+	optional int32 fondle_exp = 4; 		//抚摸经验
+}
+
+//飞龙技能操作请求 command 11203 DragonListResponse
+message OperateSoulSkillRequest{
+	required int32 dragon_id = 1;
+	required int32 soulskill_id = 2;
+	optional int32 type = 3; 		//1.level up;
+}
+
+
+///////////////////////////////////////////////////////////////////////////装备
+message EquipBaseInfo_tx{
+    required int64 unique_id = 1;		//唯一id
+    required int32 equip_id = 2;  		//装备id
+    required int32 star = 3; 			//星数
+    required int32 stage = 4; 			//阶数
+    required int32 level = 5; 			//级数
+}
+
+//获取装备列表 command 11301 None → EquipListResponse
+message EquipListResponse{
+    repeated EquipBaseInfo_tx equip = 1;		//受影响装备的列表
+}
+
+//培养装备 command 11302 EquipOperateRequest → EquipOperateResponse
+message EquipOperateRequest{
+    required int64 unique_id = 1;		//唯一id
+    required int32 type = 2;		//操作类型 1.升级 2.升阶 3.升星
+    required int32 target = 3;		//操作结果 1.升到几级 2.升到几阶 3.升到几星
+}
+
+message EquipOperateResponse{
+    repeated EquipBaseInfo_tx equip = 1;		//受影响装备的列表
+}
+
+
+//使用货币物品 command 11304 MoneyItemsUseRequest → MoneyItemsUseResponse
+message MoneyItemsUseRequest{
+	repeated int64 unique_id = 1;	//唯一id
+	repeated int32 count = 2;		//对应的使用个数
+}
+
+message MoneyItemsUseResponse{
+	repeated int64 unique_id = 1;	//唯一id
+	repeated int32 count = 2;		//剩余数量
+	repeated AwardNode awardnodelist = 3;
+}
+
+///////////////////////////////////////////////////////////////////////////背包_tx
+//材料信息
+message MertialInfo{
+    required int64 unique_id = 1;		//实体id
+    required int32 props_id = 2;  		//物品id
+    required int32 props_amount = 3; 	//数量
+    required int32 istemp = 4; 			//是否存在临时背包
+}
+//宝石信息
+message GemInfo{
+    required int64 unique_id = 1; 		//实体id
+    required int32 props_id = 2; 		//物品id
+    required int32 props_amount = 3; 	//数量
+    required int32 istemp = 4; 			//是否存在临时背包
+}
+
+
+//获取背包信息 command 11501 BagListResponse
+message BagListResponse{
+	repeated EquipBaseInfo_tx equip_list = 1;	//装备
+	repeated MertialInfo mertial_list = 2;		//材料
+	repeated GemInfo gem_list = 3;				//宝石
+	required int32 amount = 4;					//背包格数
+	repeated MoneyNode moneylist = 5;			//货币
+}
+
+
+//响应背包扩容 command 11502
+message BagAugmentRequest{
+	required int32 amount = 1; 					//要解锁的背包数量
+}
+message BagAugmentResponse{
+    required int32 all_amount = 1;              //背包格数
+}
+
+
+//响应一键领取请求 command 11503 BagListResponse
+message BagClearRequest{
+    repeated int64 unique_ids = 1;
+}
+
+
+///////////////////////////////////////////////////////////////////////////龙魂
+//龙魂的基本信息
+message DragonsoulBaseInfo{
+	required int32 soulid = 1;		//龙魂ID
+	optional bool isget = 2;		//是否已经获取
+    optional int32 level = 3;		//强化等级
+    optional int32 position  = 4;	//位置
+}
+
+
+//请求龙魂信息 command 31
+//请求龙魂购买 command 32
+//请求龙魂强化 command 33
+//请求龙魂突破 command 34(删除)
+//请求更换使用中的龙魂 command 35 DragonsoulResponse
+message DragonsoulRequest{
+	repeated DragonsoulBaseInfo soulinfo = 1;
+}
+
+message DragonsoulResponse{
+	repeated DragonsoulBaseInfo soulinfo = 1; //龙魂信息list
+}
+
+
+///////////////////////////////////////////////////////////////////////////关卡
+//关卡的基本信息
+message StageInfo{
+	required int32 copyid = 1;		//关卡ID
+    optional int32 times = 2;		//剩余战斗次数
+	optional int32 wipetimes = 3;	//剩余扫荡次数
+    optional int32 grade  = 4;		//通关的最佳评价（cbas）
+    optional int32 gift = 5;
+    optional int32 chapterlevel = 6;		//章节等级限制,客户端用服务器不用
+	optional int32 freshtimes = 7;		//已重置次数
+}
+
+//奖励信息
+message AwardNode{
+    required int32 origin  = 1;		//奖励来源:1.战斗掉落，2.战役固定奖励，3.抽奖所得，4.连抽附赠奖励，5.邮箱附件, 6,吃到的食物
+	required int32 award_type =2; 	// 物品类型
+    optional EquipBaseInfo_tx equip = 3;	//装备
+    optional MertialInfo mertial = 4;		//材料
+    optional GemInfo gem = 5;			//宝石
+	optional MoneyNode money = 6;	//货币
+	optional PetNode pet=7;			//宠物
+	optional bool newpet = 8;		//是否新宠
+}
+//战前属性
+message PropertyNode{
+    required int32 owner = 1;	//飞龙/人物
+    required int32 type =2;		//属性类型
+	required float val = 3;		//属性值
+}
+
+//道具使用记录
+message ItemUseRecord{
+	required int32 itemid = 1;	//道具id
+    required int32 num =2;		//数量
+}
+
+//无尽奖励关随机结果序列
+message NonEndingAward{
+	required int32 type = 1;	//1:宠物， 2:宝箱
+	optional int32 award =2;	//宠物id
+}
+
+//属性字典
+message DragonProperty{
+	required int32 dragonid =1;	//龙的id
+	repeated PropertyNode bulletlist =2;	//属性字典
+}
+
+//关卡列表 command 11701 StageListResponse
+message StageListResponse{
+	repeated StageInfo stage = 1;
+}
+
+
+//战斗请求 command 11702 BattleResponse
+message BattleRequest{
+	required int32 copyid = 1;			//关卡ID
+	optional int32 num =2;
+	optional int64 help_friend_openid = 3; //雇佣好友uid
+}
+
+message BattleResponse{
+	required int32 copyid = 1;			//关卡ID
+	repeated int32 boxs = 2;				//宝箱序列
+	repeated NonEndingAward awardstage = 12;	//奖励关序列(仅无尽使用)
+	optional int32 power = 13;		//当前战斗力
+	repeated DragonProperty dragonprodict = 5;
+	optional int32 rpet_atk = 3;
+	optional int32 lpet_atk = 4;
+	optional int32 rhelper_atk = 6;
+	optional int32 lhelper_atk = 7;
+
+	optional int32 rpet_element = 8;
+	optional int32 lpet_element = 9;
+	optional int32 rhelper_element = 10;
+	optional int32 lhelper_element = 11;
+
+	optional string randseq = 14;
+	repeated int32 buff_list = 15;	//战前buffid(包括战斗祝福，圣光，兴奋剂)
+	
+	optional int32 begin_rush = 16;	//入场冲刺波数
+	optional int32 dead_rush = 17;  //死亡冲刺波数
+}
+
+message CheatReport{
+	repeated int32 type = 1;
+}
+
+//评价统计数据
+message DataForGrade{
+	optional int32 killtime = 1;	//击杀boss用时
+	optional int32 max_hits = 2;	//最大连击数
+	optional bool spkill = 3;	//是否sp技能击杀boss
+	optional bool itemkill = 4;	//是否保险击杀boss
+	optional int32 kill_monsters = 5;	//杀怪数
+	optional int32 create_monsters = 6;	//客户端生成怪的总数
+	optional int32 end_hp = 7;	//结算hp
+	optional int32 min_hp = 8;	//最低hp
+	optional bool isforce = 9;	//是否火力强化打掉boss
+	optional int32 behits = 10;	//被击数
+	optional CheatReport cheat_report = 11;
+}
+
+message DropInBattle{
+	required int32 item_id = 1;	//道具id
+	required int32 count = 2;		//数量
+}
+
+//安全sdk统计数据
+message DataForSafeTlog{
+	optional int32 ClientEndTime = 1;
+	optional string ClientVersion = 2;
+	optional string UserIP = 3;
+	optional string EquipmentType = 4;
+	optional int32 RoundMapID = 5;
+	optional int32 RoundGameType = 6;
+	optional string RoundEnemyIDList = 7;
+	optional int32 EnemyPlaneRound = 8;
+	optional int32 RoundRoleHP = 9;
+	optional int32 RoundRoleAttack = 10;
+	optional int32 RoundRoleDefense = 11;
+	optional int32 RoundRoleCrit = 12;
+	optional int32 RoundDragonSkillID = 13;
+	optional int32 RoundUserLeftPetID = 14;
+	optional int32 RoundUserLeftPetLevel = 15;
+	optional int32 RoundUserRightPetID = 16;
+	optional int32 RoundUserRightPetLevel = 17;
+	optional int32 RoundItem1UseCount = 18;
+	optional int32 RoundItem1SurplusCount = 19;
+	optional int32 RoundItem2UseCount = 20;
+	optional int32 RoundItem2SurplusCount = 21;
+	optional int32 RoundEndType = 22;
+	optional int32 RoundTimeUse = 23;
+	optional int32 RoundRate = 24;
+	optional int32 IsTopScore = 25;
+	optional int32 RoundScore = 26;
+	optional int32 RoundKillEnemyScore = 27;
+	optional int32 RoundFriendScore = 28;
+	optional int32 RoundEquipmentScore = 29;
+	optional int32 RoundStage = 32;
+	optional int32 SecInitialScore = 33;
+	optional int32 SecInitialGold = 34;
+	optional int32 SecInitialExp = 35;
+	optional int32 SecClientScore = 36;
+	optional int32 SecScoreBuff = 39;
+	optional int32 SecMoneyBuff = 40;
+	optional int32 SecExpBuff = 41;
+	optional int32 RoundDragonSoulScore = 42;
+	optional int32 RoundExp = 43;
+	optional int32 RoundKillEnemyCount = 44;
+	optional int32 RoundGold = 45;
+	optional int32 RoundVitTotal = 46;
+	optional int32 RoundGoldTotal = 47;
+	optional int32 RoundDiamondTotal = 48;
+	optional int32 PauseCount = 49;
+	optional string PauseTimeDetail = 50;
+	optional string PauseTimeIntervalDetail = 51;
+	optional int32 UserPlanDamage = 56;
+	optional int32 FriendPlanDamage = 59;
+	optional int32 FriendPlanCastTimeMax = 60;
+	optional int32 FriendPlanCastTimeMin = 61;
+	optional int32 FriendPlanCastTimeTotal = 62;
+	optional int32 FriendPlanAppearCount = 63;
+	optional int32 UserPlanHP = 64;
+	optional int32 AddHPCount = 65;
+	optional int32 AddHPMax = 66;
+	optional int32 AddHPMin = 67;
+	optional int32 AddHPTotal = 68;
+	optional int32 AddHPItemAppearCount = 69;
+	optional int32 AddHPItemEatCount = 70;
+	optional int32 AddHPItemMax = 71;
+	optional int32 AddHPItemMin = 72;
+	optional int32 AddHPItemTotal = 73;
+	optional int32 ReduceHPCount = 74;
+	optional int32 ReduceHPMax = 75;
+	optional int32 ReduceHPMin = 76;
+	optional int32 ReduceHPTotal = 77;
+	optional int32 EndHP = 78;
+	optional int32 RoundDieCount = 79;
+	optional int32 RoundReviveCount = 80;
+	optional int32 RoundEnemyCount = 81;
+	optional int32 RoundEnemyKillCount = 82;
+	optional int32 RoundEnemyHPMax = 83;
+	optional int32 RoundEnemyHPMin = 84;
+	optional int32 RoundEnemyHPTotal = 85;
+	optional int32 RoundEnemyReduceHPMax = 86;
+	optional int32 RoundEnemyReduceHPMin = 87;
+	optional int32 RoundEnemyReduceHPTotal = 88;
+	optional int32 RoundEnemyBeAttackCount = 89;
+	optional int32 RoundBossCount = 90;
+	optional int32 RoundBossKillCount = 91;
+	optional int32 RoundBossHPMax = 92;
+	optional int32 RoundBossHPMin = 93;
+	optional int32 RoundBossHPTotal = 94;
+	optional int32 RoundBossReduceHPMax = 95;
+	optional int32 RoundBossReduceHPMin = 96;
+	optional int32 RoundBossReduceHPTotal = 97;
+	optional int32 RoundBossBeAttackCount = 98;
+	optional int32 RoundBossPlanHp = 99;
+	optional int32 RoundBossKillTime = 100;
+	optional int32 RushBossKillCount = 101;
+	optional int32 RushPlanKillCount = 102;
+	optional int32 ComboMax = 103;
+	optional int32 ComboTotalCount = 104;
+	optional int32 ComboTotalScore = 105;
+	optional int32 ComboScoreMax = 106;
+	optional int32 ComboScoreMin = 107;
+	optional int32 StartFlyTime = 109;
+	optional int32 RoundFlyTimeTotal = 111;
+	optional int32 RoundDragonSkillCount = 114;
+	optional int32 RoundAttackItemCount = 118;
+	optional int32 RoundEatAttackItemCount = 119;
+	optional int32 RoundAddAtkCastMax = 120;
+	optional int32 RoundAddAtkCastMin = 121;
+	optional int32 RoundAddAtkCastTotal = 122;
+	optional int32 RoundRampageCount = 123;
+	optional int32 RoundRampageCastMax = 124;
+	optional int32 RoundRampageCastMin = 125;
+	optional int32 RoundRampageCastTotal = 126;
+	optional int32 RoundShieldCount = 127;
+	optional int32 RoundEatShieldCount = 128;
+	optional int32 RoundShieldCastMax = 129;
+	optional int32 RoundShieldCastMin = 130;
+	optional int32 RoundShieldCastTotal = 131;
+	optional int32 EnemyPlanScoreTotal = 132;
+	optional int32 EnemyPlanScoreMax = 133;
+	optional int32 EnemyPlanScoreMin = 134;
+	optional int32 BossScoreTotal = 135;
+	optional int32 BossScoreMax = 136;
+	optional int32 BossScoreMin = 137;
+	optional int32 YellowCrystalCount = 138;
+	optional int32 YellowCrystalEatCount = 139;
+	optional int32 LeftArea1BulletCount= 140;
+	optional int32 LeftArea2BulletCount= 141;
+	optional int32 LeftArea3BulletCount= 142;
+	optional int32 RightArea1BulletCount = 143;
+	optional int32 RightArea2BulletCount = 144;
+	optional int32 RightArea3BulletCount = 145;
+	optional int32 AboveArea1BulletCount= 146;
+	optional int32 AboveArea2BulletCount= 147;
+	optional int32 AboveArea3BulletCount= 148;
+	optional int32 BelowArea1BulletCount = 149;
+	optional int32 BelowArea2BulletCount = 150;
+	optional int32 BelowArea3BulletCount = 151;
+	optional int32 SpecialBulletCount1 = 152;
+	optional int32 SpecialBulletCount2 = 153;
+}
+
+message DataForCheck{
+	optional int32 minatk = 1;		//最小攻击
+	optional int32 maxatk = 2;		//最大攻击
+    optional float min_atk_speed = 3;	//最小攻速
+    optional float max_atk_speed = 4;	//最大攻速
+    optional int32 min_damage = 5;		//单发子弹最小伤害
+    optional int32 max_damage = 6;		//单发子弹最大伤害
+    optional int32 behits = 7;			//被击数
+    optional int32 invincible_time = 8;		//无敌时间
+    optional int32 injured = 9;		//掉血总量
+	repeated DropInBattle items = 10;		//战斗内道具掉落个数
+	repeated int32 sp_skillid = 11;		//sp技能的id
+	optional string use_skill_times = 12;		//sp技能使用时间点序列
+	repeated int32 create_hp = 13; //单关生成怪物的总血量
+	repeated int32 wave_list = 14; //无尽出怪波怪物monster_rule的id
+	optional int32 create_damage = 15;  //造成伤害总值
+	optional int32 hit_count = 16;		//命中目标次数
+	repeated DataForCheckMonster data_monster = 17;
+}
+message DataForCheckMonster{
+	optional int32 id = 1; //数据id
+	optional int32 kill_count =2;
+	optional int32 hp = 3;
+}
+
+message DataForCheckBoss{
+    optional int32 boss_damage = 1;	//boss阶段普攻总伤害
+	optional int32 score = 2;		//本关得分
+	optional int32 killtime = 3;	//击杀boss用时
+	repeated int32 skill = 4;		//技能使用list
+}
+
+
+//战斗结算 command 11703 AwardListResponse
+message AwardListRequest{
+	required bool result = 1;					//战斗结果(胜/负)
+	required int32 score = 2;					//评分
+	required int32 killboss = 3;				//杀死boss的数量
+	repeated ItemUseRecord uselist =4;			//道具使用列表
+	optional int32 relife = 5; 				    //复活次数
+	optional DataForGrade battledata = 6;			//数据统计for评级
+	optional int32 battle_time_elapsed = 7; 	//战斗耗时(s)
+	optional DataForCheck data_check = 8;	//战斗校验数据
+	repeated DataForCheckBoss data_check_boss = 9;	//boss战校验数据
+	optional int32 coin = 10;	//或得的货币(龙魂/金币)数量，用于活动关卡
+	required int32 covering_skill_times = 11;  //使用援护技能次数
+	optional int32 max_endlessid = 12;		//打完的最后一波id(无尽关卡)
+	repeated int32 endlessids = 13;		//达成的奖励波id
+	optional DataForSafeTlog data_for_safe_tlog = 14;	//安全tlog
+	optional int32 begin_rush = 15;	//入场冲刺波数
+	optional int32 dead_rush = 16;  //死亡冲刺波数
+	repeated Item food = 17;	//食物猎场迟到的食物列表
+}
+
+
+//扫荡 command 11704 AwardListResponse
+message AwardListResponse{
+	required int32 copyid = 1;
+	required int32 grade = 2;			//本次通关的评价（几星）
+	required int32 score = 6;					//评分
+	repeated AwardNode awardnodelist = 3;
+	repeated StageInfo nextcopy = 4;
+	optional StageInfo curstage = 5;		//当前关
+	optional int32 highestscore = 7; 	    //历史最高分
+	optional int32 highestrank = 8; 		//历史最高排名
+	optional int32 currentrank = 9; 		//当前排名
+}
+
+//复活 command 11705 None→ResultMessage
+
+//购买3s评价奖励  command 11706 ScorebuyRequest
+message ScorebuyRequest{
+	required int32 copyid = 1;			//关卡ID
+}
+
+message ScorebuyResponse{
+	repeated AwardNode awardnodelist = 1;
+	required StageInfo stage = 2;
+}
+
+//好友援护飞龙请求 command 11707
+message FriendDragonRequest{
+    required int64 friend_uid = 1;
+    required string friend_openid = 2;
+}
+message FriendDragonResponse{
+    required int64 friend_uid = 2;
+    required int32 dragon_id = 1;
+    required int32 dragon_stars = 3;
+    required int32 dragon_quality = 4;
+    required int32 dragon_level = 5;
+
+}
+
+//重置可打次数  command 11708 ResetAtkTimesRequest → ResetAtkTimesResponse
+message ResetAtkTimesRequest{
+	required int32 stage_id = 1;			//关卡ID
+}
+
+message ResetAtkTimesResponse{
+	required StageInfo stage = 1;
+}
+
+//试炼之地副本列表 command 11709 None → ResetAtkTimesResponse
+message ActivityStage{
+	required int32 activity_id = 1;		// 类型
+	repeated int32 stages = 2;		// 活动副本id
+	repeated int32 openday = 3;		// 开启时间(1-7代表星期1到星期日)
+	required int32 last_count = 4;		// 剩余可打次数
+	required int32 max_count = 5;		// 最大可打次数
+	optional bool open = 6;			//当前是否开启
+}
+
+message ActivityStageList{
+	repeated ActivityStage activity_stage = 1;
+}
+
+//试炼之地副本结算 command 11710 AwardListRequest → ActivityStageResponse
+message ActivityStageResponse{
+	required int32 stage_id = 1;
+	required int32 score = 2;					//评分
+	repeated AwardNode awardnodelist = 3;		//奖励列表
+}
+
+///////////////////////////////////////////////////////////////////////////关卡系统_tx
+//响应战前购买请求 command 11601 ResultMessage
+message PrewarBuyGoodsRequest{
+    required string props_id = 1;
+    required int32 props_amount = 2;
+}
+//响应飞龙阵型设置请求 command 11602 ResultMessage
+message SetDragonQueueRequest{
+    repeated int32 dragon_ids = 1;
+}
+
+
+///////////////////////////////////////////////////////////////////////////道具
+message Item{
+	required string itemid = 1;					//道具ID
+	required int32 num = 2;						//数量
+}
+
+
+//购买道具 command 52
+message BuyItemRequest{
+	required string itemid = 1;					//道具ID
+	optional int32 num = 2;						//购买数量
+}
+
+
+//道具列表 command 51 ItemListResponse
+message ItemListResponse{
+	repeated Item ownitemlist = 1;				//道具列表
+}
+
+
+///////////////////////////////////////////////////////////////////////////任务
+message TaskNode{
+	required int32 taskid = 1;					//任务id
+	required int32 tasktype = 5;
+	required bool isover =2;
+	required bool getaward =3;
+	required int32 times = 4;					//完成数量
+}
+
+
+//任务列表 command 12101 TaskListRequest -> TaskListResponse
+message TaskListRequest{
+	required int32 tasktype = 1;				//任务类型
+}
+
+message TaskListResponse{
+	repeated TaskNode tasklist = 1;				//任务列表
+}
+
+
+//任务领奖 command 12102 TaskAwardListResponse
+message TaskAwardRequest{
+	required int32 taskid = 1;					//任务id
+}
+message TaskAwardListResponse{
+	required int32 taskid = 1;
+	repeated AwardNode awardnodelist = 2;
+	repeated TaskNode nexttask = 3;
+}
+
+
+//推送 触发新任务 command 12103 TaskListResponse
+
+//日常任务刷新 command 12104 TaskFreshRequest > TaskFreshResponse
+message TaskFreshRequest{
+	required int32 taskid = 1;					//任务id
+}
+
+message TaskFreshResponse{
+	required int32 taskid = 1;				//任务id
+	required TaskNode task = 2;				//替代任务
+}
+
+//////////////////////////////////////////////////////////////////////////buff
+message BuffNode{
+	required int32 position = 1;
+	required int32 buffid = 2;
+}
+
+
+//获取buff列表 command 41 BuffListResponse
+message BuffListResponse{
+	repeated BuffNode bufflist = 1;
+}
+
+
+//购买buff command 42 BuyBuffResponse
+message BuyBuffRequest{
+	required int32 position = 1;
+}
+message BuyBuffResponse{
+	required int32 buffid = 1;
+}
+
+
+//////////////////////////////////////////////////////////////////////////抽奖
+//抽奖请求 command 81 LotteryResponse
+message LotteryRequest{
+	required int32 lotterytype = 1;				//1:单抽,10:十连抽
+}
+message LotteryResponse{
+	required int32 type =1;
+	repeated AwardNode itemlist =2;
+}
+
+
+//////////////////////////////////////////////////////////////////////////VIP
+//推送 command 131
+//请求 command 141 VipResponse
+message VipResponse{
+       required VipInfo vip=1;					//VIP信息
+}
+
+
+//////////////////////////////////////////////////////////////////////////邮箱
+message AttachmentNode{
+	required int32 letterid =1;
+	repeated AwardNode itemlist =2;
+}
+message Letter{
+	required int32 type =1;						//类型：公告,获赠,礼物
+	required int32 letterid =2;					//信件id
+	optional string icon =3;					//图片
+	optional string title =4;					//标题
+	optional string summary =5;					//摘要
+	required int32 sender =6;					//发信人
+	required int32 time = 7;					//截止时间
+	required bool isread = 8;					//是否阅读
+}
+
+//信件列表 command 91 LettersResponse
+message LettersResponse{
+	repeated Letter letters =1;
+}
+
+
+//信件正文 command 92 TextResponse
+message TextRequest{
+	required int32 letterid=1;
+}
+message TextResponse{
+	required int32 letterid = 1;
+	repeated string text=2;
+}
+
+
+//领取附件 command 93 AttachmentResponse
+message GetAttachmentRequest{
+	repeated int32 letterid = 1;
+}
+message AttachmentResponse{
+	repeated AttachmentNode attachmentlist =1;
+}
+
+
+//////////////////////////////////////////////////////////////////////////好友
+message Friend{
+	required string uid = 1;
+	required string nickname = 2;	//昵称
+	required int32 score = 3;		//无尽
+	required int32 dragonid = 5;
+	required int32 dragonlv = 6;	//龙等级
+	required int32 viplv = 7; 		// VIP等级
+	required bool isvitality = 8;	//是否已赠送体力
+	required bool isaccept = 9;		//是否接受体力
+}
+
+
+//好友列表 command 111
+//申请好友列表 command 112
+//接受好友 command 116
+message FriendsResponse{
+	repeated Friend friends =1;
+}
+message FriendReturnList{
+	repeated string fuids = 1;
+}
+//发送体力 command 113
+//添加好友 command 114
+//删除好友 command 115
+//接受好友 command 116
+//拒绝好友 command 117 ResultMessage
+message FriendsRequest{
+	repeated string fuid = 1;
+}
+
+
+//全服排行榜 command 119 RankResponse
+message Rank{
+	required string uid = 1;
+	required int32 rank = 2;		//名次
+	required int32 score = 3;		//无尽
+	required string username = 4;	//用户名
+}
+message RankResponse{
+	repeated Rank rank = 1;
+}
+
+
+//新手引导 command 131 SetNewbieResponse
+message SetNewbieRequest{
+	required int32 newbieid = 1;
+}
+message SetNewbieResponse{
+	required int32 newbieid = 1;
+	repeated AwardNode awardnodelist = 2;
+}
+
+
+///////////////////////////////////////////////////////////////////////////活动
+//请求活动列表 command 301 ActList
+message ActListRequest{
+}
+message ActList{
+	required int32 actid = 1;			//活动id
+	required int32 rate = 2;			//活动进度
+}
+
+
+//活动列表返回 ActListResponse
+message ActListResponse{
+	repeated ActList acts = 1;			//活动列表
+}
+
+
+//活动状态变化推送 command 303 ActListStatus
+message ActListStatus{
+	repeated ActList acts = 1;			//活动列表
+}
+
+
+//领取活动奖励 command 302 DrawActResponse
+message DrawActReuest{
+	required int32 actid = 1;			//活动id
+}
+message DrawActResponse{
+	required int32 actid = 1;			//活动id
+	repeated AwardNode awards = 2;		//活动奖励列表
+}
+
+
+///////////////////////////////////////////////////////////////////////////充值
+//账单生成 OrderGetResponse
+message OrderGetReuest{
+	required string productcode = 1;	//商品代码
+	optional int32 productcount = 2;	//购买数量
+}
+message OrderGetResponse{
+	required string OrderId = 1;		//订单id
+	required double price = 2;			//价格
+	required string uid =3;				//游戏服的UID
+	optional int32 serverid = 4;		//分区id
+	optional string productcode = 5;	//商品代码
+	optional int32 productcount = 6;	//购买数量
+}
+
+
+//支付账单提交 command 63 OrderResponse
+message OrderRequest{
+	required string OrderId = 1;
+}
+message OrderResponse{
+	required string OrderId = 1;
+	required int32 result = 2;		    //1:交易完成，0：交易等待，-1：发生错误
+	optional MoneyNode diamond = 3;
+}
+
+
+///////////////////////////////////////////////////////////////////////////激活
+//激活游戏 command 302 ResultMessage
+message ActivateRequest{
+	optional string ipaddr = 1;
+	optional string ifa = 2;		    //1:交易完成，0：交易等待，-1：发生错误
+	optional string mac = 3;
+}
+
+///////////////////////////////////////////////////////////////////////////签到
+//获取签到状态 command 11101 SignStatusResponse
+message SignStatusResponse{
+	optional int32 already_sign_days = 1;       //本月已签到天数
+	optional int32 is_sign = 2;                 //今日是否已签
+	optional int32 surplus_times = 3;           //本月剩余补签次数
+	repeated ContinuousStatus draw_info = 4;	//连续签到奖励领取状态信息
+	required int32 continuous_sign_days = 5;    //连续签到天数
+}
+message ContinuousStatus{
+    required int32 num = 1;         //目标天数 7为连续7天
+    required int32 draw_status = 2; //领取状态 0 未达成 1 未领取 2 已领取
+}
+
+
+//签到or补签 command 11102
+message SignInRequest{
+	required int32 stype = 1;   //签到类型 1签到 2补签
+}
+message SignInResponse{
+	required int32 already_sign_days = 1;    //本月已签次数
+	repeated AwardNode awards = 2;           //奖励列表
+	required int32 stype = 3;                //签到类型 1签到 2补签
+	required int32 continuous_sign_days = 4; //连续签到天数
+}
+
+//领取连续签到奖励 command 11103
+message DrawSigninAwardReuest{
+	required int32 num = 1;		//目标天数 7为连续7天
+}
+message DrawSigninAwardResponse{
+	required int32 num = 1;		    //目标天数 7为连续7天
+	repeated AwardNode awards = 2;	//活动奖励列表
+}
+
+///////////////////////////////////////////////////////////////////////////军团_for_tx
+//军团外部信息
+message CorpsInfo{
+    required string corps_id = 1;   //军团ID
+    required string corps_name = 2; //军团名称
+    optional string corps_icon = 3; //军团图标
+    optional int32 max_people = 4;  //最大人数
+    optional int32 now_people = 5;  //军团人数
+    optional int32 limit_level = 6; //入团等级
+    optional string caption = 7;    //军团说明
+    required bool is_apply= 8;      //是否已经申请
+}
+//军团成员信息
+message CorpsPeopleInfo{
+    required int64 uid = 1;         //uid
+    optional string nickname = 2;   //昵称
+    optional int32 level = 3;       //等级
+    optional int32 devote = 4;      //贡献度
+    optional int32 grade = 5;       //军团职位
+}
+//军团日志信息
+message CorpsLogInfo{
+    required int32 int_time = 1;    //时间
+    optional int32 str_text = 2;    //内容
+
+}
+
+//获取军团列表 command 11901 CorpsListResponse
+message CorpsListResponse{
+    repeated CorpsInfo corps = 1;
+}
+
+
+//加入军团请求 command 11902 CorpsListResponse
+message CorpsApplyRequest{
+    required string corps_id = 1;
+}
+
+
+//创建军团请求 command 11903 ResultMessage
+message CreateCorpsRequest{
+    required string corps_name = 1;         //军团名称
+    optional string corps_icon = 2;         //军团图标
+    //optional string caption = 5;          //军团说明
+}
+
+
+//查找军团请求 command 11904 CorpsListResponse
+message SearchCorpsRequest{
+    required string corps_id = 1;           //军团ID
+}
+
+
+//获取所在军团信息 command 11905 CorpsResponse
+//message CorpsRequest{
+//    required string corps_id = 1;           //军团ID
+//}
+message CorpsResponse{
+    optional string corps_id = 1;           //军团ID
+    optional string corps_name = 2;         //军团名称
+    optional string corps_icon = 3;         //军团图标
+    optional int32 now_people = 4;          //军团人数
+    optional int32 max_people = 5;          //军团上线
+    optional int32 corps_level = 6;         //军团等级
+    optional int32 corps_exp = 7;           //军团经验
+    optional int32 open_type = 8;         //1.需要验证才可以加入; 2.不需要验证加入; 3.不可以加入; 4.等级限制;
+    optional int32 limit_level = 9;       //限制等级
+    optional string caption = 10;            //军团说明
+    repeated CorpsPeopleInfo people = 11;    //军团成员
+    repeated CorpsLogInfo log = 12;         //军团日志
+}
+
+
+//退出军团请求 command 11906 ResultMessage
+
+
+//军团管理操作请求 command 11907 ResultMessage
+message CorpsManageRequest{
+    required int32 kind = 1;    //1.允许; 2.忽略; 3.军团转让; 4.成员提升; 5.成员降级; 6.移除成员;
+    repeated int64 fuid = 2;
+}
+
+//修改军团信息请求 command 11908 ResultMessage
+message CorpsOperateRequest{
+    required string corps_id = 1;           //军团ID
+    required string corps_name = 2;         //军团名称
+    optional string corps_icon = 3;         //军团图标
+    required int32 open_type = 4;           //1.需要验证才可以加入 2.不需要验证加入 3.不可以加入 4.等级限制
+    optional int32 limit_level = 5;         //限制等级
+    optional string caption = 6;            //军团说明
+}
+
+//解散军团请求 command 11909 ResultMessage
+
+
+
+///////////////////////////////////////////////////////////////////////////商城系统_for_tx
+//商城列表
+message ShopGoodsInfo{
+	required int32 goods_id = 1;			//商品序号
+	optional int32 last_count = 2;			//购买剩余次数
+	optional bool is_recommend= 3;			//是否推荐
+	optional bool is_bargain= 4;			//是否特价
+	optional int32 cost_type = 5;			//花费的类型
+	optional int32 cost_id = 6;			    //花费的id
+	optional int32 cost_val= 7;			    //商品价格
+}
+
+
+//获取非熔炼商店列表 command 12001 None→ShopGoodsResponse
+//获取熔炼商店列表 command 12002 None→ShopGoodsResponse，跨0点刷新
+//刷新熔炼商店列表 command 12003 RefreshRequest→ShopGoodsResponse
+message RefreshRequest{
+	required bool free = 1;		//True:免费刷;False:付费刷
+	required int32 smelt_shop = 2;	//1.低级熔炼商店, 2.高级熔炼商店
+}
+
+message SmeltShopRequest{
+	required int32 smelt_shop = 1;	//1:低级熔炼商店, 2.高级熔炼商店
+}
+
+message ShopGoodsResponse{
+	repeated ShopGoodsInfo goods_list = 1;
+	optional int32 free_fresh = 2;	//已免费刷新次数
+	optional int32 pay_fresh = 3;	//已付费刷新次数
+}
+
+
+//购买商品请求 command 12004 OperateBuyRequest→BuyAwardList
+//抽奖请求 command 12005 OperateBuyRequest→BuyAwardList
+message OperateBuyRequest{
+	required int32 id = 1;
+	required int32 count = 2;	//购买数量
+}
+
+
+//奖励物品
+message BuyAwardList{
+	repeated AwardNode awards= 1;		//购买获得的物品
+	repeated ShopGoodsInfo goods_list = 2; 	//此商品的刷新信息
+}
+
+/////////////////////////////////////////////////////////////////////////新商城系统
+message RandGoodsInfo{
+	required int32 unid = 1;				//商品唯一编号
+	required int32 goods_id = 2;			//商品序号
+	optional int32 last_count = 3;			//购买剩余次数
+}
+
+//6格常驻商店列表 command 12007 none→RandGoodsResponse
+//刷新6rand商品请求 command 12008 none → RandGoodsResponse
+message RandGoodsResponse{
+	repeated RandGoodsInfo goods_list = 1;
+	optional int32 pay_fresh = 2;	//已付费刷新次数
+}
+
+//购买商品请求 command 12009 OperateBuyRequest → BuyRandGoodsList
+message BuyRandGoodsList{
+	repeated AwardNode awards= 1;		//购买获得的物品
+	repeated RandGoodsInfo goods_list = 2; 	//此商品的刷新信息
+}
+
+
+//////////////////////////////////////////////////////////////////////限时商店
+message TimeLimitGoods{
+	required int32 unid = 1;				//商品唯一编号
+	required int32 goods_id = 2;			//商品代码
+	required int32 starttime = 3;			//开启时间
+	required int32 endtime = 4;				//关闭时间
+	optional int32 last_count = 5;			//购买剩余次数
+}
+//限时商店列表 command 12010 none → TimeLimitGoodsResponse
+message TimeLimitGoodsResponse{
+	repeated TimeLimitGoods goodslist=1;
+}
+
+//购买限时商品 command 12011 OperateBuyRequest → TimeLimitBuyResponse
+message TimeLimitBuyResponse{
+	repeated AwardNode awards= 1;		//购买获得的物品
+	optional TimeLimitGoods goodslist=2;
+}
+
+///////////////////////////////////////////////////////////////////////魔法商店
+message MagicGoods{
+	required int32 unid = 1;				//商品唯一编号
+	required int32 goods_id = 2;			//商品代码
+	required int32 usedtimes = 3;			//已购买次数
+	required int32 maxtimes = 4;			//当前vip最高购买次数
+	optional bool special = 5;				//是否特殊物品(True为特殊， False/None为不特殊)
+}
+
+//魔法商店列表 command 12012 none → MagicGoodsResponse
+message MagicGoodsResponse{
+	repeated MagicGoods goodslist=1;
+}
+
+//购买魔法商店物品 command 12013 OperateBuyRequest → MagicBuyResponse
+message MagicBuyResponse{
+	repeated AwardNode awards= 1;		//购买获得的物品
+	required MagicGoods goodsbuy = 2; 	//此商品的刷新信息
+}
+
+
+//购买魔法商店物品 command 12014 BattleWishRequest -> BattleWishResponse
+message BattleWishRequest{
+	required int32 o_type = 1; 	//操作战斗祝福, 0.查询，1.刷新
+}
+
+message BattleWishResponse{
+	required int32 buff_id = 1; 	//战斗祝福的buffid(独立于圣光&兴奋剂)
+}
+
+///////////////////////////////////////////////////////////////////////////邮件系统_for_tx
+message ItemInfo{
+    required int32 item_type = 1;                   //类型
+    required int32 item_id = 2;                     //id
+    required int32 item_amount = 3;                 //数量
+}
+
+message MailInfo{
+    required string uuid = 1;                       //邮件id
+    optional string title = 2;                      //标题
+    optional string text = 3;                       //正文
+    optional string from_name = 4;                  //发送人
+    optional string send_time = 5;                  //发送时间(20150101)
+	repeated ItemInfo items = 6;					//奖励物品
+	optional bool is_read = 7;					    //是否读取
+	optional int32 mail_id = 8;					    //邮件id
+	optional int32 create_time = 9;					//时间戳
+}
+
+//获取信件列表 command 12201 MailsResponse
+message MailsResponse{
+	repeated MailInfo sys_mails = 1;                //系统邮件
+	repeated MailInfo friend_mails = 2;             //好友邮件
+	optional int32 physical_times = 3;              //可领取好友体力次数
+}
+
+
+//领取奖励请求 command 12202 ReadResponse
+message ReadRequest{
+	required int32 kind = 1;	//1.一键领取系统奖励 2.一键领取好友赠送 3.单个领取物品 4.单个阅读邮件
+	optional string uuid = 2;
+}
+message ReadResponse{
+	repeated AwardNode awards = 1;
+}
+
+//推送新信件列表 command 12203 MailsResponse
+
+
+///////////////////////////////////////////////////////////////////////////排行榜
+////获取排行信息 command 12301 GetRankingResponse
+message GetRankingRequest{
+    required int32 rtype = 1;      //排行榜类型 1角色战力 2飞龙战力 3飞龙星级 4无尽分数 5关卡星级
+}
+message GetRankingResponse{
+    required int32 rtype = 1;      //排行榜类型 1角色战力 2飞龙战力 3飞龙星级 4无尽分数 5关卡星级
+    optional RankingInfo myrankinfo = 2;       //我的排名
+    repeated RankingInfo worldrankinfo = 3;    //世界排名
+}
+message RankingInfo{
+	required int32 rank = 1;         //排名
+	required int32 roleid = 2;       //勇者id
+	required string nickname = 3;    //昵称
+	required int32 level = 4;        //等级
+	required int32 score = 5;        //排行分数
+	optional int32 yrank = 6;        //昨日排名
+	optional int64 uid = 7;          //uid
+	required int32 qq_vip = 8;       //QQ会员信息 0非会员 1会员 16超级会员
+	required int32 vip_level = 9;    //vip等级
+}
+
+///////////////////////////////////////////////////////////////////////////宠物系统_tx
+//宠物的基本信息
+message PetNode{
+	required int64 unid = 1;			// 唯一id
+	required int32 petid = 2;			//宠物id
+    required int32 quality = 3;			//当前品阶
+	required int32 maxqua = 4;			//最高品阶
+    required int32 level = 5;			//当前等级
+	required int32 exp = 6;				// 经验值
+	optional int32 pos = 7;				// 上阵位置
+	optional int32 skill_level = 8;		//技能等级
+}
+
+
+//获取当前已有的宠物列表 command 12401 None -> PetListResponse(所有宠物)
+message PetListResponse{
+	repeated PetNode pets = 1;
+}
+
+//宠物升级/宠物进阶 command 12403 PetOperateRequest-> PetOperateResponse
+message PetOperateRequest{
+	required int32 type = 1;	// 1.升级， 2.进阶
+	required int64 decid = 2;	//要操作的宠物唯一id
+	repeated int64 srcid = 3;	//进阶材料宠的唯一id list
+	optional int32 cardid = 4;	//道具id
+	optional int32 count = 5;	//道具数量
+}
+message PetOperateResponse{
+	required PetNode pet = 1;	//操作完成宠物属性
+	repeated int64 srcid = 2;	//进阶材料宠的唯一id list
+	optional int32 cardid = 3;	//道具id
+	optional int32 count = 4;	//道具数量
+}
+
+
+//宠物上阵 command 12404 PetPosRequest> PetListResponse(上阵宠物)
+message PetPosRequest{
+	required int64 decid = 1;	//要上阵的宠物唯一id
+	required int32 pos = 2;		//上阵位置(0:下阵, 1:左上阵, 2:右上阵)
+}
+
+//宠物技能升级 command 12405 PetSkillRequest> PetListResponse(升级后的宠物信息)
+message PetSkillRequest{
+	required int64 decid = 1;	//要升级技能的宠物唯一id
+	required int64 skill_id = 2;	//要升级技能的id
+	required int32 level = 3;		//要升到的目标等级
+}
+
+//宠物合成 command 12406 PetCompoundRequest> PetCompoundResponse(合成结果信息)
+message PetCompoundRequest{
+	repeated int64 srcid = 1;	//材料宠的唯一id list
+}
+message PetCompoundResponse{
+    required int32 compound_result = 1;   //合成结果 1失败 2小成功 3大成功
+	repeated AwardNode res_info =2; //合成结果信息
+}
+///////////////////////////////////////////////////////////////////////////祈愿_tx
+message SupplicationInfo{
+    required int32 stype = 1; //祈愿类型
+    required int32 surplus_times = 2; //剩余次数 -1为无次数限制
+    required int32 cd_time = 3; //cd时间(秒)
+}
+
+
+//获取祈愿信息 command 12311 GetSupplicationInfoResponse
+message GetSupplicationInfoResponse{
+	repeated SupplicationInfo supplication_info = 1; //祈愿信息
+}
+
+
+
+//进行祈愿 command 12312 SupplicationResponse
+message SupplicationRequest{
+	required int32 stype = 1; //祈愿类型
+}
+message SupplicationResponse{
+	required int32 stype =1; //祈愿类型
+	repeated AwardNode itemlist =2; //奖品列表
+	repeated AwardNode mustitem =3; //必得物品
+	optional int32 surplus_times = 4;//剩余时间
+	optional int32 cd_time = 5;//cd时间
+}
+
+
+///////////////////////////////////////////////////////////////////////////好友_tx
+message FriendDragonInfo{
+     required int32 id = 1;			        //飞龙id
+     required int32 stars = 2; 		        //星级（亲密度）
+     required int32 quality = 3;	        //品阶
+     required int32 level = 4;		        //飞龙等级
+     repeated BattleAttr dragon_battle_attr = 5;   //飞龙界面战斗属性
+}
+message BattleAttr{
+    required int32 attr_id = 1;             //属性id 1攻 2血 3防 4暴
+    required int32 attr_val = 2;            //属性值
+}
+
+
+//更改是否接受好友赠送体力状态 command 12321 ChangeIsAcceptResponse
+message ChangeIsAcceptResponse{
+	required int32 status = 1; //当前状态 0不接受 1接受
+}
+
+
+//赠送好友体力 command 12322 SendPhysicalResponse
+message SendPhysicalRequest{
+	required int64 friend_uid = 1; //好友uid
+    required string openid = 2; //好友openid
+}
+message SendPhysicalResponse{
+	required int64 friend_uid = 1; //好友uid
+	required string openid = 2; //好友openid
+}
+
+
+//查询好友详细数据 command 12323 GetFriendInfoResponse
+message GetFriendInfoRequest{
+	required int64 friend_uid = 1; //目标uid
+	required int32 ftype = 2;      //查询类型 1 好友排行（即时） 2 本区排行（入榜时）
+}
+message GetFriendInfoResponse{
+    required int32 role_id = 1; //游戏角色id
+	repeated EquipBaseInfo_tx equip_info = 2; //装备信息
+	repeated BattleAttr role_battle_attr = 3;   //勇者界面战斗属性
+	repeated FriendDragonInfo dragon_info = 4; //飞龙信息
+	repeated CurrentStage current_stage = 5;//关卡进度
+	required int64 friend_uid = 6;//好友uid
+//	required int32 farthest = 7; //无尽模式最远飞行距离
+}
+
+
+// 99901:上报安全SDK数据到TSS
+message AntiRecvData{
+    required string anti_data = 1;
+    optional int32 anti_data_len = 2;
+}
+
+// 99902:下发安全SDK数据到客户端
+message AntiSendData{
+    required string anti_data = 1;
+    optional int32 anti_data_len = 2;
+}
+
+
+//SNS（通知服务器客户端的操作（分享/邀请好友）） command 12331 SnsResponse
+message SnsRequest{
+	required int32 sns_type = 1; //sns类型 1分享 2邀请
+	required int32 sns_id = 2; //snsid(目前只有分享有值) 0无 1排行 2飞龙升星 3宠物抽奖 4抽奖 5无尽结算 6战斗结算 7解锁飞龙 8超越好友 9送完体力后的告诉他
+}
+message SnsResponse{
+	required int32 sns_type = 1; //sns类型 1分享 2邀请
+}
+
+///////////////////////////////////////////////////////////////////////////VIP_tx
+
+//获取vip信息 command 12341 GetVipInfoResponse
+message GetVipInfoResponse{
+	required int32 vip_exp = 1; //当前vip经验
+	repeated AwardDrawInfo draw_info = 2; //奖励领取信息
+}
+message AwardDrawInfo{
+    required int32 vip_level = 1; //vip等级
+    required int32 draw_status = 2; //奖励领取状态 0 未达成 1 未领取 2 已领取
+}
+
+//获取账户（魔钻）余额 command 12342 GetBalanceResponse
+message GetBalanceResponse{
+    required int32 vip_exp = 1;           //当前vip经验
+}
+
+//是否可以购买月卡 command 12343 IsBuyResponse
+message IsBuyResponse{
+    required int32 is_buy = 1;           //是否可以购买月卡 0 不可以 1 可以
+}
+
+// 领取vip等级奖励 command 12344 GetVipAwardResponse
+message GetVipAwardRequest{
+	required int32 vip_level = 1; //礼包对应的vip等级
+}
+message GetVipAwardResponse{
+	repeated AwardNode itemlist = 1; //奖品列表
+}
+
+//获取充值界面信息 command 12345 GetRechargeInfoResponse
+message GetRechargeInfoResponse{
+	repeated FirstRechargeInfo first_recharge_info =1; //首冲信息
+}
+message FirstRechargeInfo{
+    required int32 recharge_id = 1; //充值档次id
+    required int32 is_first = 2; //是否还有首冲奖励  0 没有 1 有
+}
+
+
+///////////////////////////////////////////////////////////////////////////活动
+message ActivityNode{
+	required int32 view_id = 1;//标签展示
+    required int32 activity_id = 2;//活动id
+    required int32 state = 3;//0.未完成1.可领取2.已领取3.已失效
+	required int32 count = 4;//当前进度
+	required int32 total = 5;//目标进度
+    required string awards_config = 6;//奖励展示
+}
+
+
+//请求活动列表 command 12501 ActivityListResponse
+message ActivityListResponse{
+	repeated ActivityNode activity_list = 1;
+
+}
+
+//请求活动领奖 command 12502 ActivityAwardListResponse
+message ActivityAwardListRequest{
+	required int32 activity_id = 1;
+	optional int32 total = 2;
+}
+message ActivityAwardListResponse{
+	required int32 activity_id = 1;
+	repeated AwardNode awards = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////QQ会员
+//通知服务器玩家开通/续费QQ会员 12601
+message BuyQQVIPResponse{
+	required int32 qq_vip = 1;                 //QQ会员信息 0非会员 1会员 16超级会员
+	required int32 qq_vip_end = 2;             //QQ会员期限，标准时间戳
+}

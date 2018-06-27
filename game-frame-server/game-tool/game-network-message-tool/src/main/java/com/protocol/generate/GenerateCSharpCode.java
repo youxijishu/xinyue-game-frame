@@ -10,14 +10,13 @@ import com.protocol.generate.common.BuilderProtobufFile;
 import com.protocol.generate.common.ReadProtocolConfigFile;
 import com.protocol.generate.csharps.BuildCSharpStructs;
 import com.protocol.generate.csharps.BuildCsharpCommand;
-import com.protocol.generate.csharps.BuildCsharpCommandFactory;
 import com.protocol.generate.csharps.BuilderCSharpProtobufFile;
 import com.protocol.generate.model.ProtocolObject;
 
 public class GenerateCSharpCode {
 	public static void main(String[] args) {
 		int i = 0;
-		String outPath = args[i++];
+		String outPath = "config/Csharp";
 		File fileDir = new File("config/proto_config");
 		File[] configfile = fileDir.listFiles();
 		ReadProtocolConfigFile readProtocolConfigFile = new ReadProtocolConfigFile();
@@ -31,9 +30,9 @@ public class GenerateCSharpCode {
 				ProtocolObject protocolObject = readProtocolConfigFile.readFile(file);
 				protocolObjects.add(protocolObject);
 				//清空旧的数据
-				commandDirPath = outPath + "/" + protocolObject.getPackageName().replace(".", "/");
-				File dir = new File(commandDirPath);
-				deleteDir(dir);
+				commandDirPath = outPath;
+				//File dir = new File(commandDirPath);
+				//deleteDir(dir);
 				String fileName = file.getName().substring(0, file.getName().length() - 4);
 				protocolObject.setFileName(fileName);
 				BuilderProtobufFile.build(protocolObject);
@@ -47,7 +46,7 @@ public class GenerateCSharpCode {
 				e.printStackTrace();
 			}
 		}
-		BuildCsharpCommandFactory.build(protocolObjects, commandDirPath);
+		//BuildCsharpCommandFactory.build(protocolObjects, commandDirPath);
 		
 	}
 
