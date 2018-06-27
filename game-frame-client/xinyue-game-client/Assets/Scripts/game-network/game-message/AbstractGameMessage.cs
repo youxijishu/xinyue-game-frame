@@ -13,7 +13,7 @@ namespace Assets.Scripts.game_network.game_message
         public AbstractGameMessage()
         {
             
-           messageHeader =ReadGameMessageMeta();
+           messageHeader =ReadGameMessageMeta(this.GetType());
             int serverType = (int)this.messageHeader.ServerType;
             int messageId = this.messageHeader.MessageId;
             this.messageUniqueId = CreateGameMessageUniqueId(serverType,messageId);
