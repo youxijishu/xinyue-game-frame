@@ -19,14 +19,14 @@ public class BuildCsharpCommand {
 	public static void build(ProtocolObject protocolObject, String commandPath) {
 		Collection<CommandObject> commandObjects = protocolObject.getCommandObjectMap().values();
 		for (CommandObject commandObject : commandObjects) {
-			buildCommand(protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
+			buildCommand(protocolObject.getServerType(),protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
 					commandObject.getRequestList(), commandPath, true);
-			buildCommand(protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
+			buildCommand(protocolObject.getServerType(),protocolObject.getFileName(), protocolObject.getPackageName(), commandObject,
 					commandObject.getResponseList(), commandPath, false);
 		}
 	}
 
-	private static void buildCommand(String fileName, String packageName, CommandObject commandObject,
+	private static void buildCommand(String serverType,String fileName, String packageName, CommandObject commandObject,
 			List<FieldObject> fieldObjects, String commandPath, boolean request) {
 		Map<String, Object> root = new HashMap<>();
 		List<String> imports = new ArrayList<>();
@@ -44,13 +44,16 @@ public class BuildCsharpCommand {
 				fieldObject.setBasicType(1);
 			}
 		}
+		root.put("serverType", serverType);
 		root.put("imports", imports);
 		root.put("namespace", packageName);
 		String className = StringUtil.firstToUpper(commandObject.getCommandName());
 		if (request) {
 			className += ObjectConstans.Request;
+			root.put("messageType", "EnumMessageType.REQUEST");
 		} else {
 			className += ObjectConstans.Response;
+			root.put("messageType", "EnumMessageType.RESPONSE");
 		}
 		root.put("className", className);
 

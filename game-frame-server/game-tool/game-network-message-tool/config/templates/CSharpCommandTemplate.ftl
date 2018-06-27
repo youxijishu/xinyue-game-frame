@@ -1,4 +1,4 @@
-using Assets.Scripts.NewNetWork.Command;
+using Assets.Scripts.game_network.game_message;
 using ProtoBuf;
 using System.IO;
 <#list imports as ns>
@@ -7,18 +7,18 @@ using ${ns};
 using ${namespace}.proto;
 
 //河南心悦网络科技有限公司   王广帅
-namespace ${namespace}
+namespace Assets.Scripts.game_network.game_message_impl
 {
-	public class ${className} : AbstractCommand
+	[GameMessageMeta(${id?c},${messageType},EnumServerType.${serverType})]
+	public class ${className} : AbstractGameMessage
 	{
 	
-		public const int commandId = ${id?c};
 		<#list fields as field>
 		// ${field.desc}
 		<#if field.arrayType == 1>
-		private List<${field.csharpType}> _${field.name};
+		public List<${field.csharpType}> ${field.name};
 		<#else>
-		private ${field.csharpType} _${field.name};
+		public ${field.csharpType} ${field.name};
 		</#if>
 		</#list>
 		
@@ -29,43 +29,12 @@ namespace ${namespace}
 		<#if (fields?size > 0)>
 		public ${className}(<#list fields as field><#if field.arrayType == 1>List<${field.csharpType}> ${field.name}<#else>${field.csharpType} ${field.name}</#if><#sep>, </#list>){
 		<#list fields as field>
-		this.${field.name } = ${field.name};		
+			this.${field.name } = ${field.name};		
 		</#list>
 		}
 		</#if>
 		
-		<#list fields as field>
-		
-		<#if field.arrayType == 1>
-		public List<${field.csharpType}> ${field.name}
-		{
-			get
-			{
-				return _${field.name};
-			}
-			
-			set
-			{
-				_${field.name} = value;
-			}
-		}
-		<#else>
-		public ${field.csharpType} ${field.name}
-		{
-			get
-			{
-				return _${field.name};
-			}
-			
-			set
-			{
-				_${field.name} = value;
-			}
-		}
-		</#if>
-		</#list>
-		
-		protected override IExtensible GetGenerateMessage()
+		public override byte[] EncodeBody()
 		{
 			
 			<#if (fields? size == 0)>
@@ -92,11 +61,15 @@ namespace ${namespace}
 			</#if>
 			</#if>
 			</#list>
-			return entity;
+			 MemoryStream ms = new MemoryStream();
+			 using(ms){
+             	Serializer.Serialize(ms, entity);
+             	return ms.ToArray();
+             }
 			</#if>
 		}
 	
-		protected override void ParseFromBytes(byte[] bytes)
+		public override void DecodeBody(byte[] bytes)
 		{
 			<#if (fields?size > 0)>
 			
@@ -130,10 +103,6 @@ namespace ${namespace}
 				</#list>
 			}
 			</#if>
-		}
-		public override int GetCommandId()
-		{
-			return commandId;
 		}
 	}
 }

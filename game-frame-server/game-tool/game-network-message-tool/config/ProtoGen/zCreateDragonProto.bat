@@ -1,0 +1,1 @@
+protogen -i:dragon.proto -o:dragon.cs
