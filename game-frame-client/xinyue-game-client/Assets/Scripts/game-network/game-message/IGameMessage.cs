@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Scripts.game_network.game_message
 {
-   interface IGameMessage
+  public interface IGameMessage
     {
         int GetMessageUniqueId();
         GameMessageHeader GetMessageHeader();

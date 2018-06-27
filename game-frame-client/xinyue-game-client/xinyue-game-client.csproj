@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2017.3.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -287,20 +285,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\game-boot\GameBoot.cs" />
     <Compile Include="Assets\Scripts\game-common\DateUtil.cs" />
     <Compile Include="Assets\Scripts\game-common\StringUtil.cs" />
     <Compile Include="Assets\Scripts\game-network\ByteBuf.cs" />
-    <Compile Include="Assets\Scripts\game-network\game-message-impl\ConnectConfirmRequest.cs" />
-    <Compile Include="Assets\Scripts\game-network\game-message-impl\EnumServerType.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\AbstractGameMessage.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\EnumMessageType.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\GameMessageCodecFactory.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\GameMessageHeader.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\GameMessageMeta.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\IGameMessage.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\ConnectConfirmRequest.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\ConnectConfirmResponse.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\EnumServerType.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\proto\UserModule.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\SignRequest.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\SignResponse.cs" />
     <Compile Include="Assets\Scripts\game-network\GameNetworkClient.cs" />
     <Compile Include="Assets\Scripts\game-network\GameSocket.cs" />
     <Compile Include="Assets\Scripts\game-network\GameSocketState.cs" />
+    <Compile Include="Assets\Scripts\game-network-frame\GameNetworkClient.cs" />
     <Compile Include="Assets\Scripts\Thirdparty\Protobuf\BclHelpers.cs" />
     <Compile Include="Assets\Scripts\Thirdparty\Protobuf\BufferExtension.cs" />
     <Compile Include="Assets\Scripts\Thirdparty\Protobuf\BufferPool.cs" />

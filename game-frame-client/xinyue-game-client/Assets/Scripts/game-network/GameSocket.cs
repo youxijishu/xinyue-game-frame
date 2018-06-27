@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace Assets.Scripts.game_network
 {
-    delegate void GameSocketSateChange(GameSocket gameSocket,GameSocketState nowState);
-    delegate void ReceiveMessage(ByteBuf buf);
+  public  delegate void GameSocketSateChange(GameSocket gameSocket,GameSocketState nowState);
+  public  delegate void ReceiveMessage(ByteBuf buf);
 
-    class GameSocket
+   public class GameSocket
     {
         public event GameSocketSateChange GameSocketStateChangeEvent;
         public event ReceiveMessage ReceiveMessageEvent;

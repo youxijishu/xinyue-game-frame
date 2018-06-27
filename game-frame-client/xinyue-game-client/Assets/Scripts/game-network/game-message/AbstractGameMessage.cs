@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Scripts.game_network.game_message
 {
-    abstract class AbstractGameMessage : IGameMessage
+   public abstract class AbstractGameMessage : IGameMessage
     {
         private GameMessageHeader messageHeader;
         private int messageUniqueId;
@@ -25,7 +25,7 @@ namespace Assets.Scripts.game_network.game_message
         public static  GameMessageHeader ReadGameMessageMeta(Type objType)
         {
             GameMessageHeader  messageHeader = new GameMessageHeader();
-            GameMessageMeta gameMessageMeta = (GameMessageMeta)objType.GetCustomAttributes(typeof(GameMessageMeta), false).FirstOrDefault();
+            GameMessageMeta gameMessageMeta = (GameMessageMeta)(objType.GetCustomAttributes(typeof(GameMessageMeta), false).FirstOrDefault());
             messageHeader.MessageId = gameMessageMeta.MessageId;
             messageHeader.ServerType = gameMessageMeta.ServerType;
             return messageHeader;

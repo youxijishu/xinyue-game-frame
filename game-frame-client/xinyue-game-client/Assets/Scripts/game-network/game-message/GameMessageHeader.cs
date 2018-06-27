@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Assets.Scripts.game_network.game_message
 {
-    class GameMessageHeader
+  public class GameMessageHeader
     {
         private short messageId;
         private int seqId;
