@@ -46,6 +46,11 @@ public class GameNetworkClient {
         gameSocket.ReceiveMessageEvent += ReceiveGameMessage;
     }
 
+    public void CloseSocket()
+    {
+        this.gameSocket.Close();
+    }
+
     public void SendGameMessage(IGameMessage gameMessage)
     {
       

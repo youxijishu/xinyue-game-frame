@@ -118,12 +118,12 @@ namespace Assets.Scripts.game_network
             {
                 throw new ArgumentException("minWriteableBytes 不能小于0");
             }
-            int newCapacity = this.writerIndex + minWriteableBytes;
-            if (newCapacity <= WriteableBytes())
+          
+            if (minWriteableBytes <= WriteableBytes())
             {
                 return;
             }
-           
+            int newCapacity = this.writerIndex + minWriteableBytes;
             //如果新的buf大小大于4M，则直接增加4M
             if(newCapacity > CALCULATE_THRESHOLD)
             {
