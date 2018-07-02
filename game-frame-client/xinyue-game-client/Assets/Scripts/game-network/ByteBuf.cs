@@ -9,7 +9,7 @@ namespace Assets.Scripts.game_network
     /// <summary>
     /// 这个类的实现，是参考netty的Bytebuf实现的。
     /// </summary>
-   class ByteBuf
+ public  class ByteBuf
     {
         private const int CALCULATE_THRESHOLD = 1048576 * 4;
         private int readerIndex;

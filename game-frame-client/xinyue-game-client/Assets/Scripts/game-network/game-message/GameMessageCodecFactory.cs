@@ -7,9 +7,17 @@ using UnityEngine;
 
 namespace Assets.Scripts.game_network.game_message
 {
-    class GameMessageCodecFactory
+   public class GameMessageCodecFactory
     {
+        private static GameMessageCodecFactory _instance = new GameMessageCodecFactory();
+
+
         private Dictionary<int, Type> gameMessageTypeMap = new Dictionary<int, Type>();
+
+        public static GameMessageCodecFactory Instance()
+        {
+            return _instance;
+        }
 
         public void RegisterGameMessageType(List<Type> gameMessageTypes)
         {
