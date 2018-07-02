@@ -42,7 +42,7 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 		ByteBuf byteBuf = (ByteBuf) msg;
 		try {
 			int total = byteBuf.readInt();
-			logger.debug("ip:{},channelId:{},接收字节大小:{}", total, NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx));
+			logger.debug("ip:{},channelId:{},接收字节大小:{}",  NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx),total);
 			MessageHead messageHead = new MessageHead();
 			int seqId = byteBuf.readInt();
 			messageHead.setSeqId(seqId);
@@ -63,7 +63,7 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 				byteBuf.readBytes(body);
 			}
 			// 判断一下，这个命令是不是gate服务直接处理的，如果是就不转发了。
-			boolean isExistGateMessage = GameMessageRegisterFactory.getInstance().containsGameMessage(messageId);
+			boolean isExistGateMessage = GameMessageRegisterFactory.getInstance().containsGameMessage(messageUniqueId);
 			if (isExistGateMessage) {
 				IGameMessage gameMessage = this.decode(messageHead, body);
 				if (gameMessage != null) {

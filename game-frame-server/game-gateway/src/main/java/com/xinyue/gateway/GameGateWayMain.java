@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import com.xinyue.gateway.server.GameGatewayServer;
+import com.xinyue.gateway.service.ChannelService;
 
 @SpringBootApplication(scanBasePackages = { "com.xinyue.gateway", "com.xinyue.rocketmq" })
 public class GameGateWayMain {
@@ -23,6 +24,8 @@ public class GameGateWayMain {
 //		}
 
 		GameGatewayServer gameGatewayServer = applicationContext.getBean(GameGatewayServer.class);
+		ChannelService channelService = applicationContext.getBean(ChannelService.class);
+		channelService.init(gameGatewayServer.getWorkerGroup());
 		gameGatewayServer.startServer();
 	}
 }

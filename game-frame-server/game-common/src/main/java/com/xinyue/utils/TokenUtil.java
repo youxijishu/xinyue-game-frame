@@ -36,14 +36,19 @@ public class TokenUtil {
 	 *
 	 */
 	public static TokenModel getTokenModel(String token) {
-		byte[] bytes = Base64Utils.decodeFromString(token);
-		try {
-			bytes = AesUtil.decryptBuffer(EncryptKey, bytes);
-		} catch (Exception e) {
-			return null;
-		}
-		TokenModel tokenModel = new TokenModel();
-		tokenModel.fromBytes(bytes);
+		//暂时不做加密验证
+//		byte[] bytes = Base64Utils.decodeFromString(token);
+//		try {
+//			bytes = AesUtil.decryptBuffer(EncryptKey, bytes);
+//		} catch (Exception e) {
+//			return null;
+//		}
+		String[] strs = token.split(",");
+		long userId = Long.parseLong(strs[0]);
+		long roleId = Long.parseLong(strs[1]);
+		long time = Long.parseLong(strs[2]);
+		TokenModel tokenModel = new TokenModel(userId, roleId, time);
+		//tokenModel.fromBytes(bytes);
 		return tokenModel;
 	}
 

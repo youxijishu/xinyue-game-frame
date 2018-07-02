@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.xinyue.network.message.common.GameMessageRegisterFactory;
 import com.xinyue.network.message.common.IGameMessage;
+import com.xinyue.network.message.impl.ConnectConfirmRequest;
 /**
  * 这里注册网关直接处理的客户端请求命令。
  * @author 心悦网络科技有限公司   王广帅
@@ -21,6 +22,7 @@ public class GateMessageRegister {
 	@PostConstruct
 	public void init() {
 		List<Class<? extends IGameMessage>> gameMessages = new ArrayList<>();
+		gameMessages.add(ConnectConfirmRequest.class);
 		GameMessageRegisterFactory.getInstance().registerCommandClass(gameMessages);
 	}
 }

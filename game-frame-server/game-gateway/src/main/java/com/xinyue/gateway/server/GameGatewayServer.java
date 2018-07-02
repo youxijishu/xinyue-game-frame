@@ -2,9 +2,12 @@ package com.xinyue.gateway.server;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.config.ServerConfig;
@@ -28,11 +31,16 @@ public class GameGatewayServer {
 	private Logger logger = LoggerFactory.getLogger(GameGatewayServer.class);
 	@Autowired
 	private ServerConfig serverConfig;
-
+	@Autowired
+	private ApplicationContext applicationContext;
+    @PostConstruct
+	public void init(){
+    	bossGroup = new NioEventLoopGroup(serverConfig.getBossThreads());
+		workerGroup = new NioEventLoopGroup(serverConfig.getWorkThreads());
+	}
 	public void startServer() {
 		int port = this.serverConfig.getPort();
-		bossGroup = new NioEventLoopGroup(serverConfig.getBossThreads());
-		workerGroup = new NioEventLoopGroup(serverConfig.getWorkThreads());
+		
 		try {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
@@ -56,12 +64,16 @@ public class GameGatewayServer {
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
 				ChannelPipeline p = ch.pipeline();
+				GameGatewayConnectHandler gameGatewayConnectHandler = applicationContext.getBean(GameGatewayConnectHandler.class);
+				GameMessageDecode gameMessageDecode = applicationContext.getBean(GameMessageDecode.class);
+				GameMessageEncode gameMessageEncode = applicationContext.getBean(GameMessageEncode.class);
+				DispatchMessageHandler dispatchMessageHandler = applicationContext.getBean(DispatchMessageHandler.class);
 				//添加接收消息包的handler
-				p.addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4, -4, 0));
-				p.addLast(new GameMessageDecode());
-				p.addLast(new GameGatewayConnectHandler());
-				p.addLast(new GameMessageEncode());
-				p.addLast(new DispatchMessageHandler());
+				p.addLast(new LengthFieldBasedFrameDecoder(1024 * 10, 0, 4, -4, 0));
+				p.addLast(gameMessageDecode);
+				p.addLast(gameGatewayConnectHandler);
+				p.addLast(gameMessageEncode);
+				p.addLast(dispatchMessageHandler);
 			}
 		};
 		return channelInitializer;

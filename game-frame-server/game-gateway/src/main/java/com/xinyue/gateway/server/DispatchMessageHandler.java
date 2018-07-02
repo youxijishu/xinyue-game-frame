@@ -1,5 +1,7 @@
 package com.xinyue.gateway.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 @Service
 @Scope(scopeName = "prototype")
 public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
+	private static Logger logger = LoggerFactory.getLogger(DispatchMessageHandler.class);
 	InnerMessageCodecFactory codecFactory = InnerMessageCodecFactory.getInstance();
 	@Autowired
 	private ILogicServerService logicServerService;
@@ -57,5 +60,10 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 			buf.readBytes(body);
 			gameMessageRouter.sendMessage(body, tag);
 		}
+	}
+	
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		logger.error("服务器异常",cause);
 	}
 }
