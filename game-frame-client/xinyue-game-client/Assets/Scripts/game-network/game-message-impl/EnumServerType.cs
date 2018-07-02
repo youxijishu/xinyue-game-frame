@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Assets.Scripts.game_network.game_message_impl
 {
-    enum EnumServerType
+    public enum EnumServerType
     {   
         GAME_SERVER = 1001
     }

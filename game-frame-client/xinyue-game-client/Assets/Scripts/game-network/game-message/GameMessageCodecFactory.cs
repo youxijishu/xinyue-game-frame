@@ -13,6 +13,7 @@ namespace Assets.Scripts.game_network.game_message
 
 
         private Dictionary<int, Type> gameMessageTypeMap = new Dictionary<int, Type>();
+        private int seqid = 0;
 
         public static GameMessageCodecFactory Instance()
         {
@@ -83,6 +84,8 @@ namespace Assets.Scripts.game_network.game_message
         /// <param name="gameMessage"></param>
         public byte[] EncodeGameMessage(IGameMessage gameMessage)
         {
+            seqid++;
+            gameMessage.GetMessageHeader().SeqId = seqid;
             int total = 12;
             byte[] body = gameMessage.EncodeBody();
             if(body != null)
@@ -97,7 +100,8 @@ namespace Assets.Scripts.game_network.game_message
             {
                 byteBuf.WriteBytes(body);
             }
-            return byteBuf.ToArray();
+            byte[] msg = byteBuf.ToArray();
+            return msg;
         }
     }
 }
