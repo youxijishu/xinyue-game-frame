@@ -20,7 +20,7 @@ public class GameNetworkClient {
     }
     public void Init()
     {
-        Assembly assembly = Assembly.Load("Assets.Scripts.game_network.game_message_impl");
+        Assembly assembly = Assembly.GetExecutingAssembly();
         Type[] types = assembly.GetTypes();
         List<Type> typeList = new List<Type>();
         foreach(Type type in types)

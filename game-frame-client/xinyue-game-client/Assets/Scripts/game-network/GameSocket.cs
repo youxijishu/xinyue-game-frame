@@ -129,7 +129,7 @@ namespace Assets.Scripts.game_network
                                 localBytesBuffer.MarkReaderIndex();
                                 int total = localBytesBuffer.ReadInt();
 
-                                Debug.Log(total + "  " + localBytesBuffer.ReadableBytes());
+                               
                                 if (total <= readables)
                                 {
                                     localBytesBuffer.ResetReaderIndex();
