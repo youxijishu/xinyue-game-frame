@@ -71,8 +71,9 @@ public class GameGatewayServer {
 				//添加接收消息包的handler
 				p.addLast(new LengthFieldBasedFrameDecoder(1024 * 10, 0, 4, -4, 0));
 				p.addLast(gameMessageDecode);
-				p.addLast(gameGatewayConnectHandler);
 				p.addLast(gameMessageEncode);
+				p.addLast(gameGatewayConnectHandler);
+				
 				p.addLast(dispatchMessageHandler);
 			}
 		};

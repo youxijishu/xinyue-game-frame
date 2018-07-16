@@ -10,8 +10,13 @@ import com.xinyue.network.EnumServerType;
 
 @GameMessageMetaData(serverType = EnumServerType.GAME_SERVER,messageId = 1001, messageType =GameMessageType.RESPONSE)
 public class ConnectConfirmResponse extends AbstractGameMessage {
+	//是否成功
+	private boolean result;
 	
 	public ConnectConfirmResponse(){
+	}
+	public ConnectConfirmResponse(boolean result){
+		this.result = result;		
 	}
 	
 	
@@ -21,8 +26,19 @@ public class ConnectConfirmResponse extends AbstractGameMessage {
 		return response;
 	}
 	
+	public void setResult (boolean result){
+		this.result = result;
+	}
+		
+	public boolean getResult(){
+		return result;
+	}
+	
 	@Override
 	public void decodeBody(byte[] bytes) throws Exception {
+		com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel body = com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel.parseFrom(bytes);
+		
+			this.result = body.getResult();
 	}
 	
 	@Override
@@ -31,7 +47,9 @@ public class ConnectConfirmResponse extends AbstractGameMessage {
 		  	return null;
 		 }
 		 
-		 return null;
+		 com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel.Builder builder = com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel.newBuilder();
+		  builder.setResult(this.result);
+		 return builder.build().toByteArray();
 	}
 	@Override
 	public String toString(){

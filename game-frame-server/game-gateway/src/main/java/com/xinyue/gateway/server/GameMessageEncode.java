@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.network.message.inner.InnerMessageCodecFactory;
 import com.xinyue.network.message.inner.InnerMessageHeader;
 import com.xinyue.utils.NettyUtil;
@@ -29,7 +30,7 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(GameMessageEncode.class);
 	InnerMessageCodecFactory codecFactory = InnerMessageCodecFactory.getInstance();
 	// 固定长度
-	private final static int Fix_len = 24;
+	private final static int Fix_len = 16;
 
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
@@ -38,27 +39,41 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 			ByteBuf buf = (ByteBuf) msg;
 			InnerMessageHeader header = codecFactory.getMessageHeaderFromResponse(buf);
 			int bodyLen = buf.readableBytes();
-			int total = Fix_len;
+			
 			byte[] body = null;
 			if (bodyLen > 0) {
-				total += bodyLen;
+				
 				body = new byte[bodyLen];
 				buf.readBytes(body);
 			}
-			buf = NettyUtil.createBuf(total);
-			buf.writeInt(total);
-			buf.writeInt(header.getSeqId());
-			buf.writeInt(header.getMessageUniqueId());
-			buf.writeInt(header.getErrorCode());
-			if (body != null) {
-				buf.writeBytes(body);
-			}
-
+			NettyUtil.releaseBuf(buf);
+			buf = this.createBytebufToClient(body, header);
 			ctx.writeAndFlush(buf);
-			logger.debug("<==roleId:{}, message size:{},messageId:{}",header.getRoleId(), total, header.getMessageId());
 			promise.setSuccess();
-		} else {
-			ctx.write(msg, promise);
+		} else if(msg instanceof IGameMessage){
+			IGameMessage gameMessage = (IGameMessage)msg;
+		    InnerMessageHeader header = gameMessage.getMessageHead();
+		    byte[] body = gameMessage.encodeBody();
+		    ByteBuf buf = this.createBytebufToClient(body, header);
+		    ctx.writeAndFlush(buf);
 		}
+	}
+	
+	private ByteBuf createBytebufToClient(byte[] body,InnerMessageHeader header){
+		int total = Fix_len;
+		if (body != null){
+			int bodyLen = body.length;
+			total += bodyLen;
+		}
+		ByteBuf buf = NettyUtil.createBuf(total);
+		buf.writeInt(total);
+		buf.writeInt(header.getSeqId());
+		buf.writeInt(header.getMessageUniqueId());
+		buf.writeInt(header.getErrorCode());
+		if (body != null) {
+			buf.writeBytes(body);
+		}
+		logger.debug("<==roleId:{}, message size:{},messageId:{}",header.getRoleId(), total, header.getMessageId());
+		return buf;
 	}
 }

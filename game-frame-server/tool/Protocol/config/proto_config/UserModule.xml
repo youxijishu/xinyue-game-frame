@@ -12,7 +12,7 @@
 				<field name="roleId" type="long" desc="角色id" />
 			</request>
 			<response>
-
+				<field name = "result" type = "bool" desc = "是否成功"/>
 			</response>
 		</command>
 

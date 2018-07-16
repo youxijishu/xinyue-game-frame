@@ -6,6 +6,7 @@ message ConnectConfirmRequestModel{
 	required int64 roleId = 3;
 } 
 message ConnectConfirmResponseModel{
+	required bool result = 1;
 } 
 message SignRequestModel{
 	required int64 RoleId = 1;
