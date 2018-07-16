@@ -667,6 +667,15 @@ public final class UserModule {
   public interface ConnectConfirmResponseModelOrBuilder extends
       // @@protoc_insertion_point(interface_extends:ConnectConfirmResponseModel)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required bool result = 1;</code>
+     */
+    boolean hasResult();
+    /**
+     * <code>required bool result = 1;</code>
+     */
+    boolean getResult();
   }
   /**
    * Protobuf type {@code ConnectConfirmResponseModel}
@@ -702,6 +711,7 @@ public final class UserModule {
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -717,6 +727,11 @@ public final class UserModule {
                                      extensionRegistry, tag)) {
                 done = true;
               }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              result_ = input.readBool();
               break;
             }
           }
@@ -758,7 +773,24 @@ public final class UserModule {
       return PARSER;
     }
 
+    private int bitField0_;
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private boolean result_;
+    /**
+     * <code>required bool result = 1;</code>
+     */
+    public boolean hasResult() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bool result = 1;</code>
+     */
+    public boolean getResult() {
+      return result_;
+    }
+
     private void initFields() {
+      result_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -766,6 +798,10 @@ public final class UserModule {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
+      if (!hasResult()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -773,6 +809,9 @@ public final class UserModule {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, result_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -782,6 +821,10 @@ public final class UserModule {
       if (size != -1) return size;
 
       size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, result_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
@@ -899,6 +942,8 @@ public final class UserModule {
 
       public Builder clear() {
         super.clear();
+        result_ = false;
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -925,6 +970,13 @@ public final class UserModule {
 
       public com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel buildPartial() {
         com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel result = new com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.result_ = result_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -940,11 +992,18 @@ public final class UserModule {
 
       public Builder mergeFrom(com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel other) {
         if (other == com.xinyue.network.message.impl.proto.UserModule.ConnectConfirmResponseModel.getDefaultInstance()) return this;
+        if (other.hasResult()) {
+          setResult(other.getResult());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
+        if (!hasResult()) {
+          
+          return false;
+        }
         return true;
       }
 
@@ -963,6 +1022,39 @@ public final class UserModule {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean result_ ;
+      /**
+       * <code>required bool result = 1;</code>
+       */
+      public boolean hasResult() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bool result = 1;</code>
+       */
+      public boolean getResult() {
+        return result_;
+      }
+      /**
+       * <code>required bool result = 1;</code>
+       */
+      public Builder setResult(boolean value) {
+        bitField0_ |= 0x00000001;
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool result = 1;</code>
+       */
+      public Builder clearResult() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        result_ = false;
+        onChanged();
         return this;
       }
 
@@ -1818,11 +1910,12 @@ public final class UserModule {
     java.lang.String[] descriptorData = {
       "\n\"config/java_proto/UserModule.proto\"K\n\032" +
       "ConnectConfirmRequestModel\022\r\n\005token\030\001 \002(" +
-      "\t\022\016\n\006userId\030\002 \002(\003\022\016\n\006roleId\030\003 \002(\003\"\035\n\033Con" +
-      "nectConfirmResponseModel\"\"\n\020SignRequestM" +
-      "odel\022\016\n\006RoleId\030\001 \002(\003\"#\n\021SignResponseMode" +
-      "l\022\016\n\006Result\030\001 \002(\010B3\n%com.xinyue.network." +
-      "message.impl.protoB\nUserModule"
+      "\t\022\016\n\006userId\030\002 \002(\003\022\016\n\006roleId\030\003 \002(\003\"-\n\033Con" +
+      "nectConfirmResponseModel\022\016\n\006result\030\001 \002(\010" +
+      "\"\"\n\020SignRequestModel\022\016\n\006RoleId\030\001 \002(\003\"#\n\021" +
+      "SignResponseModel\022\016\n\006Result\030\001 \002(\010B3\n%com" +
+      ".xinyue.network.message.impl.protoB\nUser" +
+      "Module"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1847,7 +1940,7 @@ public final class UserModule {
     internal_static_ConnectConfirmResponseModel_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_ConnectConfirmResponseModel_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Result", });
     internal_static_SignRequestModel_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_SignRequestModel_fieldAccessorTable = new

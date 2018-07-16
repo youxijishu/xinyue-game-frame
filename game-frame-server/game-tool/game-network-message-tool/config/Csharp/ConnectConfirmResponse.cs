@@ -10,20 +10,40 @@ namespace Assets.Scripts.game_network.game_message_impl
 	public class ConnectConfirmResponse : AbstractGameMessage
 	{
 	
+		// 是否成功
+		public bool result;
 		
 		public ConnectConfirmResponse()
 		{
 		
 		}
+		public ConnectConfirmResponse(bool result){
+			this.result = result;		
+		}
 		
 		public override byte[] EncodeBody()
 		{
 			
-			return null;
+			
+			ConnectConfirmResponseModel entity = new ConnectConfirmResponseModel();
+			
+			entity.result = this.result;
+			 MemoryStream ms = new MemoryStream();
+			 using(ms){
+             	Serializer.Serialize(ms, entity);
+             	return ms.ToArray();
+             }
 		}
 	
 		public override void DecodeBody(byte[] bytes)
 		{
+			
+			
+			MemoryStream ms = new MemoryStream(bytes);
+			using(ms){
+				ConnectConfirmResponseModel entity = Serializer.Deserialize<ConnectConfirmResponseModel>(ms);
+							this.result = entity.result;
+			}
 		}
 	}
 }

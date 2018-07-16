@@ -11,7 +11,7 @@ import ${pck};
 //河南心悦网络科技有限公司   王广帅
 //${desc}
 
-@GameMessageMetaData(serverType = EnumServerType.${serverType},id = ${id?c}, type =${messageType})
+@GameMessageMetaData(serverType = EnumServerType.${serverType},messageId = ${id?c}, messageType =${messageType})
 public class ${className} extends AbstractGameMessage {
 	<#list fields as field>
 	//${field.desc}

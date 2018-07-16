@@ -85,6 +85,7 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 				gateUserInfo.setUserId(userId);
 				gateUserInfo.setToken(token);
 				channelService.addChannel(roleId, ctx.channel());
+			    response.setResult(true);
 				ctx.writeAndFlush(response);
 				logger.debug("userId:{},roleId:{} token验证通过", userId, roleId);
 			} else {
