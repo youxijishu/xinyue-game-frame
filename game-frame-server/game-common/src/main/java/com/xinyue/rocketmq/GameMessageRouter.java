@@ -6,11 +6,14 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class GameMessageRouter {
 	private DefaultMQProducer producer;
 	private DefaultMQPushConsumer consumer;
 	private RocketmqConfig rocketmqConfig;
+	private Logger logger = LoggerFactory.getLogger(GameMessageRouter.class);
 
 	public void start() throws MQClientException {
 		System.setProperty("rocketmq.client.log.loadconfig", "false");
@@ -55,7 +58,9 @@ public abstract class GameMessageRouter {
 
 	public void sendMessage(byte[] body, String tag) throws Exception {
 		Message msg = new Message(rocketmqConfig.getPublishTopic(), tag, body);
+		
 		producer.sendOneway(msg);
+		
 	}
 
 	public void shutdown() {

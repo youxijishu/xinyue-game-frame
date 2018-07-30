@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="off" monitorInterval="1800">
+	<Properties>
+		<Property name="log-path">/home/logs</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<Filters>
+				<ThresholdFilter level="debug" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %class{36} - %msg%xEx%n" />
+		</Console>
+		<File name="consoleFileLog" fileName="${log-path}/console/consoleLog.log"
+			append="true">
+			<PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss z} %-5level - %msg%xEx%n" />
+		</File>
+
+		<!-- 例子 -->
+		<File name="MYSQL_DURABLE_TYPE12" fileName="${log-path}/app/MYSQL_DURABLE_TYPE1.log"
+			append="true">
+			<Filters>
+				<ThresholdFilter level="info" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<PatternLayout
+				pattern="%d{yyyy.MM.dd HH:mm:ss z} %-5level %class{36} - %msg%xEx%n" />
+		</File>
+		<File name="RequestAndResponseLog" fileName="${log-path}/gamelog/request_and_response_log.log"
+			append="true">
+			<Filters>
+				<ThresholdFilter level="debug" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss } %-5level - %msg%xEx%n" />
+
+		</File>
+		
+		<File name="UserRegister" fileName="${log-path}/gamelog/user_register.log"
+			append="true">
+			<Filters>
+				<ThresholdFilter level="info" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss } %-5level - %msg%xEx%n" />
+
+		</File>
+
+
+		<File name="diamondlog" fileName="${log-path}/gamelog/diamondlog.log"
+			append="true">
+			<Filters>
+				<ThresholdFilter level="info" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+			<PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss } %-5level - %msg%xEx%n" />
+
+		</File>
+		
+	</Appenders>
+	<Loggers>
+		<!-- 如果没有定义logger，使用这里默认的日志等级 -->
+		<root level="debug">
+			<appender-ref ref="console" />
+			<appender-ref ref="consoleFileLog"/>
+		</root>
+	</Loggers>
+</configuration>

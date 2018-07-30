@@ -33,6 +33,7 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 	InnerMessageCodecFactory codecFactory = InnerMessageCodecFactory.getInstance();
 	@Autowired
 	private ILogicServerService logicServerService;
+	@Autowired
 	private ServerConfig serverConfig;
 
 	@Autowired
@@ -49,6 +50,7 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 			header.setRoleId(messageInfo.getRoleId());
 			header.setUserId(messageInfo.getUserId());
 			header.setSeqId(messageInfo.getMessageHead().getSeqId());
+			header.setServerType(messageInfo.getMessageHead().getServerType());
 			header.setFromServerId(serverConfig.getServerId());
 			// 计算toServerId
 			short serverId = logicServerService.getToServerId(header.getRoleId(), header.getServerType());
@@ -56,9 +58,11 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 			ByteBuf buf = codecFactory.gateEncode(header, body);
 			// 这里使用消息队列向业务服务发送消息。
 			String tag = header.getToLogicServerMessageTag();
+			
 			body = new byte[buf.readableBytes()];
 			buf.readBytes(body);
 			gameMessageRouter.sendMessage(body, tag);
+			logger.debug("send messge->[tag:{}],serverId:{},messageId:{}",tag,serverId,messageInfo.getMessageHead().getMessageId());
 		}
 	}
 	
