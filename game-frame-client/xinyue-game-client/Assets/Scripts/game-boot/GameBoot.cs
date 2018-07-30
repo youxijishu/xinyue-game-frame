@@ -13,6 +13,7 @@ public class GameBoot : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         client = new GameNetworkClient();
+        client.Init();
 
         token = userId + "," + roleId + "," + (DateUtil.GetCurrentTimeUnix() + 203 * 1000);
         //StartCoroutine("Sign");

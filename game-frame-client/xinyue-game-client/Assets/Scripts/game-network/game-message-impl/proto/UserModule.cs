@@ -46,6 +46,13 @@ namespace com.xinyue.network.message.impl.proto
   {
     public ConnectConfirmResponseModel() {}
     
+    private bool _result;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"result", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public bool result
+    {
+      get { return _result; }
+      set { _result = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

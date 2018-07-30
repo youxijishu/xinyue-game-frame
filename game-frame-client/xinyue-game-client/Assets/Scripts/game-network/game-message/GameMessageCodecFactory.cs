@@ -51,7 +51,7 @@ namespace Assets.Scripts.game_network.game_message
             return gameMessage;
         }
         /// <summary>
-        /// 解码从服务器收到的消息(暂时不做加密和解密处理)，协议格式：total(4) + seqId(4) + messageId(2) + errorCode(4) + crc(8) + body
+        /// 解码从服务器收到的消息(暂时不做加密和解密处理)，协议格式：total(4) + seqId(4) + uniqueMessageId(4) + errorCode(4) +  body
         /// </summary>
         /// <param name="byteBuf"></param>
         /// <returns></returns>
