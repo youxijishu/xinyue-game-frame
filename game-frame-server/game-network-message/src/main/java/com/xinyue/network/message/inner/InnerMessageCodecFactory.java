@@ -102,11 +102,13 @@ public class InnerMessageCodecFactory {
 	public IGameMessage decode(ByteBuf buf) throws Exception {
 		IGameMessage gameMessage;
 		try {
-			int total = buf.readInt();
+			int total = buf.readableBytes();
 			int messageUniqueId = buf.readInt();
 			long userId = buf.readLong();
 			long roleId = buf.readLong();
 			int seqId = buf.readInt();
+			int fromServerId = buf.readInt();
+			int toServerId = buf.readInt();
 			gameMessage = registerFactory.getGameMessage(messageUniqueId);
 			if (gameMessage == null) {
 				return null;
@@ -128,6 +130,8 @@ public class InnerMessageCodecFactory {
 			header.setRoleId(roleId);
 			header.setSeqId(seqId);
 			header.setUserId(userId);
+			header.setFromServerId(fromServerId);
+			header.setToServerId(toServerId);
 			int bodyLen = buf.readableBytes();
 			if (bodyLen > 0) {
 				byte[] body = new byte[bodyLen];

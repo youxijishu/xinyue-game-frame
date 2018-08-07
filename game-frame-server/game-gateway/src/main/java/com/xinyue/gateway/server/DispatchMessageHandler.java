@@ -62,7 +62,7 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 			body = new byte[buf.readableBytes()];
 			buf.readBytes(body);
 			gameMessageRouter.sendMessage(body, tag);
-			logger.debug("send messge->[tag:{}],serverId:{},messageId:{}",tag,serverId,messageInfo.getMessageHead().getMessageId());
+			logger.debug("send messge->serverId: {},messageId: {},serverType: {}",serverId,messageInfo.getMessageHead().getMessageId(),messageInfo.getMessageHead().getServerType());
 		}
 	}
 	

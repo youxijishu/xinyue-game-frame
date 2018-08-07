@@ -11,8 +11,9 @@ game:
     workThreads: 16
     idleTime: 300
     connectTimeout: 10
+    # 某个服务类型对应的服务器id列表，key是服务类型，比如背包服务，而且这个服务可以部分多台，value就是每台服务器的serverId
     serverTypeMap: 
-      1001: [2001,2002]
+      2001: [2001,2001]
       
   rocketmq:
     instance-name: GateServer

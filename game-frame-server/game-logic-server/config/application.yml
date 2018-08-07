@@ -9,6 +9,8 @@ game:
     instance-name: ${spring.application.name}-2001
     consumer-group-name: LogicServerMessageConsumerGroup
     consumer-topic: GateMessageProducerTopic3
+    
+    
     publish-topic: GateMessageConsumerTopic
     publish-topic-key: LogicServerMessageProduceTopicKey
     publish-topic-queue-num: 8

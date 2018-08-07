@@ -3,6 +3,8 @@ package com.xinyue.rocketmq.framework.network;
 import java.util.List;
 
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import com.xinyue.rocketmq.framework.messagehandler.GameMessageMethodInvokerMapp
 
 @Service
 public class LogicServerGameMessageRouter extends GameMessageRouter {
+	private Logger logger = LoggerFactory.getLogger(LogicServerGameMessageRouter.class);
 	@Autowired
 	private GameChannelGroupManager gameChannelGroupManager;
 	@Autowired
@@ -27,6 +30,7 @@ public class LogicServerGameMessageRouter extends GameMessageRouter {
 	private ServerConfig serverConfig;
 	@Autowired
 	private GameMessageMethodInvokerMapping gameMessageMethodInvokerMapping;
+	
 
 	public void sendMessage(IGameMessage gameMessage) throws Exception {
 		byte[] body = InnerMessageCodecFactory.getInstance().encode(gameMessage);
@@ -45,6 +49,7 @@ public class LogicServerGameMessageRouter extends GameMessageRouter {
 			short messageId = messageMetaData.messageId();
 			EnumServerType serverType = messageMetaData.serverType();
 			allTags[i] = InnerMessageHeader.getLogicServerMessageTag(serverType, messageId, serverId);
+			logger.info("监听的tag:{}",allTags[i]);
 		}
 		return allTags;
 	}
