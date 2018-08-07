@@ -39,11 +39,12 @@ public class GameBoot : MonoBehaviour {
         
     }
 
-    public IEnumerator Sign()
+    public void Sign()
     {
         SignRequest request = new SignRequest();
         request.RoleId = 10001;
+        
         client.SendGameMessage(request);
-        yield return new WaitForSeconds(4);
+       
     }
 }
