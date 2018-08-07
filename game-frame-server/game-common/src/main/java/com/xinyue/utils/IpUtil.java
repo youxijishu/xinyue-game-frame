@@ -44,7 +44,7 @@ public class IpUtil {
 		if (ipv4 == null || ipv4.length() == 0) {
 			return false;// 字符串为空或者空串
 		}
-		String[] parts = ipv4.split("//.");
+		String[] parts = ipv4.split("\\.");
 		// 因为java doc里已经说明, split的参数是reg, 即正则表达式, 如果用"|"分割, 则需使用"//|"
 		if (parts.length != 4) {
 			return false;

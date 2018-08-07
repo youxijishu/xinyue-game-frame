@@ -28,6 +28,7 @@ public class LogicMessageConsumerListener implements MessageListenerConcurrently
 				.setGameMessageClass(gameMessageClasses);
 	}
 
+
 	@Override
 	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
 		if (msgs != null) {
