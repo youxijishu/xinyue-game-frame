@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.config.ServerConfig;
+import com.xinyue.gateway.service.ChannelService;
 import com.xinyue.rocketmq.GameMessageRouter;
 import com.xinyue.rocketmq.RocketmqConfig;
 
@@ -14,7 +15,9 @@ public class GateGameMessageRouter extends GameMessageRouter {
 	private ServerConfig serverConfig;
 	@Autowired
 	private RocketmqConfig rocketmqConfig;
-
+	@Autowired
+	private ChannelService channelService;
+	
 	@Override
 	public String[] getAllListenerTags() {
 		String[] tags = new String[1];
@@ -29,7 +32,7 @@ public class GateGameMessageRouter extends GameMessageRouter {
 
 	@Override
 	public MessageListenerConcurrently getMessageListener() {
-		return new GateMessageSubscibeListener();
+		return new GateMessageSubscibeListener(channelService);
 	}
 
 }

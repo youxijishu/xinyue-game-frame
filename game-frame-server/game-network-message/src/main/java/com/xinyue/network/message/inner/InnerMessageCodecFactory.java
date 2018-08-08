@@ -166,10 +166,10 @@ public class InnerMessageCodecFactory {
 		ByteBuf buf = NettyUtil.createBuf(total);
 		try {
 			InnerMessageHeader header = gameMessage.getMessageHead();
+			buf.writeLong(header.getRoleId());
+			buf.writeLong(header.getUserId());
 			buf.writeShort(header.getServerType().getServerType());
 			buf.writeShort(header.getMessageId());
-			buf.writeLong(header.getUserId());
-			buf.writeLong(header.getRoleId());
 			buf.writeInt(header.getSeqId());
 			buf.writeInt(header.getErrorCode());
 			if (header.getErrorCode() == 0) {
@@ -196,10 +196,10 @@ public class InnerMessageCodecFactory {
 	 */
 	public InnerMessageHeader getMessageHeaderFromResponse(ByteBuf buf) {
 		InnerMessageHeader header = new InnerMessageHeader();
+		long roleId = buf.readLong();
+		long userId = buf.readLong();
 		short serverType = buf.readShort();
 		short messageId = buf.readShort();
-		long userId = buf.readLong();
-		long roleId = buf.readLong();
 		int seqId = buf.readInt();
 		int errorCode = buf.readInt();
 		header.setServerType(EnumServerType.getServerType(serverType));
