@@ -72,7 +72,7 @@ public class GameGatewayServer {
 				p.addLast(new LengthFieldBasedFrameDecoder(1024 * 10, 0, 4, -4, 0));
 				p.addLast(gameMessageDecode);
 				p.addLast(gameMessageEncode);
-				p.addLast(gameGatewayConnectHandler);
+				p.addLast(GameGatewayConnectHandler.class.getName(),gameGatewayConnectHandler);
 				
 				p.addLast(dispatchMessageHandler);
 			}

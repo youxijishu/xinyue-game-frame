@@ -5,12 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.xinyue.network.message.common.IGameMessage;
+import com.xinyue.gateway.message.GateMessageHeader;
+import com.xinyue.gateway.message.IGateMessage;
 import com.xinyue.network.message.inner.InnerMessageCodecFactory;
-import com.xinyue.network.message.inner.InnerMessageHeader;
 import com.xinyue.utils.NettyUtil;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -30,50 +31,38 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(GameMessageEncode.class);
 	InnerMessageCodecFactory codecFactory = InnerMessageCodecFactory.getInstance();
 	// 固定长度
-	private final static int Fix_len = 16;
+	private final static int Fix_len = 11;
 
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 
-		if (msg instanceof ByteBuf) {
-			ByteBuf buf = (ByteBuf) msg;
-			InnerMessageHeader header = codecFactory.getMessageHeaderFromResponse(buf);
-			int bodyLen = buf.readableBytes();
-			
-			byte[] body = null;
-			if (bodyLen > 0) {
-				
-				body = new byte[bodyLen];
-				buf.readBytes(body);
+		if (msg instanceof IGateMessage) {
+			IGateMessage gateMessage = (IGateMessage) msg;
+			int total = Fix_len;
+			ByteBuf body = gateMessage.getBody();
+			try {
+				if (body != null) {
+					total += body.readableBytes();
+				}
+				ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(total);
+				GateMessageHeader header = gateMessage.getHeader();
+				buf.writeShort(total);
+				buf.writeInt(header.getSeqId());
+				buf.writeShort(header.getMessageId());
+				buf.writeShort(header.getErrorCode());
+				buf.writeByte(header.getIsZip());
+				buf.writeBytes(body);
+				ctx.writeAndFlush(buf);
+				promise.setSuccess();
+				logger.debug("send to cleint => {}",gateMessage);
+			} finally {
+				if(body != null){
+					NettyUtil.releaseBuf(body);
+				}
 			}
-			NettyUtil.releaseBuf(buf);
-			buf = this.createBytebufToClient(body, header);
-			ctx.writeAndFlush(buf);
-			promise.setSuccess();
-		} else if(msg instanceof IGameMessage){
-			IGameMessage gameMessage = (IGameMessage)msg;
-		    InnerMessageHeader header = gameMessage.getMessageHead();
-		    byte[] body = gameMessage.encodeBody();
-		    ByteBuf buf = this.createBytebufToClient(body, header);
-		    ctx.writeAndFlush(buf);
+			
+		} else {
+			ctx.fireChannelRead(msg);
 		}
-	}
-	
-	private ByteBuf createBytebufToClient(byte[] body,InnerMessageHeader header){
-		int total = Fix_len;
-		if (body != null){
-			int bodyLen = body.length;
-			total += bodyLen;
-		}
-		ByteBuf buf = NettyUtil.createBuf(total);
-		buf.writeInt(total);
-		buf.writeInt(header.getSeqId());
-		buf.writeInt(header.getMessageUniqueId());
-		buf.writeInt(header.getErrorCode());
-		if (body != null) {
-			buf.writeBytes(body);
-		}
-		logger.debug("<==roleId:{}, message size:{},messageId:{}",header.getRoleId(), total, header.getMessageId());
-		return buf;
 	}
 }

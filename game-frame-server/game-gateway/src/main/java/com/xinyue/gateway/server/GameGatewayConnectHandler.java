@@ -44,7 +44,7 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 	private ServerConfig serverConfig;
 	@Autowired
 	private ChannelService channelService;
-
+	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		this.clientIp = NettyUtil.getIp(ctx);

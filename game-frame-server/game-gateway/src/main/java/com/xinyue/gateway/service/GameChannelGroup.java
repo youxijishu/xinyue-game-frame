@@ -6,6 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xinyue.gateway.message.IGateMessage;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.util.concurrent.EventExecutor;
@@ -58,7 +60,7 @@ public class GameChannelGroup {
 		});
 	}
 
-	public void writeMessage(Long roleId, Object message) {
+	public void writeMessage(Long roleId, IGateMessage message) {
 		this.execute(() -> {
 			Channel channel = channelMap.get(roleId);
 			if (channel == null) {

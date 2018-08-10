@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 
+import com.xinyue.gateway.message.IGateMessage;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.channel.EventLoopGroup;
@@ -94,7 +96,8 @@ public class ChannelService {
 		}
 	}
 
-	public void writeMessage(long roleId,Object msg) {
+	public void sendMessageToClient(IGateMessage msg) {
+		long roleId = msg.getHeader().getRoleId();
 		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(roleId);
 		if (gameChannelGroup != null) {
 			gameChannelGroup.writeMessage(roleId, msg);
