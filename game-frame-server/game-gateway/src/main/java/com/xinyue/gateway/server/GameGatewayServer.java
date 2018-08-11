@@ -11,6 +11,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.config.ServerConfig;
+import com.xinyue.gateway.server.codec.GameMessageDecode;
+import com.xinyue.gateway.server.codec.GameMessageEncode;
+import com.xinyue.gateway.server.confirm.GameGatewayConnectHandler;
+import com.xinyue.gateway.server.dispatcher.DispatchMessageHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;

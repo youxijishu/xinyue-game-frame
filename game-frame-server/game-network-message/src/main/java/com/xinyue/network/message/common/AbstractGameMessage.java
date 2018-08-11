@@ -1,44 +1,49 @@
 package com.xinyue.network.message.common;
 
-import com.xinyue.network.message.inner.InnerMessageHeader;
-
 public abstract class AbstractGameMessage implements IGameMessage {
-	private InnerMessageHeader messageHead;
-	
+	private GameMessageHead messageHead;
 
 	public AbstractGameMessage() {
-		messageHead = new InnerMessageHeader();
+		messageHead = new GameMessageHead();
 		this.readGameMessageMeta();
-		
+
 	}
 
 	private void readGameMessageMeta() {
 		GameMessageMetaData gameMessageMetaData = this.getClass().getAnnotation(GameMessageMetaData.class);
-		messageHead.setServerType(gameMessageMetaData.serverType());
+		messageHead.setServerType(gameMessageMetaData.serverType().getServerType());
 		messageHead.setMessageId(gameMessageMetaData.messageId());
-		messageHead.setGameMessageType(gameMessageMetaData.messageType());
+		messageHead.setMessageType(gameMessageMetaData.messageType());
 	}
 
 	@Override
-	public InnerMessageHeader getMessageHead() {
+	public GameMessageHead getMessageHead() {
 		return messageHead;
 	}
 
-	protected void copyMessageHead(InnerMessageHeader responseMessageHead) {
-		if (this.messageHead.getGameMessageType() == GameMessageType.REQUEST) {
+	@Override
+	public void setMessageHead(GameMessageHead messageHead) {
+		messageHead.setServerType(this.messageHead.getServerType());
+		messageHead.setMessageType(this.messageHead.getMessageType());
+		this.messageHead = messageHead;
+	}
+
+	protected void copyMessageHead(GameMessageHead responseMessageHead) {
+		if (this.messageHead.getMessageType() == GameMessageType.REQUEST) {
 			responseMessageHead.setUserId(this.messageHead.getUserId());
 			responseMessageHead.setRoleId(this.messageHead.getRoleId());
 			responseMessageHead.setSeqId(this.messageHead.getSeqId());
-			responseMessageHead.setFromServerId(this.messageHead.getToServerId());
-			responseMessageHead.setToServerId(this.messageHead.getFromServerId());
-			responseMessageHead.setRecTime(this.messageHead.getRecTime());
+			responseMessageHead.setFromeServerId(this.messageHead.getToServerId());
+			responseMessageHead.setToServerId(this.messageHead.getFromeServerId());
+			responseMessageHead.setIp(this.messageHead.getIp());
+			responseMessageHead.setSendTime(System.currentTimeMillis());
+			responseMessageHead.setSeqId(this.messageHead.getSeqId());
 		} else {
 			throw new UnsupportedOperationException("Response 消息不能创建返回消息");
 		}
 	}
 
 	public void setError(IGameError gameError) {
-		this.messageHead.setErrorCode(gameError.getErrorCode());
-		this.messageHead.setErrorMsg(gameError.getErrorMsg());
+		this.messageHead.setError(gameError);
 	}
 }

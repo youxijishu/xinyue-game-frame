@@ -9,8 +9,8 @@ import org.apache.rocketmq.common.message.MessageExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xinyue.network.message.InnerMessageCodecFactory;
 import com.xinyue.network.message.common.IGameMessage;
-import com.xinyue.network.message.inner.InnerMessageCodecFactory;
 import com.xinyue.rocketmq.framework.gamechannel.GameChannelGroupManager;
 import com.xinyue.utils.NettyUtil;
 

@@ -1,4 +1,4 @@
-package com.xinyue.gateway.server;
+package com.xinyue.gateway.server.codec;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.message.GateMessage;
 import com.xinyue.gateway.message.GateMessageHeader;
+import com.xinyue.gateway.server.confirm.GameGatewayConnectHandler;
 import com.xinyue.gateway.server.model.GateUserInfo;
 import com.xinyue.utils.NettyUtil;
 

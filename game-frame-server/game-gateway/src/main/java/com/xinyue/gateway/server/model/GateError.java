@@ -3,17 +3,18 @@ package com.xinyue.gateway.server.model;
 import com.xinyue.network.message.common.IGameError;
 
 public enum GateError implements IGameError {
-	TOKEN_ERROR(401, "TOKEN错误"), TOKEN_EXPIRE(402, "token 过期"),;
-	private int errorCode;
+	TOKEN_ERROR((short)401, "TOKEN错误"), 
+	TOKEN_EXPIRE((short)402, "token 过期"),;
+	private short errorCode;
 	private String errorMsg;
 
-	private GateError(int errorCode, String errorMsg) {
+	private GateError(short errorCode, String errorMsg) {
 		this.errorCode = errorCode;
 		this.errorMsg = errorMsg;
 	}
 
 	@Override
-	public int getErrorCode() {
+	public short getErrorCode() {
 		return errorCode;
 	}
 

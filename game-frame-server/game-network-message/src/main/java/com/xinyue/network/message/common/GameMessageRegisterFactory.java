@@ -44,7 +44,7 @@ public class GameMessageRegisterFactory {
 			short messageId = gameMessageMetaData.messageId();
 			GameMessageType messageType = gameMessageMetaData.messageType();
 			if (messageType == GameMessageType.REQUEST) {
-				int uniqueMessageId = MessageIdUtil.getMessageUniqueId(gameMessageMetaData.serverType(),
+				int uniqueMessageId = MessageIdUtil.getMessageUniqueId(gameMessageMetaData.serverType().getServerType(),
 						messageId);
 				if (messageClassMap.containsKey(uniqueMessageId)) {
 					throw new IllegalArgumentException("命令重复注册：serverType:"
@@ -54,10 +54,6 @@ public class GameMessageRegisterFactory {
 			}
 		}
 		this.messageClassMap = messageClassMap;
-	}
-
-	public boolean containsGameMessage(int messageId) {
-		return this.messageClassMap.containsKey(messageId);
 	}
 
 	/**
@@ -71,11 +67,12 @@ public class GameMessageRegisterFactory {
 	 * @Date 2018年6月15日 下午4:34:19
 	 *
 	 */
-	public IGameMessage getGameMessage(int messageUniqueId)
+	public IGameMessage getGameMessage(short messageId,short serverType)
 			throws InstantiationException, IllegalAccessException {
-		Class<? extends IGameMessage> clazz = this.messageClassMap.get(messageUniqueId);
+		int id = MessageIdUtil.getMessageUniqueId(serverType, messageId);
+		Class<? extends IGameMessage> clazz = this.messageClassMap.get(id);
 		if (clazz == null) {
-			logger.warn("找不到对应的GameMessage class,serverType:{},messageId:{}", MessageIdUtil.getServerType(messageUniqueId),MessageIdUtil.getMessageId(messageUniqueId));
+			logger.warn("找不到对应的GameMessage class,serverType:{},messageId:{}", serverType,messageId);
 			return null;
 		}
 		return clazz.newInstance();

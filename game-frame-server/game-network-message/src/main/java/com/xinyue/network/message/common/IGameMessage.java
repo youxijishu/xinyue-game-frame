@@ -1,10 +1,10 @@
 package com.xinyue.network.message.common;
 
-import com.xinyue.network.message.inner.InnerMessageHeader;
-
 public interface IGameMessage {
 	
-	InnerMessageHeader getMessageHead();
+	GameMessageHead getMessageHead();
+	
+	void setMessageHead(GameMessageHead messageHead);
 
 	byte[] encodeBody() throws Exception;
 

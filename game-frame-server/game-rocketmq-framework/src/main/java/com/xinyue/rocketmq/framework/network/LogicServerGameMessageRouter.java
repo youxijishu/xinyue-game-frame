@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.network.EnumServerType;
+import com.xinyue.network.message.InnerMessageCodecFactory;
 import com.xinyue.network.message.common.GameMessageMetaData;
 import com.xinyue.network.message.common.IGameMessage;
-import com.xinyue.network.message.inner.InnerMessageCodecFactory;
 import com.xinyue.network.message.inner.InnerMessageHeader;
 import com.xinyue.rocketmq.GameMessageRouter;
 import com.xinyue.rocketmq.RocketmqConfig;
