@@ -10,7 +10,10 @@ import java.util.Set;
  */
 public enum EnumServerType {
 	
-	GAME_SERVER((short) 2001, "游戏服务"),;
+	GAME_SERVER((short) 2001, "游戏服务")
+	,
+	
+	;
 	private short serverType;
 	private String desc;
 

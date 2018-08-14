@@ -1,20 +1,15 @@
-logging: 
+logging:
   config: file:config/log4j2.xml
 spring:
   application:
     name: gate-server
 game:
-  server :
-    serverId: 1001
+  server:
     port: 8809
     bossThreads: 1
     workThreads: 16
     idleTime: 300
     connectTimeout: 10
-    # 某个服务类型对应的服务器id列表，key是服务类型，比如背包服务，而且这个服务可以部分多台，value就是每台服务器的serverId
-    serverTypeMap: 
-      2001: [2001,2001]
-      
   rocketmq:
     instance-name: GateServer
     consumer-group-name: GateMessageConsumerGroup
@@ -24,4 +19,18 @@ game:
     publish-topic-queue-num: 8
     name-server-addr: 127.0.0.1:9876
     publish-group-name: GateMessageProduceGrooup
+eureka:
+  instance:
+    app-group-name: gate-server-group
+    appname: gate-server-1
+    instance-id: 101-1
+    prefer-ip-address: true
+    ip-address: 192.168.0.192
+  client:
+    fetch-registry: true
+    registry-fetch-interval-seconds: 15
+    initial-instance-info-replication-interval-seconds: 15
+    instance-info-replication-interval-seconds: 15
     
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/

@@ -29,7 +29,7 @@ public class GateMessageSubscibeListener implements MessageListenerConcurrently 
 			buf.markReaderIndex();
 			roleId = buf.readLong();
 			buf.resetReaderIndex();
-			channelService.writeMessage(roleId, buf);
+			//channelService.writeMessage(roleId, buf);
 		}
 		System.out.println("网关收到逻辑服务消息：" + msgs.get(0).getBody().length);
 		return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

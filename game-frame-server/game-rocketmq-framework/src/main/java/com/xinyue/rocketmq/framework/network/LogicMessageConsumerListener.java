@@ -38,8 +38,8 @@ public class LogicMessageConsumerListener implements MessageListenerConcurrently
 				ByteBuf buf = NettyUtil.createBuf(body.length);
 				buf.writeBytes(body);
 				try {
-					IGameMessage gameMessage = InnerMessageCodecFactory.getInstance().decode(buf);
-					this.gameChannelGroupManager.fireReadMessage(gameMessage);
+					//IGameMessage gameMessage = InnerMessageCodecFactory.getInstance().decode(buf);
+					//this.gameChannelGroupManager.fireReadMessage(gameMessage);
 				} catch (Exception e) {
 					logger.warn("消息解码错误", e);
 				}

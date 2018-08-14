@@ -6,16 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.xinyue.eureka.GlobalEurekaService;
+import com.xinyue.eureka.LocalServerInstanceService;
 import com.xinyue.gateway.config.ServerConfig;
+import com.xinyue.gateway.message.GateMessageHeader;
 import com.xinyue.gateway.message.IGateMessage;
 import com.xinyue.gateway.server.GateGameMessageRouter;
 import com.xinyue.gateway.service.ILogicServerService;
 import com.xinyue.network.message.InnerMessageCodecFactory;
-import com.xinyue.network.message.inner.InnerMessageHeader;
-import com.xinyue.utils.NettyUtil;
+import com.xinyue.network.message.common.GameMessageHead;
+import com.xinyue.rocketmq.tag.GameMessageTag;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -34,37 +36,37 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 	private ILogicServerService logicServerService;
 	@Autowired
 	private ServerConfig serverConfig;
-
+	@Autowired
+	private GlobalEurekaService gateEurekaService;
+	@Autowired
+	private LocalServerInstanceService localServerInstanceService;
 	@Autowired
 	private GateGameMessageRouter gameMessageRouter;
+	
     
+	@Autowired
+	
     
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		if (msg instanceof IGateMessage) {
 			IGateMessage gateMessage = (IGateMessage) msg;
-			int initialCapacity = 
-			ByteBuf byteBuf = UnpooledByteBufAllocator.DEFAULT.buffer(initialCapacity);
-			byte[] body = messageInfo.getBody();
-			InnerMessageHeader header = new InnerMessageHeader();
-			header.setClientIp(NettyUtil.getIp(ctx));
-			header.setMessageId(messageInfo.getMessageHead().getMessageId());
-			header.setRoleId(messageInfo.getRoleId());
-			header.setUserId(messageInfo.getUserId());
-			header.setSeqId(messageInfo.getMessageHead().getSeqId());
-			header.setServerType(messageInfo.getMessageHead().getServerType());
-			header.setFromServerId(serverConfig.getServerId());
-			// 计算toServerId
-			short serverId = logicServerService.getToServerId(header.getRoleId(), header.getServerType());
-			header.setToServerId(serverId);
-			ByteBuf buf = codecFactory.gateEncode(header, body);
-			// 这里使用消息队列向业务服务发送消息。
-			String tag = header.getToLogicServerMessageTag();
+			GateMessageHeader gateMessageHeader = gateMessage.getHeader();
+			GameMessageHead messageHead = new GameMessageHead();
+			int serverType = gateMessageHeader.getServerType();
+			int messageId = gateMessageHeader.getMessageId();
+			long roleId = gateMessageHeader.getRoleId();
+			int serverId  = gateEurekaService.selectServerId(roleId,serverType);
+			int localServerId = localServerInstanceService.getLocalServerId();
+			messageHead.setFromeServerId((short)localServerId);
 			
-			body = new byte[buf.readableBytes()];
-			buf.readBytes(body);
-			gameMessageRouter.sendMessage(body, tag);
-			logger.debug("send messge->serverId: {},messageId: {},serverType: {}",serverId,messageInfo.getMessageHead().getMessageId(),messageInfo.getMessageHead().getServerType());
+			ByteBuf body = gateMessage.getBody();
+			//把从客户端收到的包转化为向业务服务发送的包。
+			ByteBuf buf = InnerMessageCodecFactory.getInstance().gateToGameServerEncode(messageHead, body);
+			GameMessageTag gameMessageTag = new GameMessageTag(serverType, messageId, serverId);
+			
+			
+			
 		}
 	}
 	

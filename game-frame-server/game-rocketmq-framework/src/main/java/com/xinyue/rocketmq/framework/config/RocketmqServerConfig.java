@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix="game.server")
-public class ServerConfig {
+public class RocketmqServerConfig {
 	private int serverId;
 	private int threads = Runtime.getRuntime().availableProcessors() * 2 + 1;
 	

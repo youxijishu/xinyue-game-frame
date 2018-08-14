@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import com.xinyue.rocketmq.framework.config.ServerConfig;
+import com.xinyue.rocketmq.framework.config.RocketmqServerConfig;
 import com.xinyue.rocketmq.framework.gamechannel.GameChannel;
 import com.xinyue.rocketmq.framework.gamechannel.GameChannelGroupManager;
 import com.xinyue.rocketmq.framework.gamechannel.IGameChannelInit;
@@ -26,7 +26,7 @@ public class GameApplication {
 	private GameMessageMethodInvokerMapping gameMessageMethodInvokerMapping;
 	private static GameApplication instance = null;
 	@Autowired
-	private ServerConfig serverConfig;
+	private RocketmqServerConfig serverConfig;
 	@Autowired
 	private ApplicationContext applicationContext;
 
@@ -61,7 +61,7 @@ public class GameApplication {
 		return applicationContext;
 	}
 
-	public ServerConfig getServerConfig() {
+	public RocketmqServerConfig getServerConfig() {
 		return serverConfig;
 	}
 
