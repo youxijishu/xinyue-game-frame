@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +30,6 @@ public class GlobalEurekaService extends AbstractGameServerService implements Ap
 
 	private Map<Integer, List<Integer>> logicServerMap = new ConcurrentHashMap<>();
 	private static Logger logger = LoggerFactory.getLogger(GlobalEurekaService.class);
-
-	
-	@Autowired
-	private ApplicationContext context;
 	
 	@PostConstruct
 	public void init() {
@@ -80,13 +75,16 @@ public class GlobalEurekaService extends AbstractGameServerService implements Ap
 	}
 
 	public int selectServerId(long roleId, int serverType) {
-		return 0;
+		List<Integer> serverIds = this.logicServerMap.get(serverType);
+		int index = (int) (roleId % serverIds.size());
+		int serverId = serverIds.get(index);
+		return serverId;
 	}
 
 	@Override
 	public void onApplicationEvent(HeartbeatEvent event) {
 		
-		System.out.println(event.toString());
+		this.refreshLogicServerInstance();
 	}
 
 }

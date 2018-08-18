@@ -1,4 +1,4 @@
-package com.xinyue.rocketmq.tag;
+package com.xinyue.rocketmq;
 
 /**
  * 向rocketmq发送消息时的tag组成信息类

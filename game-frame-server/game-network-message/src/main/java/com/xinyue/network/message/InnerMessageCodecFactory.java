@@ -9,7 +9,6 @@ import com.xinyue.utils.StringUtil;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.util.CharsetUtil;
 
 /**
@@ -62,7 +61,7 @@ public class InnerMessageCodecFactory {
 
 	private ByteBuf writeMessageHeader(GameMessageHead messageHead, int bodySize) {
 		int initialCapacity = Fix_Len + messageHead.getIp().length() + bodySize;
-		ByteBuf byteBuf = UnpooledByteBufAllocator.DEFAULT.buffer(initialCapacity);
+		ByteBuf byteBuf = Unpooled.buffer(initialCapacity);
 		byteBuf.writeLong(messageHead.getRoleId());
 		byteBuf.writeLong(messageHead.getUserId());
 		byteBuf.writeInt(messageHead.getSeqId());
