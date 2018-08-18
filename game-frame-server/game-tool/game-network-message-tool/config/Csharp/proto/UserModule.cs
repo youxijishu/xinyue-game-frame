@@ -10,54 +10,6 @@
 // Generated from: config/java_proto/UserModule.proto
 namespace com.xinyue.network.message.impl.proto
 {
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ConnectConfirmRequestModel")]
-  public partial class ConnectConfirmRequestModel : global::ProtoBuf.IExtensible
-  {
-    public ConnectConfirmRequestModel() {}
-    
-    private string _token;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"token", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string token
-    {
-      get { return _token; }
-      set { _token = value; }
-    }
-    private long _userId;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"userId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public long userId
-    {
-      get { return _userId; }
-      set { _userId = value; }
-    }
-    private long _roleId;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"roleId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public long roleId
-    {
-      get { return _roleId; }
-      set { _roleId = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ConnectConfirmResponseModel")]
-  public partial class ConnectConfirmResponseModel : global::ProtoBuf.IExtensible
-  {
-    public ConnectConfirmResponseModel() {}
-    
-    private bool _result;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"result", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public bool result
-    {
-      get { return _result; }
-      set { _result = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SignRequestModel")]
   public partial class SignRequestModel : global::ProtoBuf.IExtensible
   {

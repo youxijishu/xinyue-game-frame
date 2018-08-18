@@ -3,8 +3,18 @@ package com.xinyue.network;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 服务类型的枚举
+ * 
+ * @author 心悦网络科技有限公司 王广帅
+ *
+ * @Date 2018年8月11日 上午1:27:06
+ */
 public enum EnumServerType {
-	GAME_SERVER((short) 2001, "游戏服务"),;
+	GATE((short) 1001, "网关服务"), 
+	GAME_SERVER((short) 2001, "游戏服务"),
+
+	;
 	private short serverType;
 	private String desc;
 
@@ -25,9 +35,10 @@ public enum EnumServerType {
 	public String toString() {
 		return serverType + ":" + desc;
 	}
-	public static EnumServerType getServerType(short serverType){
-		for(EnumServerType type : EnumServerType.values()){
-			if(type.getServerType() == serverType){
+
+	public static EnumServerType getServerType(short serverType) {
+		for (EnumServerType type : EnumServerType.values()) {
+			if (type.getServerType() == serverType) {
 				return type;
 			}
 		}

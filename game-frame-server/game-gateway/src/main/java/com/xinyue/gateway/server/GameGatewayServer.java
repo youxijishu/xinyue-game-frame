@@ -11,6 +11,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.gateway.config.ServerConfig;
+import com.xinyue.gateway.server.codec.GameMessageDecode;
+import com.xinyue.gateway.server.codec.GameMessageEncode;
+import com.xinyue.gateway.server.confirm.GameGatewayConnectHandler;
+import com.xinyue.gateway.server.dispatcher.DispatchMessageHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -33,14 +37,16 @@ public class GameGatewayServer {
 	private ServerConfig serverConfig;
 	@Autowired
 	private ApplicationContext applicationContext;
-    @PostConstruct
-	public void init(){
-    	bossGroup = new NioEventLoopGroup(serverConfig.getBossThreads());
+
+	@PostConstruct
+	public void init() {
+		bossGroup = new NioEventLoopGroup(serverConfig.getBossThreads());
 		workerGroup = new NioEventLoopGroup(serverConfig.getWorkThreads());
 	}
+
 	public void startServer() {
 		int port = this.serverConfig.getPort();
-		
+
 		try {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
@@ -64,16 +70,18 @@ public class GameGatewayServer {
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
 				ChannelPipeline p = ch.pipeline();
-				GameGatewayConnectHandler gameGatewayConnectHandler = applicationContext.getBean(GameGatewayConnectHandler.class);
+				GameGatewayConnectHandler gameGatewayConnectHandler = applicationContext
+						.getBean(GameGatewayConnectHandler.class);
 				GameMessageDecode gameMessageDecode = applicationContext.getBean(GameMessageDecode.class);
 				GameMessageEncode gameMessageEncode = applicationContext.getBean(GameMessageEncode.class);
-				DispatchMessageHandler dispatchMessageHandler = applicationContext.getBean(DispatchMessageHandler.class);
-				//添加接收消息包的handler
-				p.addLast(new LengthFieldBasedFrameDecoder(1024 * 10, 0, 4, -4, 0));
+				DispatchMessageHandler dispatchMessageHandler = applicationContext
+						.getBean(DispatchMessageHandler.class);
+				// 添加接收消息包的handler
+				p.addLast(new LengthFieldBasedFrameDecoder(1024 * 10, 0, 2, -2, 0));
 				p.addLast(gameMessageDecode);
 				p.addLast(gameMessageEncode);
-				p.addLast(gameGatewayConnectHandler);
-				
+				p.addLast(GameGatewayConnectHandler.class.getName(), gameGatewayConnectHandler);
+
 				p.addLast(dispatchMessageHandler);
 			}
 		};

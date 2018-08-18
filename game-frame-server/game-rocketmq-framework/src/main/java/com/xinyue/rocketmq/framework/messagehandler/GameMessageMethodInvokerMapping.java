@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.network.message.common.AbstractGameMessage;
+import com.xinyue.network.message.common.GameMessageHead;
 import com.xinyue.network.message.common.GameMessageMetaData;
 import com.xinyue.network.message.common.IGameMessage;
 import com.xinyue.network.message.common.MessageIdUtil;
@@ -63,7 +64,7 @@ public class GameMessageMethodInvokerMapping {
 						throw new IllegalArgumentException("消息处理方法的类型不对，没有GameMessageId注解,方法名："
 								+ obj.getClass().getName() + "#" + method.getName());
 					}
-					int messageUniqueId = MessageIdUtil.getMessageUniqueId(messageMetaData.serverType(),
+					int messageUniqueId = MessageIdUtil.getMessageUniqueId(messageMetaData.serverType().getServerType(),
 							messageMetaData.messageId());
 					@SuppressWarnings("unchecked")
 					Class<? extends IGameMessage> messageClass = (Class<? extends IGameMessage>) commandClass;
@@ -87,7 +88,9 @@ public class GameMessageMethodInvokerMapping {
 	 *
 	 */
 	public void Invoker(IGameMessage gameMessage, GameChannelHandlerContext ctx) {
-		Integer key = gameMessage.getMessageHead().getMessageUniqueId();
+		GameMessageHead head = gameMessage.getMessageHead();
+		Integer key =  MessageIdUtil.getMessageUniqueId(head.getServerType(),
+				head.getMessageId());
 		MethodInvokerInfo methodInvokerInfo = this.methodMap.get(key);
 		if (methodInvokerInfo != null) {
 			Object obj = methodInvokerInfo.getObject();

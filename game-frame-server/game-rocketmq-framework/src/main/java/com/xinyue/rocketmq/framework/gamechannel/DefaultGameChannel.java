@@ -1,5 +1,8 @@
 package com.xinyue.rocketmq.framework.gamechannel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xinyue.network.message.common.IGameMessage;
 
 import io.netty.util.concurrent.EventExecutor;
@@ -10,6 +13,7 @@ public class DefaultGameChannel implements GameChannel {
 	private EventExecutor executor;
 	private volatile boolean isClose;
 	private Unsafe unsafe;
+	private Logger logger = LoggerFactory.getLogger(DefaultGameChannel.class);
 
 	public DefaultGameChannel(GameChannelGroup channelGroup, long channelId) {
 		this.channelId = channelId;
@@ -80,7 +84,11 @@ public class DefaultGameChannel implements GameChannel {
 
 		@Override
 		public void writeMessage(IGameMessage gameMessage) {
-			channelGroup.sendMessage(gameMessage);
+			try {
+				channelGroup.sendMessage(gameMessage);
+			} catch (Exception e) {
+				logger.error("消息发送失败，{}", gameMessage, e);
+			}
 		}
 
 		@Override

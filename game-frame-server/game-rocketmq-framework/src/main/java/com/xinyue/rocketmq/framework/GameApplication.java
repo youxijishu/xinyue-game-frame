@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import com.xinyue.rocketmq.framework.config.ServerConfig;
+import com.xinyue.rocketmq.framework.config.RocketmqServerConfig;
 import com.xinyue.rocketmq.framework.gamechannel.GameChannel;
 import com.xinyue.rocketmq.framework.gamechannel.GameChannelGroupManager;
 import com.xinyue.rocketmq.framework.gamechannel.IGameChannelInit;
 import com.xinyue.rocketmq.framework.messagehandler.GameMessageMethodInvokerMapping;
 import com.xinyue.rocketmq.framework.messagehandler.LogicServerMessagerHandler;
-import com.xinyue.rocketmq.framework.network.LogicServerGameMessageRouter;
 
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
@@ -21,12 +20,10 @@ public class GameApplication {
 	private GameChannelGroupManager gameChannelGroupManager;
 	private EventExecutorGroup eventExecutorGroup;
 	@Autowired
-	private LogicServerGameMessageRouter gameMessageRouter;
-	@Autowired
 	private GameMessageMethodInvokerMapping gameMessageMethodInvokerMapping;
 	private static GameApplication instance = null;
 	@Autowired
-	private ServerConfig serverConfig;
+	private RocketmqServerConfig serverConfig;
 	@Autowired
 	private ApplicationContext applicationContext;
 
@@ -40,7 +37,8 @@ public class GameApplication {
 		gameMessageMethodInvokerMapping.scanGameMessageMapping();
 		int threads = serverConfig.getThreads();
 		this.eventExecutorGroup = new DefaultEventExecutorGroup(threads);
-		gameMessageRouter.start();
+		LogicMessageRouter logicMessageRouter = applicationContext.getBean(LogicMessageRouter.class);
+		MessageSendFactory sendFactory = new LogicMessageSendFactory(logicMessageRouter);
 		IGameChannelInit gameChannelInit = new IGameChannelInit() {
 
 			@Override
@@ -50,7 +48,7 @@ public class GameApplication {
 				channel.pipeline().addLast("gameMessageHandler", logicServerMessagerHandler);
 			}
 		};
-		gameChannelGroupManager.init(gameMessageRouter, eventExecutorGroup, gameChannelInit);
+		gameChannelGroupManager.init(sendFactory, eventExecutorGroup, gameChannelInit);
 	}
 
 	public EventExecutorGroup getEventExecutorGroup() {
@@ -61,7 +59,7 @@ public class GameApplication {
 		return applicationContext;
 	}
 
-	public ServerConfig getServerConfig() {
+	public RocketmqServerConfig getServerConfig() {
 		return serverConfig;
 	}
 

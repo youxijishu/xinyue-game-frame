@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import org.springframework.util.Base64Utils;
 
 public class TokenUtil {
+	
 	private static final String EncryptKey = "xinyue_token";
 
 	/**
@@ -52,19 +53,8 @@ public class TokenUtil {
 		return tokenModel;
 	}
 
-	public static void main(String[] args) throws Exception {
-		long start = System.currentTimeMillis();
-		for (int i = 0; i < 100000; i++) {
-			TokenModel tokenModel = new TokenModel(123, 124, 125);
-			String token = TokenUtil.createToken(tokenModel);
-			// System.out.println(token);
-			tokenModel = TokenUtil.getTokenModel(token);
-			// System.out.println(tokenModel);
-		}
-		long end = System.currentTimeMillis();
-		System.out.println(end - start);
-	}
 
+	
 	public static class TokenModel {
 		private long userId;
 		private long roleId;

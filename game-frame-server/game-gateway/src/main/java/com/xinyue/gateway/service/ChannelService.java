@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 
-import com.xinyue.network.message.common.IGameMessage;
+import com.xinyue.gateway.message.IGateMessage;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
@@ -24,6 +24,7 @@ import io.netty.util.concurrent.EventExecutor;
 @Service
 public class ChannelService {
 	private EventLoopGroup loopGroup;
+	//这里只有获取没有写入，所以是线程安全的
 	private Map<Integer, GameChannelGroup> eventLoopMap = new HashMap<>();
 	private boolean hadInit;
 	private AtomicInteger channelCount = new AtomicInteger();
@@ -95,11 +96,11 @@ public class ChannelService {
 		}
 	}
 
-	public void writeMessage(IGameMessage message) {
-		long roleId = message.getMessageHead().getRoleId();
+	public void sendMessageToClient(IGateMessage msg) {
+		long roleId = msg.getHeader().getRoleId();
 		GameChannelGroup gameChannelGroup = this.getGameChannelGroup(roleId);
 		if (gameChannelGroup != null) {
-			gameChannelGroup.writeMessage(roleId, message);
+			gameChannelGroup.writeMessage(roleId, msg);
 		}
 	}
 

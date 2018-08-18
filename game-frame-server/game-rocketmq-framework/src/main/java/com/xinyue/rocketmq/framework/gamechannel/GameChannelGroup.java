@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xinyue.concurrent.GameTask;
 import com.xinyue.network.message.common.IGameMessage;
-import com.xinyue.rocketmq.framework.network.LogicServerGameMessageRouter;
+import com.xinyue.rocketmq.framework.MessageSendFactory;
 
 import io.netty.util.concurrent.EventExecutor;
 
@@ -24,12 +24,13 @@ public class GameChannelGroup {
 	private Map<Long, GameChannel> gameChannelMap = new HashMap<>();
 	private EventExecutor executor;
 	private IGameChannelInit channelInit;
-	private LogicServerGameMessageRouter gameMessageRouter;
+	private MessageSendFactory sendFactory;
 
-	public GameChannelGroup(LogicServerGameMessageRouter gameMessageRouter, EventExecutor executor, IGameChannelInit channelInit) {
+	public GameChannelGroup(MessageSendFactory sendFactory, EventExecutor executor, IGameChannelInit channelInit) {
 		this.executor = executor;
 		this.channelInit = channelInit;
-		this.gameMessageRouter = gameMessageRouter;
+		this.sendFactory = sendFactory;
+
 	}
 
 	private GameChannel getGameChannel(long roleId) {
@@ -94,12 +95,8 @@ public class GameChannelGroup {
 		});
 	}
 
-	public void sendMessage(IGameMessage gameMessage) {
-		try {
-			gameMessageRouter.sendMessage(gameMessage);
-		} catch (Exception e) {
-			logger.error("发送消息失败", e);
-		}
+	public void sendMessage(IGameMessage gameMessage) throws Exception {
+		sendFactory.sendMessage(gameMessage);
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.xinyue.network.message.common;
 
-import com.xinyue.network.EnumServerType;
-
 public class MessageIdUtil {
 	/**
 	 * 
@@ -13,10 +11,9 @@ public class MessageIdUtil {
 	 * @Date 2018年6月21日 下午3:05:38
 	 *
 	 */
-	public static int getMessageUniqueId(EnumServerType type,short messageId){
-		int type1 = type.getServerType();
+	public static int getMessageUniqueId(int serverType,int messageId){
 		int messageId1 = messageId;
-		return (type1 << 16) + messageId1;
+		return (serverType << 16) + messageId1;
 	}
 
 

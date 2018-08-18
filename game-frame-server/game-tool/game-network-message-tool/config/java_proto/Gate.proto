@@ -1,0 +1,8 @@
+option java_package = "com.xinyue.network.message.impl.proto";
+option java_outer_classname = "Gate";
+message GateMessageRequestModel{
+	required string message = 1;
+} 
+message GateMessageResponseModel{
+	required string result = 1;
+} 
