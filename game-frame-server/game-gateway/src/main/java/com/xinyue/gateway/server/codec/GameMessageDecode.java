@@ -40,6 +40,7 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		this.ip = NettyUtil.getIp(ctx);
+		ctx.fireChannelActive();
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class GameMessageDecode extends ChannelInboundHandlerAdapter {
 		ByteBuf byteBuf = (ByteBuf) msg;
 		try {
 			short total = byteBuf.readShort();
-			logger.debug("ip:{},channelId:{},接收字节大小:{}", NettyUtil.getIp(ctx), NettyUtil.getChannelId(ctx), total);
+			logger.debug("ip:{},channelId:{},接收字节大小:{}", ip, NettyUtil.getChannelId(ctx), total);
 
 			int seqId = byteBuf.readInt();
 			short messageId = byteBuf.readShort();

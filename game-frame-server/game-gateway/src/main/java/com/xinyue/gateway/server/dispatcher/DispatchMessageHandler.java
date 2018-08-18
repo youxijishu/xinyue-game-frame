@@ -38,8 +38,6 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 	@Autowired
 	private GateMessageRouter messageRouter;
 
-	@Autowired
-
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		if (msg instanceof IGateMessage) {

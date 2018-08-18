@@ -56,7 +56,7 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 		this.clientIp = NettyUtil.getIp(ctx);
 		String channelId = ChannelUtil.getChannelId(ctx);
 		logger.debug("新建连接,channelId {}，clientIp:{},当前连接数:[{}]", channelId, clientIp, channelCount.incrementAndGet());
-		int timeout = serverConfig.getConnectTimeout();
+		int timeout = serverConfig.getConnectTimeout() * 100;
 		// 添加一个延迟定时器，过一会检测连接是否验证成功
 		waitConnectConfirmFuture = ctx.executor().schedule(() -> {
 			if (gateUserInfo == null) {
@@ -102,9 +102,10 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 					result.put("result", 1);
 					result.put("type", ConfirmType);
 					ctx.writeAndFlush(gateMessage);
+					logger.debug("channel [{}],ip [{}]  role [{}] 连接验证成功", ChannelUtil.getChannelId(ctx), clientIp,
+							gateUserInfo.getRoleId());
 				}
-				logger.debug("channel [{}],ip [{}]  role [{}] 连接验证成功", ChannelUtil.getChannelId(ctx), clientIp,
-						gateUserInfo.getRoleId());
+
 			} else {
 				ctx.fireChannelRead(msg);
 			}

@@ -33,7 +33,7 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(GameMessageEncode.class);
 	InnerMessageCodecFactory codecFactory = InnerMessageCodecFactory.getInstance();
 	// 固定长度
-	private final static int Fix_len = 11;
+	private final static int Fix_len = 13;
 
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
@@ -51,8 +51,7 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 			ctx.writeAndFlush(buf);
 			promise.setSuccess();
 			logger.debug("send to cleint => {}", gateLocalMessage);
-		}
-		if (msg instanceof IGateMessage) {
+		} else if (msg instanceof IGateMessage) {
 			IGateMessage gateMessage = (IGateMessage) msg;
 
 			ByteBuf body = gateMessage.getBody();
@@ -60,8 +59,6 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 			ctx.writeAndFlush(buf);
 			promise.setSuccess();
 			logger.debug("send to cleint => {}", gateMessage);
-		} else {
-			ctx.fireChannelRead(msg);
 		}
 	}
 
@@ -74,6 +71,7 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 		buf.writeShort(total);
 		buf.writeInt(header.getSeqId());
 		buf.writeShort(header.getMessageId());
+		buf.writeShort(header.getServerType());
 		buf.writeShort(header.getErrorCode());
 		buf.writeByte(header.getIsZip());
 		buf.writeBytes(body);

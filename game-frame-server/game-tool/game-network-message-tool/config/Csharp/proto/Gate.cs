@@ -7,37 +7,37 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from: config/java_proto/UserModule.proto
+// Generated from: config/java_proto/Gate.proto
 namespace com.xinyue.network.message.impl.proto
 {
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SignRequestModel")]
-  public partial class SignRequestModel : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GateMessageRequestModel")]
+  public partial class GateMessageRequestModel : global::ProtoBuf.IExtensible
   {
-    public SignRequestModel() {}
+    public GateMessageRequestModel() {}
     
-    private long _RoleId;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"RoleId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public long RoleId
+    private string _message;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"message", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string message
     {
-      get { return _RoleId; }
-      set { _RoleId = value; }
+      get { return _message; }
+      set { _message = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SignResponseModel")]
-  public partial class SignResponseModel : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GateMessageResponseModel")]
+  public partial class GateMessageResponseModel : global::ProtoBuf.IExtensible
   {
-    public SignResponseModel() {}
+    public GateMessageResponseModel() {}
     
-    private bool _Result;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Result", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public bool Result
+    private string _result;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"result", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string result
     {
-      get { return _Result; }
-      set { _Result = value; }
+      get { return _result; }
+      set { _result = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
