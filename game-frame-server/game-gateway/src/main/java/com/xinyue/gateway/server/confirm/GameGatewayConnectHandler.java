@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xinyue.gateway.config.ServerConfig;
-import com.xinyue.gateway.message.GateMessageHeader;
-import com.xinyue.gateway.message.IGateMessage;
-import com.xinyue.gateway.server.codec.MessasgeBodyDecode;
+import com.xinyue.gateway.message.GateLocalMessage;
 import com.xinyue.gateway.server.model.GateError;
 import com.xinyue.gateway.server.model.GateUserInfo;
 import com.xinyue.gateway.service.ChannelService;
@@ -45,21 +44,20 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 	private ServerConfig serverConfig;
 	@Autowired
 	private ChannelService channelService;
-	//连接认证的消息id
-	private final static short ConfirmMessageId = 1;
-	
-	
-	private boolean isConfirmMessage(short messageId){
-		return messageId == ConfirmMessageId;
+	// 连接认证的消息id
+	private final static short ConfirmType = 1;
+
+	private boolean isConfirmMessage(int type) {
+		return type == ConfirmType;
 	}
-	
+
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		this.clientIp = NettyUtil.getIp(ctx);
 		String channelId = ChannelUtil.getChannelId(ctx);
 		logger.debug("新建连接,channelId {}，clientIp:{},当前连接数:[{}]", channelId, clientIp, channelCount.incrementAndGet());
 		int timeout = serverConfig.getConnectTimeout();
-		//添加一个延迟定时器，过一会检测连接是否验证成功
+		// 添加一个延迟定时器，过一会检测连接是否验证成功
 		waitConnectConfirmFuture = ctx.executor().schedule(() -> {
 			if (gateUserInfo == null) {
 				logger.warn("客户端：{} 连接成功之后没有认证，关闭连接:{}", clientIp, channelId);
@@ -81,29 +79,46 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		// 处理连接认证消息
-		if(msg instanceof IGateMessage){
-			IGateMessage gateMessage = (IGateMessage) msg;
-			GateMessageHeader header = gateMessage.getHeader();
-			if(this.isConfirmMessage(header.getMessageId())){
+		if (msg instanceof GateLocalMessage) {
+			GateLocalMessage gateMessage = (GateLocalMessage) msg;
+			if (gateMessage.getBody() == null) {
+				logger.error("网关收到处理的消息包体为空");
+				return;
+			}
+			JSONObject param = gateMessage.getBody();
+			int type = param.getIntValue("type");
+			if (this.isConfirmMessage(type)) {
 				if (waitConnectConfirmFuture != null) {
 					waitConnectConfirmFuture.cancel(true);
 				}
-				gateUserInfo = MessasgeBodyDecode.decode(gateMessage.getBody(), GateUserInfo.class);
+				this.readGateUserInfo(param);
 				GateError gateError = this.checkToken(gateUserInfo);
-				if(gateError != null){
-					header.setErrorCode(gateError.getErrorCode());
+				if (gateError != null) {
+					logger.warn("{} 验证没有通过，关闭连接,{}", clientIp, gateUserInfo);
+					ctx.close();
+				} else {
+					channelService.addChannel(gateUserInfo.getRoleId(), ctx.channel());
+					JSONObject result = new JSONObject();
+					result.put("result", 1);
+					result.put("type", ConfirmType);
+					ctx.writeAndFlush(gateMessage);
 				}
-				channelService.addChannel(gateUserInfo.getRoleId(), ctx.channel());
-				ctx.writeAndFlush(gateMessage);
-				logger.debug("channel [{}],ip [{}]  role [{}] 连接验证成功",ChannelUtil.getChannelId(ctx),clientIp,gateUserInfo.getRoleId());
+				logger.debug("channel [{}],ip [{}]  role [{}] 连接验证成功", ChannelUtil.getChannelId(ctx), clientIp,
+						gateUserInfo.getRoleId());
 			} else {
 				ctx.fireChannelRead(msg);
-				ctx.close();
 			}
 		} else {
 			ctx.fireChannelRead(msg);
 		}
-		
+
+	}
+
+	private void readGateUserInfo(JSONObject param) {
+		gateUserInfo = new GateUserInfo();
+		gateUserInfo.setRoleId(param.getLongValue("roleId"));
+		gateUserInfo.setUserId(param.getLongValue("userId"));
+		gateUserInfo.setToken(param.getString("token"));
 	}
 
 	/**
@@ -116,7 +131,7 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 	 *
 	 */
 	private GateError checkToken(GateUserInfo userInfo) {
-		
+
 		TokenModel tokenModel = TokenUtil.getTokenModel(userInfo.getToken());
 		if (tokenModel == null) {
 			logger.warn("token解析为空，有异常，说明token不对");
@@ -128,7 +143,7 @@ public class GameGatewayConnectHandler extends ChannelInboundHandlerAdapter {
 			return GateError.TOKEN_EXPIRE;
 		}
 		if (tokenModel.getUserId() == userInfo.getUserId() && tokenModel.getRoleId() == userInfo.getRoleId()) {
-			
+
 			return null;
 		} else {
 			logger.warn("token错误，用户id和角色id和token不匹配");

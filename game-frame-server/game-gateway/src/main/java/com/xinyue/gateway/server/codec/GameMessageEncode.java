@@ -5,13 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.xinyue.gateway.message.GateLocalMessage;
 import com.xinyue.gateway.message.GateMessageHeader;
 import com.xinyue.gateway.message.IGateMessage;
 import com.xinyue.network.message.InnerMessageCodecFactory;
-import com.xinyue.utils.NettyUtil;
+import com.xinyue.network.message.impl.GateMessageResponse;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -35,34 +37,46 @@ public class GameMessageEncode extends ChannelOutboundHandlerAdapter {
 
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-
+		if (msg instanceof GateLocalMessage) {
+			GateLocalMessage gateLocalMessage = (GateLocalMessage) msg;
+			ByteBuf body = null;
+			if (gateLocalMessage.getBody() != null) {
+				String json = gateLocalMessage.getBody().toJSONString();
+				GateMessageResponse response = new GateMessageResponse();
+				response.setResult(json);
+				byte[] bytes = response.encodeBody();
+				body = Unpooled.wrappedBuffer(bytes);
+			}
+			ByteBuf buf = encode(gateLocalMessage.getHeader(), body);
+			ctx.writeAndFlush(buf);
+			promise.setSuccess();
+			logger.debug("send to cleint => {}", gateLocalMessage);
+		}
 		if (msg instanceof IGateMessage) {
 			IGateMessage gateMessage = (IGateMessage) msg;
-			int total = Fix_len;
+
 			ByteBuf body = gateMessage.getBody();
-			try {
-				if (body != null) {
-					total += body.readableBytes();
-				}
-				ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(total);
-				GateMessageHeader header = gateMessage.getHeader();
-				buf.writeShort(total);
-				buf.writeInt(header.getSeqId());
-				buf.writeShort(header.getMessageId());
-				buf.writeShort(header.getErrorCode());
-				buf.writeByte(header.getIsZip());
-				buf.writeBytes(body);
-				ctx.writeAndFlush(buf);
-				promise.setSuccess();
-				logger.debug("send to cleint => {}",gateMessage);
-			} finally {
-				if(body != null){
-					NettyUtil.releaseBuf(body);
-				}
-			}
-			
+			ByteBuf buf = encode(gateMessage.getHeader(), body);
+			ctx.writeAndFlush(buf);
+			promise.setSuccess();
+			logger.debug("send to cleint => {}", gateMessage);
 		} else {
 			ctx.fireChannelRead(msg);
 		}
+	}
+
+	private ByteBuf encode(GateMessageHeader header, ByteBuf body) {
+		int total = Fix_len;
+		if (body != null) {
+			total += body.readableBytes();
+		}
+		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(total);
+		buf.writeShort(total);
+		buf.writeInt(header.getSeqId());
+		buf.writeShort(header.getMessageId());
+		buf.writeShort(header.getErrorCode());
+		buf.writeByte(header.getIsZip());
+		buf.writeBytes(body);
+		return buf;
 	}
 }

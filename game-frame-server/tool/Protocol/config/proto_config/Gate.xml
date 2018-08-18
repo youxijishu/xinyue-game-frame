@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol package="com.xinyue.network.message.impl" serverType="GATE">
+	<Structs>
+
+	</Structs>
+	<Commands>
+		<command name="GateMessage" id="1001" desc="连接认证">
+			<request>
+				<field name="message" type="string" desc="消息内容" />
+			</request>
+			<response>
+				<field name="result" type="string" desc="返回消息" />
+			</response>
+		</command>
+
+	</Commands>
+</protocol>
