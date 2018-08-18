@@ -38,12 +38,14 @@ namespace Assets.Scripts.game_network.game_message
         /// </summary>
         /// <param name="messageUniqueId"></param>
         /// <returns></returns>
-        private IGameMessage NewGameMessage(int messageUniqueId)
+        private IGameMessage NewGameMessage(int messageId,int serverType)
         {
-            Type messageType = gameMessageTypeMap[messageUniqueId];
+            int key = AbstractGameMessage.CreateGameMessageUniqueId(serverType, messageId);
+
+            Type messageType = gameMessageTypeMap[key];
             if(messageType == null)
             {
-                Debug.Log("找不到消息" + messageUniqueId + "对应的消息Type，可能是没有注册这个消息Type");
+                Debug.Log("找不到消息对象，messageId:" + messageId + ",serverType:" + serverType + "对应的消息Type，可能是没有注册这个消息Type");
                 return null;
             }
             IGameMessage gameMessage = (IGameMessage)Activator.CreateInstance(messageType);
@@ -57,11 +59,12 @@ namespace Assets.Scripts.game_network.game_message
         /// <returns></returns>
         public IGameMessage DecodeGameMessage(ByteBuf byteBuf)
         {
-            int total = byteBuf.ReadInt();
+            int total = byteBuf.ReadShort();
             int seqId = byteBuf.ReadInt();
-            int messageUniqueId = byteBuf.ReadInt();
-            int errorCode = byteBuf.ReadInt();
-          
+            short messageId = byteBuf.ReadShort();
+            short serverType = byteBuf.ReadShort();
+            int errorCode = byteBuf.ReadShort();
+            int isZip = byteBuf.ReadByte();
             byte[] body = null;
             if (errorCode == 0)
             {
@@ -70,7 +73,7 @@ namespace Assets.Scripts.game_network.game_message
                 body = new byte[bodyLen];
                 byteBuf.ReadBytes(body);    
             }
-            IGameMessage gameMessage = this.NewGameMessage(messageUniqueId);
+            IGameMessage gameMessage = this.NewGameMessage(messageId,serverType);
             if(gameMessage != null)
             {
                 gameMessage.DecodeBody(body);
@@ -79,23 +82,27 @@ namespace Assets.Scripts.game_network.game_message
             
         }
         /// <summary>
-        /// 编码客户端向服务器发送的请求消息，暂不加密，格式：total(4) + seqId(4）+ messageUniqueId(4) + body
+        /// 编码客户端向服务器发送的请求消息，暂不加密，
         /// </summary>
         /// <param name="gameMessage"></param>
         public byte[] EncodeGameMessage(IGameMessage gameMessage)
         {
             seqid++;
             gameMessage.GetMessageHeader().SeqId = seqid;
-            int total = 12;
+            int total = 19;
             byte[] body = gameMessage.EncodeBody();
             if(body != null)
             {
                 total += body.Length;
             }
+            GameMessageHeader header = gameMessage.GetMessageHeader();
             ByteBuf byteBuf = new ByteBuf(total);
-            byteBuf.WriteInt(total);
-            byteBuf.WriteInt(gameMessage.GetMessageHeader().SeqId);
-            byteBuf.WriteInt(gameMessage.GetMessageUniqueId());
+            byteBuf.WriteShort(total);
+            byteBuf.WriteInt(header.SeqId);
+            byteBuf.WriteShort(header.MessageId);
+            byteBuf.WriteLong(DateUtil.GetCurrentTimeUnix());
+            byteBuf.WriteShort((short)header.ServerType);
+            byteBuf.WriteByte(0);
             if(body != null)
             {
                 byteBuf.WriteBytes(body);

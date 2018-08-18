@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2017.3.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -283,9 +285,14 @@
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>Library\UnityAssemblies\UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\Scripts\Thirdparty\JsonNet\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\game-boot\GameBoot.cs" />
+    <Compile Include="Assets\Scripts\game-boot\gate\ConfirmInfo.cs" />
+    <Compile Include="Assets\Scripts\game-boot\gate\GateMessage.cs" />
     <Compile Include="Assets\Scripts\game-common\DateUtil.cs" />
     <Compile Include="Assets\Scripts\game-common\StringUtil.cs" />
     <Compile Include="Assets\Scripts\game-network\ByteBuf.cs" />
@@ -295,13 +302,13 @@
     <Compile Include="Assets\Scripts\game-network\game-message\GameMessageHeader.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\GameMessageMeta.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message\IGameMessage.cs" />
-    <Compile Include="Assets\Scripts\game-network\game-message-impl\ConnectConfirmRequest.cs" />
-    <Compile Include="Assets\Scripts\game-network\game-message-impl\ConnectConfirmResponse.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message-impl\EnumServerType.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\GateMessageRequest.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\GateMessageResponse.cs" />
+    <Compile Include="Assets\Scripts\game-network\game-message-impl\proto\Gate.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message-impl\proto\UserModule.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message-impl\SignRequest.cs" />
     <Compile Include="Assets\Scripts\game-network\game-message-impl\SignResponse.cs" />
-    <Compile Include="Assets\Scripts\game-network\GameNetworkClient.cs" />
     <Compile Include="Assets\Scripts\game-network\GameSocket.cs" />
     <Compile Include="Assets\Scripts\game-network\GameSocketState.cs" />
     <Compile Include="Assets\Scripts\game-network-frame\GameNetworkClient.cs" />

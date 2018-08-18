@@ -8,6 +8,7 @@ namespace Assets.Scripts.game_network.game_message_impl
 {
     public enum EnumServerType
     {   
-        GAME_SERVER = 2001
+        GAME_SERVER = 2001,
+        GATE = 1001
     }
 }
