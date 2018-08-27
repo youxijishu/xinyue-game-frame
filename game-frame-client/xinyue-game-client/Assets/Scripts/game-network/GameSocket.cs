@@ -127,7 +127,7 @@ namespace Assets.Scripts.game_network
                                 }
                                 int readables = localBytesBuffer.ReadableBytes();
                                 localBytesBuffer.MarkReaderIndex();
-                                int total = localBytesBuffer.ReadInt();
+                                int total = localBytesBuffer.ReadShort();
 
                                
                                 if (total <= readables)

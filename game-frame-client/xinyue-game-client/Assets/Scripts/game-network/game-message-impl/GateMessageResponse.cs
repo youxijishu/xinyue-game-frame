@@ -6,18 +6,18 @@ using com.xinyue.network.message.impl.proto;
 //河南心悦网络科技有限公司   王广帅
 namespace Assets.Scripts.game_network.game_message_impl
 {
-	[GameMessageMeta(1001,EnumMessageType.RESPONSE,EnumServerType.GAME_SERVER)]
-	public class ConnectConfirmResponse : AbstractGameMessage
+	[GameMessageMeta(1001,EnumMessageType.RESPONSE,EnumServerType.GATE)]
+	public class GateMessageResponse : AbstractGameMessage
 	{
 	
-		// 是否成功
-		public bool result;
+		// 返回消息
+		public string result;
 		
-		public ConnectConfirmResponse()
+		public GateMessageResponse()
 		{
 		
 		}
-		public ConnectConfirmResponse(bool result){
+		public GateMessageResponse(string result){
 			this.result = result;		
 		}
 		
@@ -25,7 +25,7 @@ namespace Assets.Scripts.game_network.game_message_impl
 		{
 			
 			
-			ConnectConfirmResponseModel entity = new ConnectConfirmResponseModel();
+			GateMessageResponseModel entity = new GateMessageResponseModel();
 			
 			entity.result = this.result;
 			 MemoryStream ms = new MemoryStream();
@@ -41,7 +41,7 @@ namespace Assets.Scripts.game_network.game_message_impl
 			
 			MemoryStream ms = new MemoryStream(bytes);
 			using(ms){
-				ConnectConfirmResponseModel entity = Serializer.Deserialize<ConnectConfirmResponseModel>(ms);
+				GateMessageResponseModel entity = Serializer.Deserialize<GateMessageResponseModel>(ms);
 							this.result = entity.result;
 			}
 		}

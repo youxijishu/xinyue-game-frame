@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.game_network.game_message_impl;
+﻿using Assets.Scripts.game_boot;
+using Assets.Scripts.game_network.game_message_impl;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -15,7 +17,7 @@ public class GameBoot : MonoBehaviour {
         client = new GameNetworkClient();
         client.Init();
 
-        token = userId + "," + roleId + "," + (DateUtil.GetCurrentTimeUnix() + 203 * 1000);
+        token = userId + "," + roleId + "," + (DateUtil.GetCurrentTimeUnix() + 2003 * 1000);
         //StartCoroutine("Sign");
 
 	}
@@ -30,11 +32,14 @@ public class GameBoot : MonoBehaviour {
         client.CloseSocket();
         client.OnConnectedToServer("192.168.0.192", 8809);
         Thread.Sleep(3000);
-        ConnectConfirmRequest request = new ConnectConfirmRequest();
-        request.token = this.token;
-        request.userId = this.userId;
-        request.roleId = this.roleId;
-        
+        ConfirmInfo confirmInfo = new ConfirmInfo();
+        confirmInfo.type = 1;
+        confirmInfo.token = this.token;
+        confirmInfo.userId = this.userId;
+        confirmInfo.roleId = this.roleId;
+        string json = JsonConvert.SerializeObject(confirmInfo);
+        GateMessageRequest request = new GateMessageRequest();
+        request.message = json;
         client.SendGameMessage(request);
         
     }
