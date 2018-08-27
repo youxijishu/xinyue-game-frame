@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xinyue.web.gateway.balance.config.GatewayServerConfig;
@@ -20,7 +19,7 @@ import com.xinyue.web.gateway.balance.config.GatewayServerInfo;
 @Service
 public class GatewaybalanceService implements IGatewaybalanceService {
 	private static final Logger logger = LoggerFactory.getLogger(GatewaybalanceService.class);
-	@Autowired
+	// @Autowired
 	private GatewayServerConfig gatewayServerConfig;
 
 	@Override

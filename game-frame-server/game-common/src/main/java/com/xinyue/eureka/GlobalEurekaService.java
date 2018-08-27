@@ -30,10 +30,10 @@ public class GlobalEurekaService extends AbstractGameServerService implements Ap
 
 	private Map<Integer, List<Integer>> logicServerMap = new ConcurrentHashMap<>();
 	private static Logger logger = LoggerFactory.getLogger(GlobalEurekaService.class);
-	
+
 	@PostConstruct
 	public void init() {
-		
+
 		eurekaClient.registerEventListener(new EurekaEventListener() {
 
 			@Override
@@ -76,6 +76,9 @@ public class GlobalEurekaService extends AbstractGameServerService implements Ap
 
 	public int selectServerId(long roleId, int serverType) {
 		List<Integer> serverIds = this.logicServerMap.get(serverType);
+		if (serverIds == null) {
+			return -1;
+		}
 		int index = (int) (roleId % serverIds.size());
 		int serverId = serverIds.get(index);
 		return serverId;
@@ -83,7 +86,7 @@ public class GlobalEurekaService extends AbstractGameServerService implements Ap
 
 	@Override
 	public void onApplicationEvent(HeartbeatEvent event) {
-		
+
 		this.refreshLogicServerInstance();
 	}
 

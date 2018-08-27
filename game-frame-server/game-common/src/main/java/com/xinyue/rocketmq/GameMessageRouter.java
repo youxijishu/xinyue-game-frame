@@ -3,7 +3,6 @@ package com.xinyue.rocketmq;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.xinyue.rocketmq.config.MessageConsumeConfig;
 import com.xinyue.rocketmq.config.MessagePublishConfig;

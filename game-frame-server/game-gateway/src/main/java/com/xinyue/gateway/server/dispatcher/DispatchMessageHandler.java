@@ -13,6 +13,7 @@ import com.xinyue.gateway.message.IGateMessage;
 import com.xinyue.gateway.server.GateMessageRouter;
 import com.xinyue.network.message.InnerMessageCodecFactory;
 import com.xinyue.network.message.common.GameMessageHead;
+import com.xinyue.network.message.common.GameMessageType;
 import com.xinyue.rocketmq.GameMessageTag;
 
 import io.netty.buffer.ByteBuf;
@@ -44,13 +45,25 @@ public class DispatchMessageHandler extends ChannelInboundHandlerAdapter {
 			IGateMessage gateMessage = (IGateMessage) msg;
 			GateMessageHeader gateMessageHeader = gateMessage.getHeader();
 			GameMessageHead messageHead = new GameMessageHead();
-			int serverType = gateMessageHeader.getServerType();
-			int messageId = gateMessageHeader.getMessageId();
+			short serverType = gateMessageHeader.getServerType();
+			short messageId = gateMessageHeader.getMessageId();
 			long roleId = gateMessageHeader.getRoleId();
-			int serverId = gateEurekaService.selectServerId(roleId, serverType);
+			short serverId = (short) gateEurekaService.selectServerId(roleId, serverType);
+			if (serverId < 0) {
+				logger.error("不存在的服务类型：{}", serverType);
+				return;
+			}
 			int localServerId = localServerInstanceService.getLocalServerId();
 			messageHead.setFromeServerId((short) localServerId);
-
+			messageHead.setIp(gateMessageHeader.getIp());
+			messageHead.setMessageId(messageId);
+			messageHead.setMessageType(GameMessageType.REQUEST);
+			messageHead.setRoleId(gateMessageHeader.getRoleId());
+			messageHead.setSendTime(System.currentTimeMillis());
+			messageHead.setSeqId(gateMessageHeader.getSeqId());
+			messageHead.setServerType(serverType);
+			messageHead.setToServerId(serverId);
+			messageHead.setUserId(gateMessageHeader.getUserId());
 			ByteBuf body = gateMessage.getBody();
 			// 把从客户端收到的包转化为向业务服务发送的包。
 			ByteBuf buf = InnerMessageCodecFactory.getInstance().gateToGameServerEncode(messageHead, body);

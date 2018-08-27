@@ -7,7 +7,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
@@ -24,8 +23,8 @@ import io.netty.util.concurrent.EventExecutorGroup;
 @Service
 public class UserServerApplicationContext {
 	private Logger logger = LoggerFactory.getLogger(UserRegisterService.class);
-	@Value("${logic_threads}")
-	private int logicThreads;
+	// @Value("${logic_threads}")
+	private int logicThreads = 3;
 	private EventExecutorGroup executorGroup;
 	private List<EventExecutor> eventExecutors;
 

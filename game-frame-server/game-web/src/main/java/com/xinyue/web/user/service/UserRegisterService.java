@@ -3,7 +3,6 @@ package com.xinyue.web.user.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -25,13 +24,13 @@ public class UserRegisterService {
 	@Autowired
 	private UserServerApplicationContext context;
 	private ReadAndWriteSet<String> registerUserNameSet = new ReadAndWriteSet<>();
-	@Value("${user-name-min-length}")
+	// @Value("${user-name-min-length}")
 	private int userNameMinLength;
-	@Value("${user-name-max-length}")
+	// @Value("${user-name-max-length}")
 	private int userNameMaxLength;
 
 	public void register(UserInfo userInfo, DeferredResult<Object> result) {
-		
+
 	}
 
 	private boolean checkUserInfo(UserInfo userInfo) {

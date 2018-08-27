@@ -1,3 +1,5 @@
+logging:
+  config: file:config/log4j2.xml
 spring:
   application:
     # 服务器实例名，格式：定义的名称字符串_服务类型_服务id
@@ -6,17 +8,20 @@ game:
   server:
     server-id: 2001
     threads: 16
-  rocketmq: 
-    instance-name: ${spring.application.name}-2001
-    consumer-group-name: LogicServerMessageConsumerGroup
-    consumer-topic: GateMessageProducerTopic3
-    
-    
-    publish-topic: GateMessageConsumerTopic
-    publish-topic-key: LogicServerMessageProduceTopicKey
-    publish-topic-queue-num: 8
-    name-server-addr: 127.0.0.1:9876
-    publish-group-name: GateMessageProduceGrooup
+  message:
+    consume:
+      group-name: LogicServerMessageConsumerGroup
+      instance-name:  LogicServer-1
+      name-server-addr: 127.0.0.1:9876
+      topic: GateMessageProduceTopic
+    publish:
+      group-name: LogicMessageProduceGrooup
+      instance-name: LogicServer-1
+      name-server-addr:  127.0.0.1:9876
+      queue-num: 1
+      topic: GateMessageConsumerTopic
+      topic-key: GateMessageConsumerTopicKey
+   
     
 eureka:
   instance:
@@ -24,7 +29,7 @@ eureka:
     ip-address: 192.168.0.192
     appname: LogicServer-1
     app-group-name: LogicServer
-    instance-id: 101-1   
+    instance-id: 2001-1   
     
     #服务过期时间配置,超过这个时间没有接收到心跳EurekaServer就会将这个实例剔除
     #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，这个配置一般为服务刷新时间配置的三倍

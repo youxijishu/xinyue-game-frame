@@ -1,0 +1,13 @@
+logging:
+  config: classpath:log4j2.xml
+server:
+  port: 8101
+spring:
+  application:
+    name: gameuser
+  thymeleaf:
+    cache: false
+    mode: XHTML
+unity:
+  resource:
+    url: http://115.28.208.195:8101

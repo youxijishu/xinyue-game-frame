@@ -13,9 +13,9 @@ public class GameLogicServer {
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(GameLogicServer.class);
-		app.setWebEnvironment(false);
-		ApplicationContext applicationContext = app.run(args);
+		app.setWebEnvironment(true);
 		try {
+			ApplicationContext applicationContext = app.run(args);
 			GameApplication.start(applicationContext);
 		} catch (Exception e) {
 			e.printStackTrace();

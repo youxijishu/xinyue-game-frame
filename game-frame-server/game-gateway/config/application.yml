@@ -10,15 +10,21 @@ game:
     workThreads: 16
     idleTime: 300
     connectTimeout: 10
-  rocketmq:
-    instance-name: GateServer
-    consumer-group-name: GateMessageConsumerGroup
-    consumer-topic: GateMessageConsumerTopic
-    publish-topic: GateMessageProducerTopic3
-    publish-topic-key: GateMessageProduceTopicKey
-    publish-topic-queue-num: 8
-    name-server-addr: 127.0.0.1:9876
-    publish-group-name: GateMessageProduceGrooup
+  message: 
+    publish: 
+      groupName: gate-server-group
+      instance-name: gate-server-1
+      name-server-addr: 127.0.0.1:9876
+      queue-num: 3
+      topic: GateMessageProduceTopic
+      topic-key: GateMessageProduceTopicKey
+      
+    consume: 
+      group-name: GateMessageConsumerGroup
+      instance-name: gate-server-1
+      name-server-addr: 127.0.0.1:9876
+      topic: GateMessageConsumerTopic
+      
 eureka:
   instance:
     app-group-name: gate-server-group
